@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel, Field
 import joblib
 import numpy as np
-
+from fastapi.middleware.cors import CORSMiddleware
 
 # ============================================
 # 1. KHỞI TẠO FASTAPI
@@ -12,6 +12,13 @@ app = FastAPI(
     title="Iris SVM Classification API",
     description="API phân loại hoa Iris bằng mô hình SVM",
     version="1.0.0"
+)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 

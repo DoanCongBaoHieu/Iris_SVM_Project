@@ -2,7 +2,7 @@
 // CẤU HÌNH API
 // ==========================================
 
-const API_URL = "http://127.0.0.1:8000/predict";
+const API_URL = "https://iris-svm-api-oar1.onrender.com/predict";
 
 
 // ==========================================
