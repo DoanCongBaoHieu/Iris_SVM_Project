@@ -24,20 +24,29 @@
     =========================================== -->
 
     <header class="header">
-
-        <div style="font-size: 32px; margin-bottom: 5px;">
-            🌸
+    <div class="header-top">
+        <div class="brand">
+            <div class="brand-icon">🌸</div>
+            <div>
+                <h1>Iris SVM Classifier</h1>
+                <p>Phân loại hoa Iris bằng Machine Learning</p>
+            </div>
         </div>
 
-        <h1>
-            Iris SVM Classifier
-        </h1>
+        <div class="api-status">
+            <span class="status-dot"></span>
+            <span>API Online</span>
+        </div>
+    </div>
 
-        <p>
-            Phân loại hoa Iris bằng mô hình Machine Learning
-        </p>
-
-    </header>
+    <nav class="navbar">
+        <a href="#prediction">Dự đoán</a>
+        <a href="#dataset">Dữ liệu Iris</a>
+        <a href="#evaluation">Đánh giá</a>
+        <a href="#svm-theory">Tìm hiểu SVM</a>
+        <a href="#api-info">API</a>
+    </nav>
+</header>
 
 
 
@@ -45,7 +54,7 @@
          KHU VỰC DỰ ĐOÁN
     =========================================== -->
 
-    <div class="prediction-container">
+    <div id="prediction" class="prediction-container">
 
 
         <!-- ======================================
@@ -354,78 +363,6 @@
 
 
     <!-- ==========================================
-         THÔNG TIN DATASET
-    =========================================== -->
-
-    <section class="dataset-section">
-
-        <h2>
-            📊 Thông tin bộ dữ liệu Iris
-        </h2>
-
-
-        <div class="dataset-grid">
-
-
-            <div class="dataset-card">
-
-                <div class="number">
-                    150
-                </div>
-
-                <div class="label">
-                    Mẫu dữ liệu
-                </div>
-
-            </div>
-
-
-            <div class="dataset-card">
-
-                <div class="number">
-                    4
-                </div>
-
-                <div class="label">
-                    Đặc trưng
-                </div>
-
-            </div>
-
-
-            <div class="dataset-card">
-
-                <div class="number">
-                    3
-                </div>
-
-                <div class="label">
-                    Loài hoa
-                </div>
-
-            </div>
-
-
-            <div class="dataset-card">
-
-                <div class="number">
-                    0
-                </div>
-
-                <div class="label">
-                    Missing values
-                </div>
-
-            </div>
-
-
-        </div>
-
-    </section>
-
-
-
-    <!-- ==========================================
          FOOTER
     =========================================== -->
 
@@ -456,121 +393,12 @@
      THÔNG TIN VÀ ĐÁNH GIÁ MÔ HÌNH
 ========================================== -->
 
-<section class="model-section">
 
-    <div class="section-title">
-        <span>🤖</span>
-        <h2>Thông tin mô hình SVM</h2>
-    </div>
-
-    <p class="section-description">
-        Mô hình Support Vector Machine (SVM) được huấn luyện
-        trên bộ dữ liệu Iris để phân loại ba loài hoa:
-        Setosa, Versicolor và Virginica.
-    </p>
-
-
-    <!-- CÁC CHỈ SỐ -->
-
-    <div class="metrics-grid">
-
-        <div class="metric-card">
-            <div class="metric-icon">🎯</div>
-            <div class="metric-value">93.33%</div>
-            <div class="metric-label">
-                Test Accuracy
-            </div>
-        </div>
-
-
-        <div class="metric-card">
-            <div class="metric-icon">🔄</div>
-            <div class="metric-value">97.50%</div>
-            <div class="metric-label">
-                Cross-Validation
-            </div>
-        </div>
-
-
-        <div class="metric-card">
-            <div class="metric-icon">🧠</div>
-            <div class="metric-value">Linear</div>
-            <div class="metric-label">
-                SVM Kernel
-            </div>
-        </div>
-
-
-        <div class="metric-card">
-            <div class="metric-icon">🌸</div>
-            <div class="metric-value">3</div>
-            <div class="metric-label">
-                Loài hoa
-            </div>
-        </div>
-
-    </div>
-
-
-    <!-- THÔNG TIN CHI TIẾT -->
-
-    <div class="model-details">
-
-        <div class="detail-card">
-
-            <h3>📊 Đánh giá mô hình</h3>
-
-            <p>
-                <strong>Test Accuracy:</strong>
-                93.33%
-            </p>
-
-            <p>
-                <strong>Mean 5-Fold CV Accuracy:</strong>
-                97.50%
-            </p>
-
-            <p>
-                <strong>Std CV Accuracy:</strong>
-                2.04%
-            </p>
-
-        </div>
-
-
-        <div class="detail-card">
-
-            <h3>🌺 Các lớp phân loại</h3>
-
-            <div class="class-list">
-
-                <div class="class-item">
-                    <span>0</span>
-                    <strong>Setosa</strong>
-                </div>
-
-                <div class="class-item">
-                    <span>1</span>
-                    <strong>Versicolor</strong>
-                </div>
-
-                <div class="class-item">
-                    <span>2</span>
-                    <strong>Virginica</strong>
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
 <!-- ==========================================
      CONFUSION MATRIX & CLASSIFICATION REPORT
 ========================================== -->
 
-<section class="evaluation-section">
+<section id="evaluation" class="evaluation-section">
 
     <div class="section-title">
         <span>📊</span>
@@ -581,6 +409,35 @@
         Kết quả đánh giá mô hình SVM trên tập kiểm tra
         gồm Confusion Matrix và Classification Report.
     </p>
+    <!-- TỔNG QUAN CHỈ SỐ -->
+
+<div class="evaluation-metrics">
+
+    <div class="evaluation-metric">
+        <div class="evaluation-metric-icon">🎯</div>
+        <div class="evaluation-metric-value">93.33%</div>
+        <div class="evaluation-metric-label">Test Accuracy</div>
+    </div>
+
+    <div class="evaluation-metric">
+        <div class="evaluation-metric-icon">🔄</div>
+        <div class="evaluation-metric-value">97.50%</div>
+        <div class="evaluation-metric-label">CV Accuracy</div>
+    </div>
+
+    <div class="evaluation-metric">
+        <div class="evaluation-metric-icon">📊</div>
+        <div class="evaluation-metric-value">0.93</div>
+        <div class="evaluation-metric-label">Macro F1-score</div>
+    </div>
+
+    <div class="evaluation-metric">
+        <div class="evaluation-metric-icon">⚙️</div>
+        <div class="evaluation-metric-value">Linear</div>
+        <div class="evaluation-metric-label">Best Kernel</div>
+    </div>
+
+</div>
 
 
     <div class="evaluation-grid">
@@ -705,11 +562,81 @@
     </div>
 
 </section>
+<!-- CROSS VALIDATION -->
+
+<div class="cv-section">
+
+    <div class="cv-header">
+        <div>
+            <h3>🔄 5-Fold Cross-Validation</h3>
+            <p>
+                Độ chính xác của mô hình trên từng fold trong quá trình
+                đánh giá chéo.
+            </p>
+        </div>
+
+        <div class="cv-summary">
+            <strong>97.50%</strong>
+            <span>Mean Accuracy</span>
+        </div>
+    </div>
+
+
+    <div class="cv-bars">
+
+        <div class="cv-row">
+            <span>Fold 1</span>
+            <div class="cv-bar">
+                <div class="cv-fill" style="width: 95.83%;"></div>
+            </div>
+            <strong>95.83%</strong>
+        </div>
+
+        <div class="cv-row">
+            <span>Fold 2</span>
+            <div class="cv-bar">
+                <div class="cv-fill" style="width: 100%;"></div>
+            </div>
+            <strong>100.00%</strong>
+        </div>
+
+        <div class="cv-row">
+            <span>Fold 3</span>
+            <div class="cv-bar">
+                <div class="cv-fill" style="width: 95.83%;"></div>
+            </div>
+            <strong>95.83%</strong>
+        </div>
+
+        <div class="cv-row">
+            <span>Fold 4</span>
+            <div class="cv-bar">
+                <div class="cv-fill" style="width: 95.83%;"></div>
+            </div>
+            <strong>95.83%</strong>
+        </div>
+
+        <div class="cv-row">
+            <span>Fold 5</span>
+            <div class="cv-bar">
+                <div class="cv-fill" style="width: 100%;"></div>
+            </div>
+            <strong>100.00%</strong>
+        </div>
+
+    </div>
+
+    <div class="cv-footer">
+        <span>Mean: <strong>97.50%</strong></span>
+        <span>Std: <strong>2.04%</strong></span>
+    </div>
+
+</div>
 <!-- ==========================================
      GIỚI THIỆU DATASET IRIS
 ========================================== -->
 
-<section class="dataset-section">
+<section id="dataset" class="dataset-section">
 
     <div class="section-title">
         <span>🌸</span>
@@ -820,6 +747,176 @@
 
 </section>
 <!-- ==========================================
+     TÌM HIỂU SVM
+========================================== -->
+
+<section id="svm-theory" class="svm-section">
+
+    <div class="section-title">
+        <span>🧠</span>
+        <h2>Tìm hiểu về Support Vector Machine</h2>
+    </div>
+
+    <p class="section-description">
+        Support Vector Machine (SVM) là thuật toán học máy có giám sát
+        được sử dụng để phân loại dữ liệu bằng cách tìm một siêu phẳng
+        tối ưu nhằm phân tách các lớp dữ liệu.
+    </p>
+
+
+    <!-- Tổng quan -->
+
+    <div class="svm-overview">
+
+        <div class="svm-main-card">
+
+            <div class="svm-card-icon">
+                🎯
+            </div>
+
+            <div>
+                <h3>SVM hoạt động như thế nào?</h3>
+
+                <p>
+                    SVM tìm một siêu phẳng phân chia các lớp dữ liệu
+                    sao cho khoảng cách từ siêu phẳng đến các điểm dữ liệu
+                    gần nhất được tối đa hóa.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="svm-main-card">
+
+            <div class="svm-card-icon">
+                📐
+            </div>
+
+            <div>
+                <h3>Support Vector</h3>
+
+                <p>
+                    Support Vector là những điểm dữ liệu nằm gần
+                    ranh giới phân loại và có vai trò quan trọng
+                    trong việc xác định siêu phẳng.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Thông tin mô hình -->
+
+    <div class="svm-grid">
+
+        <div class="svm-info-card">
+
+            <div class="svm-info-number">
+                01
+            </div>
+
+            <h3>Kernel Linear</h3>
+
+            <p>
+                Mô hình Iris sử dụng
+                <strong>Linear Kernel</strong>
+                để xây dựng ranh giới phân loại tuyến tính.
+            </p>
+
+        </div>
+
+
+        <div class="svm-info-card">
+
+            <div class="svm-info-number">
+                02
+            </div>
+
+            <h3>Tham số C</h3>
+
+            <p>
+                Giá trị tham số tối ưu được lựa chọn thông qua
+                GridSearch là
+                <strong>C = 0.1</strong>.
+            </p>
+
+        </div>
+
+
+        <div class="svm-info-card">
+
+            <div class="svm-info-number">
+                03
+            </div>
+
+            <h3>Cross-Validation</h3>
+
+            <p>
+                Mô hình được đánh giá bằng
+                <strong>5-Fold Cross-Validation</strong>
+                với độ chính xác trung bình
+                <strong>97.50%</strong>.
+            </p>
+
+        </div>
+
+
+        <div class="svm-info-card">
+
+            <div class="svm-info-number">
+                04
+            </div>
+
+            <h3>Phân loại Iris</h3>
+
+            <p>
+                SVM sử dụng bốn đặc trưng hình thái của hoa để
+                phân loại thành ba lớp:
+                <strong>Setosa, Versicolor và Virginica</strong>.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Quy trình -->
+
+    <div class="svm-flow">
+
+        <div class="flow-item">
+            <span>1</span>
+            <strong>Dữ liệu Iris</strong>
+        </div>
+
+        <div class="flow-arrow">→</div>
+
+        <div class="flow-item">
+            <span>2</span>
+            <strong>Huấn luyện SVM</strong>
+        </div>
+
+        <div class="flow-arrow">→</div>
+
+        <div class="flow-item">
+            <span>3</span>
+            <strong>Tìm ranh giới</strong>
+        </div>
+
+        <div class="flow-arrow">→</div>
+
+        <div class="flow-item">
+            <span>4</span>
+            <strong>Dự đoán loài hoa</strong>
+        </div>
+
+    </div>
+
+</section>
+<!-- ==========================================
      QUY TRÌNH XÂY DỰNG MÔ HÌNH
 ========================================== -->
 
@@ -923,6 +1020,126 @@
                 sử dụng mô hình SVM để dự đoán lớp tương ứng.
             </p>
         </div>
+
+    </div>
+
+</section>
+<!-- ==========================================
+     API & PROJECT
+========================================== -->
+
+<section id="api-info" class="api-section">
+
+    <div class="section-title">
+        <span>⚡</span>
+        <h2>API & Thông tin dự án</h2>
+    </div>
+
+    <p class="section-description">
+        Hệ thống sử dụng FastAPI để cung cấp API dự đoán
+        và kết nối trực tiếp với mô hình SVM đã huấn luyện.
+    </p>
+
+    <div class="api-grid">
+
+        <div class="api-card">
+
+            <div class="api-card-icon">⚡</div>
+
+            <h3>FastAPI</h3>
+
+            <p>
+                Backend cung cấp dịch vụ dự đoán
+                thông qua REST API.
+            </p>
+
+            <div class="api-badge">
+                ● API Online
+            </div>
+
+        </div>
+
+
+        <div class="api-card">
+
+            <div class="api-card-icon">🔗</div>
+
+            <h3>POST /predict</h3>
+
+            <p>
+                Nhận 4 đặc trưng của hoa Iris và trả về
+                lớp hoa được mô hình SVM dự đoán.
+            </p>
+
+            <div class="endpoint">
+                POST&nbsp;&nbsp;/predict
+            </div>
+
+        </div>
+
+
+        <div class="api-card">
+
+            <div class="api-card-icon">🤖</div>
+
+            <h3>SVM Model</h3>
+
+            <p>
+                Mô hình Linear SVM với tham số
+                <strong>C = 0.1</strong>.
+            </p>
+
+            <div class="api-badge">
+                Accuracy: 93.33%
+            </div>
+
+        </div>
+
+
+        <div class="api-card">
+
+    <div class="api-card-icon">🌐</div>
+
+    <h3>Swagger API</h3>
+
+    <p>
+        Truy cập giao diện Swagger để xem tài liệu
+        và trực tiếp kiểm thử API dự đoán.
+    </p>
+
+    <a
+        class="api-button swagger-button"
+        href="https://iris-svm-api-oar1.onrender.com/docs"
+        target="_blank"
+        rel="noopener noreferrer"
+    >
+        Mở Swagger API →
+    </a>
+
+</div>
+
+
+<div class="api-card">
+
+    <div class="api-card-icon">💻</div>
+
+    <h3>GitHub</h3>
+
+    <p>
+        Xem mã nguồn frontend, backend, mô hình
+        và các thành phần của dự án.
+    </p>
+
+    <a
+        class="api-button github-button"
+        href="https://github.com/DoanCongBaoHieu/Iris_SVM_Project"
+        target="_blank"
+        rel="noopener noreferrer"
+    >
+        Xem mã nguồn →
+    </a>
+
+</div>
 
     </div>
 
