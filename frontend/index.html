@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Iris SVM Classifier</title>
+
+    <link rel="stylesheet"
+          href="style.css">
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+    <!-- ==========================================
+         HEADER
+    =========================================== -->
+
+    <header class="header">
+
+        <div style="font-size: 32px; margin-bottom: 5px;">
+            🌸
+        </div>
+
+        <h1>
+            Iris SVM Classifier
+        </h1>
+
+        <p>
+            Phân loại hoa Iris bằng mô hình Machine Learning
+        </p>
+
+    </header>
+
+
+
+    <!-- ==========================================
+         KHU VỰC DỰ ĐOÁN
+    =========================================== -->
+
+    <div class="prediction-container">
+
+
+        <!-- ======================================
+             BÊN TRÁI: INPUT
+        ======================================= -->
+
+        <section class="input-section">
+
+            <h2>
+                📋 Thông số đầu vào
+            </h2>
+
+            <p class="section-description">
+                Nhập kích thước của đài hoa và cánh hoa
+                theo đơn vị centimet.
+            </p>
+
+
+            <!-- Sepal Length -->
+
+            <div class="input-group">
+
+                <label for="sepal-length">
+                    Sepal Length
+                    <span>(cm)</span>
+                </label>
+
+                <input
+                    type="number"
+                    id="sepal-length"
+                    placeholder="Ví dụ: 5.1"
+                    step="0.1"
+                >
+
+            </div>
+
+
+            <!-- Sepal Width -->
+
+            <div class="input-group">
+
+                <label for="sepal-width">
+                    Sepal Width
+                    <span>(cm)</span>
+                </label>
+
+                <input
+                    type="number"
+                    id="sepal-width"
+                    placeholder="Ví dụ: 3.5"
+                    step="0.1"
+                >
+
+            </div>
+
+
+            <!-- Petal Length -->
+
+            <div class="input-group">
+
+                <label for="petal-length">
+                    Petal Length
+                    <span>(cm)</span>
+                </label>
+
+                <input
+                    type="number"
+                    id="petal-length"
+                    placeholder="Ví dụ: 1.4"
+                    step="0.1"
+                >
+
+            </div>
+
+
+            <!-- Petal Width -->
+
+            <div class="input-group">
+
+                <label for="petal-width">
+                    Petal Width
+                    <span>(cm)</span>
+                </label>
+
+                <input
+                    type="number"
+                    id="petal-width"
+                    placeholder="Ví dụ: 0.2"
+                    step="0.1"
+                >
+
+            </div>
+
+
+            <!-- Error -->
+
+            <div id="error-message"></div>
+
+
+            <!-- Dữ liệu mẫu nhanh -->
+<div class="sample-buttons">
+
+    <p class="sample-title">Dữ liệu mẫu nhanh:</p>
+
+    <button type="button" onclick="fillSample('setosa')">
+        🌸 Setosa
+    </button>
+
+    <button type="button" onclick="fillSample('versicolor')">
+        🌸 Versicolor
+    </button>
+
+    <button type="button" onclick="fillSample('virginica')">
+        🌸 Virginica
+    </button>
+
+</div>
+
+
+<!-- Predict button -->
+<button
+    id="predict-button"
+    class="predict-button"
+    type="button"
+>
+    🌸 DỰ ĐOÁN LOÀI HOA
+</button>
+        </section>
+
+
+
+        <!-- ======================================
+             BÊN PHẢI: RESULT
+        ======================================= -->
+
+        <section class="result-section">
+
+            <h2>
+                🔍 Kết quả dự đoán
+            </h2>
+
+
+            <!-- Placeholder trước khi dự đoán -->
+
+            <div
+                id="result-placeholder"
+                class="result-placeholder"
+            >
+
+                <div class="icon">
+                    🌱
+                </div>
+
+                <p>
+                    Nhập thông số và nhấn
+                    <strong>Dự đoán</strong>
+                    để xem kết quả.
+                </p>
+
+            </div>
+
+
+
+            <!-- ==================================
+                 KẾT QUẢ SAU KHI DỰ ĐOÁN
+            =================================== -->
+
+            <div
+                id="prediction-result"
+                class="prediction-result hidden"
+            >
+
+
+                <!-- Ảnh hoa -->
+
+                <div class="flower-image-container">
+
+                    <img
+                        id="flower-image"
+                        src=""
+                        alt="Hoa Iris"
+                    >
+
+                </div>
+
+
+                <!-- Nhãn -->
+
+                <div class="species-label">
+                    Loài hoa được dự đoán
+                </div>
+
+
+                <!-- Tên loài -->
+
+                <div id="species-name">
+                    -
+                </div>
+
+
+                <!-- Thông báo -->
+
+                <p id="prediction-message">
+                    -
+                </p>
+
+
+                <!-- Class -->
+
+                <div id="prediction-code">
+                    Class: -
+                </div>
+
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+
+    <!-- ==========================================
+         THÔNG TIN MÔ HÌNH
+    =========================================== -->
+
+    <section class="model-section">
+
+        <h2>
+            🤖 Thông tin mô hình SVM
+        </h2>
+
+
+        <div class="model-grid">
+
+
+            <div class="model-card">
+
+                <div class="label">
+                    Model
+                </div>
+
+                <div class="value">
+                    SVM
+                </div>
+
+            </div>
+
+
+            <div class="model-card">
+
+                <div class="label">
+                    Kernel
+                </div>
+
+                <div class="value">
+                    Linear
+                </div>
+
+            </div>
+
+
+            <div class="model-card">
+
+                <div class="label">
+                    Best C
+                </div>
+
+                <div class="value">
+                    0.1
+                </div>
+
+            </div>
+
+
+            <div class="model-card">
+
+                <div class="label">
+                    CV Accuracy
+                </div>
+
+                <div class="value">
+                    97.50%
+                </div>
+
+            </div>
+
+
+            <div class="model-card">
+
+                <div class="label">
+                    Test Accuracy
+                </div>
+
+                <div class="value">
+                    93.33%
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ==========================================
+         THÔNG TIN DATASET
+    =========================================== -->
+
+    <section class="dataset-section">
+
+        <h2>
+            📊 Thông tin bộ dữ liệu Iris
+        </h2>
+
+
+        <div class="dataset-grid">
+
+
+            <div class="dataset-card">
+
+                <div class="number">
+                    150
+                </div>
+
+                <div class="label">
+                    Mẫu dữ liệu
+                </div>
+
+            </div>
+
+
+            <div class="dataset-card">
+
+                <div class="number">
+                    4
+                </div>
+
+                <div class="label">
+                    Đặc trưng
+                </div>
+
+            </div>
+
+
+            <div class="dataset-card">
+
+                <div class="number">
+                    3
+                </div>
+
+                <div class="label">
+                    Loài hoa
+                </div>
+
+            </div>
+
+
+            <div class="dataset-card">
+
+                <div class="number">
+                    0
+                </div>
+
+                <div class="label">
+                    Missing values
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ==========================================
+         FOOTER
+    =========================================== -->
+
+    <footer class="footer">
+
+        <p>
+            Iris SVM Classification System
+        </p>
+
+        <p>
+            Machine Learning Project
+        </p>
+
+    </footer>
+
+
+</div>
+
+
+
+<!-- ==========================================
+     JAVASCRIPT
+=========================================== -->
+
+<script src="script.js"></script>
+
+<!-- ==========================================
+     THÔNG TIN VÀ ĐÁNH GIÁ MÔ HÌNH
+========================================== -->
+
+<section class="model-section">
+
+    <div class="section-title">
+        <span>🤖</span>
+        <h2>Thông tin mô hình SVM</h2>
+    </div>
+
+    <p class="section-description">
+        Mô hình Support Vector Machine (SVM) được huấn luyện
+        trên bộ dữ liệu Iris để phân loại ba loài hoa:
+        Setosa, Versicolor và Virginica.
+    </p>
+
+
+    <!-- CÁC CHỈ SỐ -->
+
+    <div class="metrics-grid">
+
+        <div class="metric-card">
+            <div class="metric-icon">🎯</div>
+            <div class="metric-value">93.33%</div>
+            <div class="metric-label">
+                Test Accuracy
+            </div>
+        </div>
+
+
+        <div class="metric-card">
+            <div class="metric-icon">🔄</div>
+            <div class="metric-value">97.50%</div>
+            <div class="metric-label">
+                Cross-Validation
+            </div>
+        </div>
+
+
+        <div class="metric-card">
+            <div class="metric-icon">🧠</div>
+            <div class="metric-value">Linear</div>
+            <div class="metric-label">
+                SVM Kernel
+            </div>
+        </div>
+
+
+        <div class="metric-card">
+            <div class="metric-icon">🌸</div>
+            <div class="metric-value">3</div>
+            <div class="metric-label">
+                Loài hoa
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- THÔNG TIN CHI TIẾT -->
+
+    <div class="model-details">
+
+        <div class="detail-card">
+
+            <h3>📊 Đánh giá mô hình</h3>
+
+            <p>
+                <strong>Test Accuracy:</strong>
+                93.33%
+            </p>
+
+            <p>
+                <strong>Mean 5-Fold CV Accuracy:</strong>
+                97.50%
+            </p>
+
+            <p>
+                <strong>Std CV Accuracy:</strong>
+                2.04%
+            </p>
+
+        </div>
+
+
+        <div class="detail-card">
+
+            <h3>🌺 Các lớp phân loại</h3>
+
+            <div class="class-list">
+
+                <div class="class-item">
+                    <span>0</span>
+                    <strong>Setosa</strong>
+                </div>
+
+                <div class="class-item">
+                    <span>1</span>
+                    <strong>Versicolor</strong>
+                </div>
+
+                <div class="class-item">
+                    <span>2</span>
+                    <strong>Virginica</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+<!-- ==========================================
+     CONFUSION MATRIX & CLASSIFICATION REPORT
+========================================== -->
+
+<section class="evaluation-section">
+
+    <div class="section-title">
+        <span>📊</span>
+        <h2>Đánh giá chi tiết mô hình</h2>
+    </div>
+
+    <p class="section-description">
+        Kết quả đánh giá mô hình SVM trên tập kiểm tra
+        gồm Confusion Matrix và Classification Report.
+    </p>
+
+
+    <div class="evaluation-grid">
+
+        <!-- CONFUSION MATRIX -->
+
+        <div class="evaluation-card">
+
+            <h3>🧩 Confusion Matrix</h3>
+
+            <p class="matrix-description">
+                Ma trận thể hiện số lượng mẫu được dự đoán
+                đúng và nhầm giữa ba loài hoa.
+            </p>
+
+            <table class="confusion-matrix">
+
+                <thead>
+                    <tr>
+                        <th>Thực tế \ Dự đoán</th>
+                        <th>Setosa</th>
+                        <th>Versicolor</th>
+                        <th>Virginica</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <th>Setosa</th>
+                        <td class="correct">10</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+
+                    <tr>
+                        <th>Versicolor</th>
+                        <td>0</td>
+                        <td class="correct">9</td>
+                        <td>1</td>
+                    </tr>
+
+                    <tr>
+                        <th>Virginica</th>
+                        <td>0</td>
+                        <td>1</td>
+                        <td class="correct">9</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- CLASSIFICATION REPORT -->
+
+        <div class="evaluation-card">
+
+            <h3>📋 Classification Report</h3>
+
+            <table class="classification-table">
+
+                <thead>
+                    <tr>
+                        <th>Loài</th>
+                        <th>Precision</th>
+                        <th>Recall</th>
+                        <th>F1-score</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>Setosa</td>
+                        <td>1.00</td>
+                        <td>1.00</td>
+                        <td>1.00</td>
+                    </tr>
+
+                    <tr>
+                        <td>Versicolor</td>
+                        <td>0.90</td>
+                        <td>0.90</td>
+                        <td>0.90</td>
+                    </tr>
+
+                    <tr>
+                        <td>Virginica</td>
+                        <td>0.90</td>
+                        <td>0.90</td>
+                        <td>0.90</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+            <div class="report-summary">
+
+                <div>
+                    <strong>Accuracy</strong>
+                    <span>93.33%</span>
+                </div>
+
+                <div>
+                    <strong>Macro Avg F1</strong>
+                    <span>0.93</span>
+                </div>
+
+                <div>
+                    <strong>Weighted Avg F1</strong>
+                    <span>0.93</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+<!-- ==========================================
+     GIỚI THIỆU DATASET IRIS
+========================================== -->
+
+<section class="dataset-section">
+
+    <div class="section-title">
+        <span>🌸</span>
+        <h2>Giới thiệu bộ dữ liệu Iris</h2>
+    </div>
+
+    <p class="section-description">
+        Bộ dữ liệu Iris được sử dụng để xây dựng và đánh giá
+        mô hình phân loại hoa bằng thuật toán Support Vector Machine (SVM).
+    </p>
+
+
+    <div class="dataset-grid">
+
+        <!-- THÔNG TIN DATASET -->
+
+        <div class="dataset-card">
+
+            <h3>📋 Thông tin dữ liệu</h3>
+
+            <div class="dataset-info">
+
+                <div class="info-row">
+                    <span>Số lượng mẫu</span>
+                    <strong>150</strong>
+                </div>
+
+                <div class="info-row">
+                    <span>Số đặc trưng</span>
+                    <strong>4</strong>
+                </div>
+
+                <div class="info-row">
+                    <span>Số lớp</span>
+                    <strong>3</strong>
+                </div>
+
+                <div class="info-row">
+                    <span>Thuật toán</span>
+                    <strong>SVM</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- CÁC ĐẶC TRƯNG -->
+
+        <div class="dataset-card">
+
+            <h3>📐 Các đặc trưng đầu vào</h3>
+
+            <div class="feature-list">
+
+                <div class="feature-item">
+                    <span>01</span>
+                    <strong>Sepal Length</strong>
+                </div>
+
+                <div class="feature-item">
+                    <span>02</span>
+                    <strong>Sepal Width</strong>
+                </div>
+
+                <div class="feature-item">
+                    <span>03</span>
+                    <strong>Petal Length</strong>
+                </div>
+
+                <div class="feature-item">
+                    <span>04</span>
+                    <strong>Petal Width</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- BA LOÀI HOA -->
+
+    <div class="species-grid">
+
+        <div class="species-card">
+            <img src="images/setosa.jpg" alt="Iris Setosa">
+            <h3>Setosa</h3>
+            <span>Class 0</span>
+        </div>
+
+
+        <div class="species-card">
+            <img src="images/versicolor.jpg" alt="Iris Versicolor">
+            <h3>Versicolor</h3>
+            <span>Class 1</span>
+        </div>
+
+
+        <div class="species-card">
+            <img src="images/virginica.jpg" alt="Iris Virginica">
+            <h3>Virginica</h3>
+            <span>Class 2</span>
+        </div>
+
+    </div>
+
+</section>
+<!-- ==========================================
+     QUY TRÌNH XÂY DỰNG MÔ HÌNH
+========================================== -->
+
+<section class="process-section">
+
+    <div class="section-header">
+        <h2>⚙️ Quy trình xây dựng mô hình</h2>
+        <p>
+            Các bước chính trong quá trình xây dựng hệ thống
+            phân loại hoa Iris bằng thuật toán SVM.
+        </p>
+    </div>
+
+    <div class="process-grid">
+
+        <!-- Bước 1 -->
+        <div class="process-card">
+            <div class="process-number">01</div>
+
+            <div class="process-icon">📊</div>
+
+            <h3>Chuẩn bị dữ liệu</h3>
+
+            <p>
+                Sử dụng bộ dữ liệu Iris gồm 150 mẫu,
+                4 đặc trưng đầu vào và 3 lớp hoa.
+            </p>
+        </div>
+
+
+        <!-- Bước 2 -->
+        <div class="process-card">
+            <div class="process-number">02</div>
+
+            <div class="process-icon">✂️</div>
+
+            <h3>Chia dữ liệu</h3>
+
+            <p>
+                Dữ liệu được chia thành tập training
+                và tập testing để huấn luyện và đánh giá mô hình.
+            </p>
+        </div>
+
+
+        <!-- Bước 3 -->
+        <div class="process-card">
+            <div class="process-number">03</div>
+
+            <div class="process-icon">🤖</div>
+
+            <h3>Huấn luyện SVM</h3>
+
+            <p>
+                Sử dụng thuật toán Support Vector Machine
+                với kernel Linear để xây dựng mô hình phân loại.
+            </p>
+        </div>
+
+
+        <!-- Bước 4 -->
+        <div class="process-card">
+            <div class="process-number">04</div>
+
+            <div class="process-icon">🔄</div>
+
+            <h3>Cross-Validation</h3>
+
+            <p>
+                Đánh giá độ ổn định của mô hình bằng
+                phương pháp 5-Fold Cross-Validation.
+            </p>
+        </div>
+
+
+        <!-- Bước 5 -->
+        <div class="process-card">
+            <div class="process-number">05</div>
+
+            <div class="process-icon">📈</div>
+
+            <h3>Đánh giá mô hình</h3>
+
+            <p>
+                Sử dụng Accuracy, Confusion Matrix,
+                Precision, Recall và F1-score.
+            </p>
+        </div>
+
+
+        <!-- Bước 6 -->
+        <div class="process-card">
+            <div class="process-number">06</div>
+
+            <div class="process-icon">🌸</div>
+
+            <h3>Dự đoán loài hoa</h3>
+
+            <p>
+                Nhận 4 thông số hình thái của hoa và
+                sử dụng mô hình SVM để dự đoán lớp tương ứng.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+</body>
+
+
+</html>
