@@ -1,0 +1,59 @@
+<section id="svm-theory" class="svm-section">
+    <div class="section-title">
+        <span>🧠</span>
+        <h2>Tìm hiểu về Support Vector Machine</h2>
+    </div>
+    <p class="section-description">
+        Support Vector Machine (SVM) là thuật toán học máy có giám sát được sử dụng để phân loại dữ liệu bằng cách tìm một siêu phẳng tối ưu nhằm phân tách các lớp dữ liệu.
+    </p>
+
+    <div class="svm-overview">
+        <div class="svm-main-card">
+            <div class="svm-card-icon">🎯</div>
+            <div>
+                <h3>SVM hoạt động như thế nào?</h3>
+                <p>SVM tìm một siêu phẳng phân chia các lớp dữ liệu sao cho khoảng cách từ siêu phẳng đến các điểm dữ liệu gần nhất được tối đa hóa.</p>
+            </div>
+        </div>
+        <div class="svm-main-card">
+            <div class="svm-card-icon">📐</div>
+            <div>
+                <h3>Support Vector</h3>
+                <p>Support Vector là những điểm dữ liệu nằm gần ranh giới phân loại và có vai trò quan trọng trong việc xác định siêu phẳng.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="svm-grid">
+        <div class="svm-info-card">
+            <div class="svm-info-number">01</div>
+            <h3>Kernel Linear</h3>
+            <p>Mô hình Iris sử dụng <strong>Linear Kernel</strong> để xây dựng ranh giới phân loại tuyến tính.</p>
+        </div>
+        <div class="svm-info-card">
+            <div class="svm-info-number">02</div>
+            <h3>Tham số C</h3>
+            <p>Giá trị tham số tối ưu được lựa chọn thông qua GridSearch là <strong>C = 0.1</strong>.</p>
+        </div>
+        <div class="svm-info-card">
+            <div class="svm-info-number">03</div>
+            <h3>Cross-Validation</h3>
+            <p>Mô hình được đánh giá bằng <strong>5-Fold Cross-Validation</strong> với độ chính xác trung bình <strong>97.50%</strong>.</p>
+        </div>
+        <div class="svm-info-card">
+            <div class="svm-info-number">04</div>
+            <h3>Phân loại Iris</h3>
+            <p>SVM sử dụng bốn đặc trưng hình thái của hoa để phân loại thành ba lớp: <strong>Setosa, Versicolor và Virginica</strong>.</p>
+        </div>
+    </div>
+
+    <div class="svm-flow">
+        <div class="flow-item"><span>1</span><strong>Dữ liệu Iris</strong></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-item"><span>2</span><strong>Huấn luyện SVM</strong></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-item"><span>3</span><strong>Tìm ranh giới</strong></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-item"><span>4</span><strong>Dự đoán loài hoa</strong></div>
+    </div>
+</section>

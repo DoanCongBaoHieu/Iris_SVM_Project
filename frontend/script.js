@@ -1,113 +1,160 @@
-// ==========================================
-// CẤU HÌNH API
-// ==========================================
-
-const API_URL = "https://iris-svm-api-oar1.onrender.com/predict";
+// ======================================================
+// IRIS SVM CLASSIFIER - FRONTEND JAVASCRIPT
+// ======================================================
 
 
-// ==========================================
-// LẤY CÁC PHẦN TỬ HTML
-// ==========================================
+// ======================================================
+// 1. CẤU HÌNH API
+// ======================================================
 
-const sepalLengthInput =
-    document.getElementById("sepal-length");
+const API_BASE_URL =
+    "https://iris-svm-api-oar1.onrender.com";
 
-const sepalWidthInput =
-    document.getElementById("sepal-width");
-
-const petalLengthInput =
-    document.getElementById("petal-length");
-
-const petalWidthInput =
-    document.getElementById("petal-width");
+const API_ENDPOINTS = {
+    predict: `${API_BASE_URL}/predict`,
+    login: `${API_BASE_URL}/login`,
+    register: `${API_BASE_URL}/register`
+};
 
 
-const predictButton =
-    document.getElementById("predict-button");
+// ======================================================
+// 2. LẤY CÁC PHẦN TỬ HTML
+// ======================================================
+
+const elements = {
+    sepalLength:
+        document.getElementById("sepal-length"),
+
+    sepalWidth:
+        document.getElementById("sepal-width"),
+
+    petalLength:
+        document.getElementById("petal-length"),
+
+    petalWidth:
+        document.getElementById("petal-width"),
+
+    predictButton:
+        document.getElementById("predict-button"),
+
+    errorMessage:
+        document.getElementById("error-message"),
+
+    resultPlaceholder:
+        document.getElementById("result-placeholder"),
+
+    predictionResult:
+        document.getElementById("prediction-result"),
+
+    flowerImage:
+        document.getElementById("flower-image"),
+
+    speciesName:
+        document.getElementById("species-name"),
+
+    predictionMessage:
+        document.getElementById("prediction-message"),
+
+    predictionCode:
+        document.getElementById("prediction-code")
+};
 
 
-const errorMessage =
-    document.getElementById("error-message");
+// ======================================================
+// 3. DỮ LIỆU CẤU HÌNH
+// ======================================================
+
+const FLOWER_IMAGES = {
+    setosa: "images/setosa.jpg",
+    versicolor: "images/versicolor.jpg",
+    virginica: "images/virginica.jpg"
+};
 
 
-const resultPlaceholder =
-    document.getElementById("result-placeholder");
+const SAMPLE_DATA = {
+    setosa: {
+        sepal_length: 5.1,
+        sepal_width: 3.5,
+        petal_length: 1.4,
+        petal_width: 0.2
+    },
+
+    versicolor: {
+        sepal_length: 6.0,
+        sepal_width: 2.9,
+        petal_length: 4.5,
+        petal_width: 1.5
+    },
+
+    virginica: {
+        sepal_length: 6.5,
+        sepal_width: 3.0,
+        petal_length: 5.2,
+        petal_width: 2.0
+    }
+};
 
 
-const predictionResult =
-    document.getElementById("prediction-result");
-
-
-const flowerImage =
-    document.getElementById("flower-image");
-
-
-const speciesName =
-    document.getElementById("species-name");
-
-
-const predictionMessage =
-    document.getElementById("prediction-message");
-
-
-const predictionCode =
-    document.getElementById("prediction-code");
-
-
-
-// ==========================================
-// HIỂN THỊ LỖI
-// ==========================================
+// ======================================================
+// 4. HIỂN THỊ LỖI
+// ======================================================
 
 function showError(message) {
 
-    errorMessage.textContent = message;
+    if (!elements.errorMessage) {
+        return;
+    }
 
-    errorMessage.classList.add("show");
+    elements.errorMessage.textContent = message;
 
+    elements.errorMessage.classList.add("show");
 }
 
 
-// ==========================================
-// XÓA THÔNG BÁO LỖI
-// ==========================================
+// ======================================================
+// 5. XÓA THÔNG BÁO LỖI
+// ======================================================
 
 function clearError() {
 
-    errorMessage.textContent = "";
+    if (!elements.errorMessage) {
+        return;
+    }
 
-    errorMessage.classList.remove("show");
+    elements.errorMessage.textContent = "";
 
+    elements.errorMessage.classList.remove("show");
 }
 
 
-
-// ==========================================
-// KIỂM TRA DỮ LIỆU ĐẦU VÀO
-// ==========================================
+// ======================================================
+// 6. KIỂM TRA DỮ LIỆU ĐẦU VÀO
+// ======================================================
 
 function validateInput() {
 
     const sepalLength =
-        parseFloat(sepalLengthInput.value);
+        parseFloat(elements.sepalLength.value);
 
     const sepalWidth =
-        parseFloat(sepalWidthInput.value);
+        parseFloat(elements.sepalWidth.value);
 
     const petalLength =
-        parseFloat(petalLengthInput.value);
+        parseFloat(elements.petalLength.value);
 
     const petalWidth =
-        parseFloat(petalWidthInput.value);
+        parseFloat(elements.petalWidth.value);
 
 
+    // ----------------------------------------------
     // Kiểm tra ô trống
+    // ----------------------------------------------
 
     if (
-        isNaN(sepalLength) ||
-        isNaN(sepalWidth) ||
-        isNaN(petalLength) ||
-        isNaN(petalWidth)
+        Number.isNaN(sepalLength) ||
+        Number.isNaN(sepalWidth) ||
+        Number.isNaN(petalLength) ||
+        Number.isNaN(petalWidth)
     ) {
 
         showError(
@@ -118,7 +165,9 @@ function validateInput() {
     }
 
 
-    // Kiểm tra giá trị âm
+    // ----------------------------------------------
+    // Kiểm tra giá trị phải lớn hơn 0
+    // ----------------------------------------------
 
     if (
         sepalLength <= 0 ||
@@ -135,46 +184,126 @@ function validateInput() {
     }
 
 
+    // ----------------------------------------------
+    // Trả về dữ liệu
+    // ----------------------------------------------
+
     return {
         sepal_length: sepalLength,
         sepal_width: sepalWidth,
         petal_length: petalLength,
         petal_width: petalWidth
     };
-
 }
 
 
-
-// ==========================================
-// HIỂN THỊ TRẠNG THÁI LOADING
-// ==========================================
+// ======================================================
+// 7. HIỂN THỊ TRẠNG THÁI LOADING
+// ======================================================
 
 function setLoading(isLoading) {
 
+    if (!elements.predictButton) {
+        return;
+    }
+
+
     if (isLoading) {
 
-        predictButton.disabled = true;
+        elements.predictButton.disabled = true;
 
-        predictButton.textContent =
+        elements.predictButton.textContent =
             "⏳ ĐANG DỰ ĐOÁN...";
 
     } else {
 
-        predictButton.disabled = false;
+        elements.predictButton.disabled = false;
 
-        predictButton.textContent =
+        elements.predictButton.textContent =
             "🌸 DỰ ĐOÁN LOÀI HOA";
-
     }
-
 }
 
 
+// ======================================================
+// 8. HÀM GỌI API DÙNG CHUNG
+// ======================================================
 
-// ==========================================
-// HIỂN THỊ KẾT QUẢ
-// ==========================================
+async function requestAPI(
+    url,
+    method = "GET",
+    data = null
+) {
+
+    const options = {
+        method: method,
+        headers: {
+            "Content-Type": "application/json"
+        }
+    };
+
+
+    // Chỉ thêm body khi có dữ liệu
+    if (data !== null) {
+
+        options.body =
+            JSON.stringify(data);
+    }
+
+
+    const response =
+        await fetch(url, options);
+
+
+    // ----------------------------------------------
+    // Đọc response
+    // ----------------------------------------------
+
+    let responseData = null;
+
+    try {
+
+        responseData =
+            await response.json();
+
+    } catch (error) {
+
+        responseData = null;
+    }
+
+
+    // ----------------------------------------------
+    // Kiểm tra lỗi HTTP
+    // ----------------------------------------------
+
+    if (!response.ok) {
+
+        let errorMessage =
+            "Máy chủ không thể xử lý yêu cầu.";
+
+        if (
+            responseData &&
+            responseData.detail
+        ) {
+
+            errorMessage =
+                typeof responseData.detail === "string"
+                    ? responseData.detail
+                    : "Dữ liệu gửi lên không hợp lệ.";
+        }
+
+
+        throw new Error(errorMessage);
+    }
+
+
+    return responseData;
+}
+
+
+// ======================================================
+// 9. HIỂN THỊ KẾT QUẢ DỰ ĐOÁN
+// ======================================================
 
 function displayResult(data) {
 
@@ -185,175 +314,116 @@ function displayResult(data) {
         data.prediction;
 
 
+    // ----------------------------------------------
     // Hiển thị tên loài
+    // ----------------------------------------------
 
-    speciesName.textContent =
+    elements.speciesName.textContent =
         species;
 
 
-    // Hiển thị class
+    // ----------------------------------------------
+    // Hiển thị mã lớp
+    // ----------------------------------------------
 
-    predictionCode.textContent =
+    elements.predictionCode.textContent =
         prediction;
 
 
-    // Hiển thị message từ API
+    // ----------------------------------------------
+    // Hiển thị thông báo
+    // ----------------------------------------------
 
     if (data.message) {
 
-        predictionMessage.textContent =
+        elements.predictionMessage.textContent =
             data.message;
 
     } else {
 
-        predictionMessage.textContent =
+        elements.predictionMessage.textContent =
             `Mô hình dự đoán đây là hoa ${species}.`;
-
     }
 
 
-    // ======================================
-    // XÁC ĐỊNH ẢNH HOA
-    // ======================================
-
-    const imageMap = {
-
-        "setosa":
-            "images/setosa.jpg",
-
-        "versicolor":
-            "images/versicolor.jpg",
-
-        "virginica":
-            "images/virginica.jpg"
-
-    };
-
+    // ----------------------------------------------
+    // Hiển thị ảnh hoa
+    // ----------------------------------------------
 
     const imagePath =
-        imageMap[species.toLowerCase()];
+        FLOWER_IMAGES[species.toLowerCase()];
 
 
     if (imagePath) {
 
-        flowerImage.src =
+        elements.flowerImage.src =
             imagePath;
 
-        flowerImage.alt =
+        elements.flowerImage.alt =
             `Hoa Iris ${species}`;
-
     }
 
 
-    // ======================================
-    // CHUYỂN TỪ PLACEHOLDER SANG KẾT QUẢ
-    // ======================================
+    // ----------------------------------------------
+    // Hiển thị khu vực kết quả
+    // ----------------------------------------------
 
-    resultPlaceholder.classList.add("hidden");
+    elements.resultPlaceholder.classList.add(
+        "hidden"
+    );
 
-    predictionResult.classList.remove("hidden");
-
+    elements.predictionResult.classList.remove(
+        "hidden"
+    );
 }
 
 
-
-// ==========================================
-// GỌI API FASTAPI
-// ==========================================
+// ======================================================
+// 10. DỰ ĐOÁN HOA
+// ======================================================
 
 async function predictFlower() {
 
     clearError();
 
 
-    // --------------------------------------
-    // 1. KIỂM TRA INPUT
-    // --------------------------------------
+    // ----------------------------------------------
+    // Kiểm tra dữ liệu
+    // ----------------------------------------------
 
     const flowerData =
         validateInput();
 
 
     if (!flowerData) {
-
         return;
-
     }
 
 
-    // --------------------------------------
-    // 2. HIỂN THỊ LOADING
-    // --------------------------------------
+    // ----------------------------------------------
+    // Bật loading
+    // ----------------------------------------------
 
     setLoading(true);
 
 
     try {
 
-
-        // ----------------------------------
-        // 3. GỬI REQUEST ĐẾN FASTAPI
-        // ----------------------------------
-
-        const response =
-            await fetch(API_URL, {
-
-                method: "POST",
-
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
-
-                body:
-                    JSON.stringify(flowerData)
-
-            });
-
-
-        // ----------------------------------
-        // 4. KIỂM TRA RESPONSE
-        // ----------------------------------
-
-        if (!response.ok) {
-
-            let errorText =
-                "Không thể thực hiện dự đoán.";
-
-            try {
-
-                const errorData =
-                    await response.json();
-
-                if (errorData.detail) {
-
-                    errorText =
-                        typeof errorData.detail === "string"
-                            ? errorData.detail
-                            : "Dữ liệu gửi lên không hợp lệ.";
-
-                }
-
-            } catch (e) {
-
-                // Không làm gì nếu response
-                // không phải JSON
-
-            }
-
-
-            throw new Error(errorText);
-
-        }
-
-
-        // ----------------------------------
-        // 5. ĐỌC JSON
-        // ----------------------------------
+        // ------------------------------------------
+        // Gọi FastAPI
+        // ------------------------------------------
 
         const result =
-            await response.json();
+            await requestAPI(
+                API_ENDPOINTS.predict,
+                "POST",
+                flowerData
+            );
 
+
+        // ------------------------------------------
+        // Ghi log để kiểm tra
+        // ------------------------------------------
 
         console.log(
             "Kết quả từ API:",
@@ -361,12 +431,11 @@ async function predictFlower() {
         );
 
 
-        // ----------------------------------
-        // 6. HIỂN THỊ KẾT QUẢ
-        // ----------------------------------
+        // ------------------------------------------
+        // Hiển thị kết quả
+        // ------------------------------------------
 
         displayResult(result);
-
 
     } catch (error) {
 
@@ -377,95 +446,133 @@ async function predictFlower() {
 
 
         showError(
-            "Không thể kết nối đến máy chủ. " +
-            "Hãy kiểm tra FastAPI đang chạy tại " +
-            "127.0.0.1:8000."
+            error.message ||
+            "Không thể kết nối đến máy chủ."
         );
-
 
     } finally {
 
-        // ----------------------------------
-        // 7. TẮT LOADING
-        // ----------------------------------
+        // ------------------------------------------
+        // Tắt loading
+        // ------------------------------------------
 
         setLoading(false);
-
     }
-
 }
 
 
-
-// ==========================================
-// GÁN SỰ KIỆN CHO NÚT DỰ ĐOÁN
-// ==========================================
-
-predictButton.addEventListener(
-    "click",
-    predictFlower
-);
-
-
-
-// ==========================================
-// CHO PHÉP NHẤN ENTER ĐỂ DỰ ĐOÁN
-// ==========================================
-
-document.addEventListener(
-    "keydown",
-    function (event) {
-
-        if (
-            event.key === "Enter" &&
-            !predictButton.disabled
-        ) {
-
-            predictFlower();
-
-        }
-
-    }
-);
-
+// ======================================================
+// 11. ĐIỀN DỮ LIỆU MẪU
+// ======================================================
 
 function fillSample(species) {
 
-    const samples = {
+    const sample =
+        SAMPLE_DATA[species];
 
-        setosa: {
-            sepal_length: 5.1,
-            sepal_width: 3.5,
-            petal_length: 1.4,
-            petal_width: 0.2
-        },
-
-        versicolor: {
-            sepal_length: 6.0,
-            sepal_width: 2.9,
-            petal_length: 4.5,
-            petal_width: 1.5
-        },
-
-        virginica: {
-            sepal_length: 6.5,
-            sepal_width: 3.0,
-            petal_length: 5.2,
-            petal_width: 2.0
-        }
-
-    };
-
-    const sample = samples[species];
 
     if (!sample) {
         return;
     }
 
-    sepalLengthInput.value = sample.sepal_length;
-    sepalWidthInput.value = sample.sepal_width;
-    petalLengthInput.value = sample.petal_length;
-    petalWidthInput.value = sample.petal_width;
+
+    elements.sepalLength.value =
+        sample.sepal_length;
+
+    elements.sepalWidth.value =
+        sample.sepal_width;
+
+    elements.petalLength.value =
+        sample.petal_length;
+
+    elements.petalWidth.value =
+        sample.petal_width;
+
 
     clearError();
 }
+
+
+// ======================================================
+// 12. SỰ KIỆN NÚT DỰ ĐOÁN
+// ======================================================
+
+if (elements.predictButton) {
+
+    elements.predictButton.addEventListener(
+        "click",
+        predictFlower
+    );
+}
+
+
+// ======================================================
+// 13. PHÍM ENTER
+// ======================================================
+//
+// Chỉ cho phép Enter trong 4 ô nhập thông số Iris.
+// Không dùng document-wide nữa.
+//
+// Điều này rất quan trọng khi sau này chúng ta
+// thêm form Login/Register.
+// ======================================================
+
+const predictionInputs = [
+    elements.sepalLength,
+    elements.sepalWidth,
+    elements.petalLength,
+    elements.petalWidth
+];
+
+
+predictionInputs.forEach(input => {
+
+    if (!input) {
+        return;
+    }
+
+
+    input.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (
+                event.key === "Enter" &&
+                elements.predictButton &&
+                !elements.predictButton.disabled
+            ) {
+
+                event.preventDefault();
+
+                predictFlower();
+            }
+        }
+    );
+});
+
+
+// ======================================================
+// 14. CHO PHÉP HTML GỌI fillSample()
+// ======================================================
+//
+// Giữ tương thích với các nút mẫu hiện tại
+// nếu index.html đang dùng:
+// onclick="fillSample('setosa')"
+// ======================================================
+
+window.fillSample =
+    fillSample;
+
+
+// ======================================================
+// 15. KIỂM TRA KẾT NỐI JAVASCRIPT
+// ======================================================
+
+console.log(
+    "Iris SVM frontend JavaScript đã được tải."
+);
+
+console.log(
+    "API:",
+    API_BASE_URL
+);

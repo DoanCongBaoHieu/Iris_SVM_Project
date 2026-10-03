@@ -1,0 +1,102 @@
+<section id="evaluation" class="evaluation-section">
+    <div class="section-title">
+        <span>📊</span>
+        <h2>Đánh giá chi tiết mô hình</h2>
+    </div>
+    <p class="section-description">
+        Kết quả đánh giá mô hình SVM trên tập kiểm tra gồm Confusion Matrix và Classification Report.
+    </p>
+
+    <!-- TỔNG QUAN CHỈ SỐ -->
+    <div class="evaluation-metrics">
+        <div class="evaluation-metric">
+            <div class="evaluation-metric-icon">🎯</div>
+            <div class="evaluation-metric-value">93.33%</div>
+            <div class="evaluation-metric-label">Test Accuracy</div>
+        </div>
+        <div class="evaluation-metric">
+            <div class="evaluation-metric-icon">🔄</div>
+            <div class="evaluation-metric-value">97.50%</div>
+            <div class="evaluation-metric-label">CV Accuracy</div>
+        </div>
+        <div class="evaluation-metric">
+            <div class="evaluation-metric-icon">📊</div>
+            <div class="evaluation-metric-value">0.93</div>
+            <div class="evaluation-metric-label">Macro F1-score</div>
+        </div>
+        <div class="evaluation-metric">
+            <div class="evaluation-metric-icon">⚙️</div>
+            <div class="evaluation-metric-value">Linear</div>
+            <div class="evaluation-metric-label">Best Kernel</div>
+        </div>
+    </div>
+
+    <div class="evaluation-grid">
+        <!-- CONFUSION MATRIX -->
+        <div class="evaluation-card">
+            <h3>🧩 Confusion Matrix</h3>
+            <p class="matrix-description">Ma trận thể hiện số lượng mẫu được dự đoán đúng và nhầm giữa ba loài hoa.</p>
+            <table class="confusion-matrix">
+                <thead>
+                    <tr>
+                        <th>Thực tế \ Dự đoán</th>
+                        <th>Setosa</th>
+                        <th>Versicolor</th>
+                        <th>Virginica</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><th>Setosa</th><td class="correct">10</td><td>0</td><td>0</td></tr>
+                    <tr><th>Versicolor</th><td>0</td><td class="correct">9</td><td>1</td></tr>
+                    <tr><th>Virginica</th><td>0</td><td>1</td><td class="correct">9</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- CLASSIFICATION REPORT -->
+        <div class="evaluation-card">
+            <h3>📋 Classification Report</h3>
+            <table class="classification-table">
+                <thead>
+                    <tr><th>Loài</th><th>Precision</th><th>Recall</th><th>F1-score</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Setosa</td><td>1.00</td><td>1.00</td><td>1.00</td></tr>
+                    <tr><td>Versicolor</td><td>0.90</td><td>0.90</td><td>0.90</td></tr>
+                    <tr><td>Virginica</td><td>0.90</td><td>0.90</td><td>0.90</td></tr>
+                </tbody>
+            </table>
+            <div class="report-summary">
+                <div><strong>Accuracy</strong><span>93.33%</span></div>
+                <div><strong>Macro Avg F1</strong><span>0.93</span></div>
+                <div><strong>Weighted Avg F1</strong><span>0.93</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CROSS VALIDATION -->
+<div class="cv-section">
+    <div class="cv-header">
+        <div>
+            <h3>🔄 5-Fold Cross-Validation</h3>
+            <p>Độ chính xác của mô hình trên từng fold trong quá trình đánh giá chéo.</p>
+        </div>
+        <div class="cv-summary">
+            <strong>97.50%</strong>
+            <span>Mean Accuracy</span>
+        </div>
+    </div>
+
+    <div class="cv-bars">
+        <div class="cv-row"><span>Fold 1</span><div class="cv-bar"><div class="cv-fill" style="width: 95.83%;"></div></div><strong>95.83%</strong></div>
+        <div class="cv-row"><span>Fold 2</span><div class="cv-bar"><div class="cv-fill" style="width: 100%;"></div></div><strong>100.00%</strong></div>
+        <div class="cv-row"><span>Fold 3</span><div class="cv-bar"><div class="cv-fill" style="width: 95.83%;"></div></div><strong>95.83%</strong></div>
+        <div class="cv-row"><span>Fold 4</span><div class="cv-bar"><div class="cv-fill" style="width: 95.83%;"></div></div><strong>95.83%</strong></div>
+        <div class="cv-row"><span>Fold 5</span><div class="cv-bar"><div class="cv-fill" style="width: 100%;"></div></div><strong>100.00%</strong></div>
+    </div>
+    <div class="cv-footer">
+        <span>Mean: <strong>97.50%</strong></span>
+        <span>Std: <strong>2.04%</strong></span>
+    </div>
+</div>
