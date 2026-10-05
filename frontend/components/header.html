@@ -1,24 +1,81 @@
 <header class="header">
+
     <div class="header-top">
+
+        <!-- LOGO -->
         <div class="brand">
+
             <div class="brand-icon">🌸</div>
+
             <div>
                 <h1>Iris SVM Classifier</h1>
                 <p>Phân loại hoa Iris bằng Machine Learning</p>
             </div>
+
         </div>
 
-        <div class="api-status">
-            <span class="status-dot"></span>
-            <span>API Online</span>
+
+        <!-- KHU VỰC BÊN PHẢI -->
+        <div class="header-actions">
+            <button id="theme-toggle" class="theme-toggle-btn" title="Giao diện Sáng/Tối">🌙</button>
+            <!-- API -->
+            <div class="api-status">
+                <span class="status-dot"></span>
+                <span>API Online</span>
+            </div>
+
+
+            <!-- TÀI KHOẢN -->
+            <div
+                id="user-account"
+                class="user-account hidden"
+>
+
+            <span class="user-icon">👤</span>
+
+             <span
+                id="current-username"
+                class="current-username"
+            ></span>
+
+            <button
+                type="button"
+                id="change-password-button"
+                class="change-password-button"
+            >
+                🔑 Đổi mật khẩu
+            </button>
+
+            <button
+                type="button"
+                id="logout-button"
+                class="logout-button"
+            >
+                Đăng xuất
+            </button>
+
+</div>
+
         </div>
+
     </div>
 
+
+    <!-- MENU -->
     <nav class="navbar">
+
         <a href="#prediction">Dự đoán</a>
+
+        <a href="#history">Lịch sử</a>
+
         <a href="#dataset">Dữ liệu Iris</a>
+
         <a href="#evaluation">Đánh giá</a>
+
         <a href="#svm-theory">Tìm hiểu SVM</a>
+
         <a href="#api-info">API</a>
+
     </nav>
+
 </header>

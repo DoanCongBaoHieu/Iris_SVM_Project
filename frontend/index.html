@@ -10,7 +10,39 @@
     <div class="container">
         <!-- Các khối Component sẽ được JS tự động đổ vào đây -->
         <div id="comp-header"></div>
+
+        <!-- =========================================
+             POPUP ĐỔI MẬT KHẨU
+        ========================================== -->
+        <div id="change-password-modal" class="password-modal hidden">
+            <div class="password-modal-overlay"></div>
+            <div class="password-modal-content">
+                <button type="button" id="close-password-modal" class="password-modal-close">×</button>
+                <div class="password-modal-icon">🔑</div>
+                <h2>Đổi mật khẩu</h2>
+                <p class="password-modal-description">Cập nhật mật khẩu để bảo vệ tài khoản của bạn.</p>
+                <div class="password-form-group">
+                    <label for="current-password">Mật khẩu hiện tại</label>
+                    <input type="password" id="current-password" placeholder="Nhập mật khẩu hiện tại" autocomplete="current-password">
+                </div>
+                <div class="password-form-group">
+                    <label for="new-password">Mật khẩu mới</label>
+                    <input type="password" id="new-password" placeholder="Ít nhất 6 ký tự" autocomplete="new-password">
+                </div>
+                <div class="password-form-group">
+                    <label for="confirm-password">Xác nhận mật khẩu mới</label>
+                    <input type="password" id="confirm-password" placeholder="Nhập lại mật khẩu mới" autocomplete="new-password">
+                </div>
+                <div id="password-message" class="password-message"></div>
+                <div class="password-modal-actions">
+                    <button type="button" id="cancel-password-button" class="password-cancel-button">Hủy</button>
+                    <button type="button" id="submit-password-button" class="password-submit-button">🔑 Lưu mật khẩu mới</button>
+                </div>
+            </div>
+        </div>
+
         <div id="comp-prediction"></div>
+        <div id="comp-history"></div>
         <div id="comp-model-info"></div>
         <div id="comp-evaluation"></div>
         <div id="comp-dataset"></div>
@@ -19,11 +51,22 @@
         <div id="comp-api-footer"></div>
     </div>
 
-    <!-- Script ghép nối UI -->
-    <script src="load-components.js"></script>
-    
-    <!-- Script Logic API của bạn -->
-    <!-- Lưu ý: Cần defer để đảm bảo HTML ghép xong mới chạy script.js -->
-    
+    <!-- =========================================
+         MENU ĐIỀU HƯỚNG BÊN CẠNH (FLOATING MENU)
+    ========================================== -->
+    <div class="floating-side-menu">
+        <a href="#prediction" class="side-link">🔮 Dự đoán</a>
+        <a href="#history" class="side-link">🕘 Lịch sử</a>
+        <a href="#dataset" class="side-link">🌸 Dữ liệu Iris</a>
+        <a href="#evaluation" class="side-link">📊 Đánh giá</a>
+        <a href="#svm-theory" class="side-link">🧠 Tìm hiểu SVM</a>
+        <a href="#api-info" class="side-link">⚡ API</a>
+        <a href="#" class="side-link back-top">⬆ Lên đầu trang</a>
+    </div>
+
+    <!-- =========================================
+         SCRIPT GHÉP NỐI UI
+    ========================================== -->
+    <script src="load-components.js?v=5"></script>
 </body>
 </html>

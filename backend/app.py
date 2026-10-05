@@ -2,12 +2,13 @@ from fastapi import FastAPI, Depends, HTTPException
 from pydantic import BaseModel, Field
 import joblib
 import numpy as np
+import time
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from backend.database import get_db
-from backend.models import User
+from backend.models import User, PredictionHistory
 import bcrypt
 from sqlalchemy import select
 
@@ -22,7 +23,12 @@ app = FastAPI(
 )
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+
+    allow_origins=[
+        "http://127.0.0.1:5500",
+        "http://localhost:5500",
+    ],
+
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -59,6 +65,10 @@ target_names = [
 # ============================================
 
 class IrisInput(BaseModel):
+    user_id: int | None = Field(
+        default=None,
+        description="ID người dùng"
+    )
 
     sepal_length: float = Field(
         ...,
@@ -118,6 +128,26 @@ class LoginInput(BaseModel):
         description="Mật khẩu"
     )
 
+
+class ChangePasswordInput(BaseModel):
+    user_id: int = Field(
+        ...,
+        description="ID người dùng"
+    )
+
+    current_password: str = Field(
+        ...,
+        min_length=1,
+        description="Mật khẩu hiện tại"
+    )
+
+    new_password: str = Field(
+        ...,
+        min_length=6,
+        max_length=100,
+        description="Mật khẩu mới"
+    )
+
 # ============================================
 # 5. API ROOT
 # ============================================
@@ -135,8 +165,23 @@ def root():
 # ============================================
 
 @app.post("/predict")
-def predict(data: IrisInput):
+def predict(data: IrisInput, db: Session = Depends(get_db)):
 
+    # Kiểm tra user nếu có user_id
+    user = None
+
+    if data.user_id is not None:
+        user = db.execute(
+            select(User).where(User.id == data.user_id)
+        ).scalar_one_or_none()
+
+        if not user:
+            raise HTTPException(
+                status_code=404,
+                detail="Không tìm thấy người dùng."
+            )
+
+    # Chuẩn bị dữ liệu đầu vào
     features = np.array([
         [
             data.sepal_length,
@@ -146,18 +191,42 @@ def predict(data: IrisInput):
         ]
     ])
 
+    # Đo thời gian chạy mô hình
+    start_time = time.perf_counter()
 
     prediction = model.predict(features)[0]
 
+    end_time = time.perf_counter()
 
+    prediction_time_ms = (end_time - start_time) * 1000
+
+    # Xác định loài hoa
     species = target_names[prediction]
 
+    # Lưu lịch sử nếu có user_id
+    if user is not None:
+        history = PredictionHistory(
+            user_id=user.id,
+            sepal_length=data.sepal_length,
+            sepal_width=data.sepal_width,
+            petal_length=data.petal_length,
+            petal_width=data.petal_width,
+            prediction=int(prediction),
+            species=species,
+            prediction_time_ms=prediction_time_ms
+        )
+
+        db.add(history)
+        db.commit()
+        db.refresh(history)
 
     return {
-    "prediction": int(prediction),
-    "species": species,
-    "message": f"Mô hình dự đoán hoa thuộc loài {species.capitalize()}."
-}
+        "prediction": int(prediction),
+        "species": species,
+        "message": f"Mô hình dự đoán hoa thuộc loài {species.capitalize()}.",
+        "prediction_time_ms": round(prediction_time_ms, 4),
+        "history_saved": user is not None
+    }
 
 # ============================================
 # 7. API KIỂM TRA KẾT NỐI CSDL
@@ -221,34 +290,156 @@ def register(data: RegisterInput, db: Session = Depends(get_db)):
 # ============================================
 
 @app.post("/login")
-def login(data: LoginInput, db: Session = Depends(get_db)):
+def login(
+    data: LoginInput,
+    db: Session = Depends(get_db)
+):
+    try:
+        # Tìm người dùng
+        user = db.execute(
+            select(User).where(User.username == data.username)
+        ).scalar_one_or_none()
 
-    # Tìm người dùng theo username
+        if not user:
+            raise HTTPException(
+                status_code=401,
+                detail="Tên đăng nhập hoặc mật khẩu không đúng."
+            )
+
+        # Kiểm tra hash
+        if not user.password_hash:
+            raise Exception("password_hash của người dùng đang bị NULL.")
+
+        password_valid = bcrypt.checkpw(
+            data.password.encode("utf-8"),
+            user.password_hash.encode("utf-8")
+        )
+
+        if not password_valid:
+            raise HTTPException(
+                status_code=401,
+                detail="Tên đăng nhập hoặc mật khẩu không đúng."
+            )
+
+        return {
+            "message": "Đăng nhập thành công.",
+            "user_id": user.id,
+            "username": user.username
+        }
+
+    except HTTPException:
+        raise
+
+    except Exception as e:
+        print("========== LOGIN ERROR ==========")
+        print(type(e).__name__)
+        print(str(e))
+        print("=================================")
+
+        raise HTTPException(
+            status_code=500,
+            detail=f"Lỗi đăng nhập: {type(e).__name__}: {str(e)}"
+        )
+# ======================================================
+# ĐỔI MẬT KHẨU
+# ======================================================
+
+@app.post("/change-password")
+def change_password(
+    data: ChangePasswordInput,
+    db: Session = Depends(get_db)
+):
+    # Tìm người dùng
     user = db.execute(
-        select(User).where(User.username == data.username)
+        select(User).where(User.id == data.user_id)
     ).scalar_one_or_none()
 
-    # Không tìm thấy username
     if not user:
         raise HTTPException(
-            status_code=401,
-            detail="Tên đăng nhập hoặc mật khẩu không đúng."
+            status_code=404,
+            detail="Không tìm thấy người dùng."
         )
 
-    # Kiểm tra mật khẩu
-    password_valid = bcrypt.checkpw(
-        data.password.encode("utf-8"),
+    # Kiểm tra mật khẩu hiện tại
+    if not bcrypt.checkpw(
+        data.current_password.encode("utf-8"),
         user.password_hash.encode("utf-8")
-    )
-
-    if not password_valid:
+    ):
         raise HTTPException(
-            status_code=401,
-            detail="Tên đăng nhập hoặc mật khẩu không đúng."
+            status_code=400,
+            detail="Mật khẩu hiện tại không đúng."
         )
+
+    # Không cho đổi thành chính mật khẩu cũ
+    if bcrypt.checkpw(
+        data.new_password.encode("utf-8"),
+        user.password_hash.encode("utf-8")
+    ):
+        raise HTTPException(
+            status_code=400,
+            detail="Mật khẩu mới phải khác mật khẩu hiện tại."
+        )
+
+    # Mã hóa mật khẩu mới
+    new_password_hash = bcrypt.hashpw(
+        data.new_password.encode("utf-8"),
+        bcrypt.gensalt()
+    ).decode("utf-8")
+
+    # Cập nhật vào database
+    user.password_hash = new_password_hash
+
+    db.commit()
+    db.refresh(user)
 
     return {
-        "message": "Đăng nhập thành công.",
+        "message": "Đổi mật khẩu thành công."
+    }
+
+
+# ============================================
+# 10. API LẤY LỊCH SỬ DỰ ĐOÁN
+# ============================================
+
+@app.get("/history/{user_id}")
+def get_prediction_history(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+    # Kiểm tra người dùng
+    user = db.execute(
+        select(User).where(User.id == user_id)
+    ).scalar_one_or_none()
+
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="Không tìm thấy người dùng."
+        )
+
+    # Lấy lịch sử dự đoán
+    histories = db.execute(
+        select(PredictionHistory)
+        .where(PredictionHistory.user_id == user_id)
+        .order_by(PredictionHistory.created_at.desc())
+    ).scalars().all()
+
+    return {
         "user_id": user.id,
-        "username": user.username
+        "username": user.username,
+        "total": len(histories),
+        "history": [
+            {
+                "id": item.id,
+                "sepal_length": item.sepal_length,
+                "sepal_width": item.sepal_width,
+                "petal_length": item.petal_length,
+                "petal_width": item.petal_width,
+                "prediction": item.prediction,
+                "species": item.species,
+                "prediction_time_ms": item.prediction_time_ms,
+                "created_at": item.created_at
+            }
+            for item in histories
+        ]
     }
