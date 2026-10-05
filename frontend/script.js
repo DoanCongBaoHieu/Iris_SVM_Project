@@ -8,7 +8,10 @@
 // ======================================================
 
 const API_BASE_URL =
-    "http://127.0.0.1:8000";
+    (window.location.hostname === "localhost" ||
+     window.location.hostname === "127.0.0.1")
+        ? "http://127.0.0.1:8000"
+        : "https://iris-svm-api-oar1.onrender.com";
 
 const API_ENDPOINTS = {
     predict: `${API_BASE_URL}/predict`,
