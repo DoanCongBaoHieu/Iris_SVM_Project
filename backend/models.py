@@ -14,7 +14,7 @@ class User(Base):
     created_at = Column(
         DateTime,
         nullable=False,
-        server_default=func.getdate()
+        server_default=func.now()
     )
 
     predictions = relationship(
@@ -47,7 +47,7 @@ class PredictionHistory(Base):
     created_at = Column(
         DateTime,
         nullable=False,
-        server_default=func.getdate()
+        server_default=func.now()
     )
 
     user = relationship(
