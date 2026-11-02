@@ -8,13 +8,6 @@ from fastapi.middleware.cors import CORSMiddleware
 import joblib
 import numpy as np
 from pydantic import BaseModel, Field
-from sklearn.datasets import load_iris
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
-from sklearn.tree import DecisionTreeClassifier
 from sqlalchemy import delete, func, select, text
 from sqlalchemy.orm import Session
 
@@ -41,34 +34,24 @@ app.add_middleware(
 )
 
 
-MODEL_PATH = Path(__file__).resolve().parents[1] / "model" / "iris_svm_model.pkl"
-
-if not MODEL_PATH.exists():
-    raise FileNotFoundError(f"Không tìm thấy mô hình tại: {MODEL_PATH}")
-
-model = joblib.load(MODEL_PATH)
-
-iris_dataset = load_iris()
-prediction_models = {
-    "svm": model,
-    "knn": Pipeline([
-        ("scaler", StandardScaler()),
-        ("classifier", KNeighborsClassifier(n_neighbors=5))
-    ]),
-    "tree": DecisionTreeClassifier(random_state=42),
-    "random_forest": RandomForestClassifier(
-        n_estimators=100,
-        random_state=42
-    ),
-    "logistic": Pipeline([
-        ("scaler", StandardScaler()),
-        ("classifier", LogisticRegression(max_iter=1000, random_state=42))
-    ])
+MODEL_DIR = Path(__file__).resolve().parents[1] / "model"
+MODEL_FILES = {
+    "svm": "iris_svm_model.pkl",
+    "knn": "iris_knn_model.pkl",
+    "tree": "iris_tree_model.pkl",
+    "random_forest": "iris_random_forest_model.pkl",
+    "logistic": "iris_logistic_model.pkl"
 }
 
-for algorithm, estimator in prediction_models.items():
-    if algorithm != "svm":
-        estimator.fit(iris_dataset.data, iris_dataset.target)
+prediction_models = {}
+for algorithm, filename in MODEL_FILES.items():
+    model_path = MODEL_DIR / filename
+    if not model_path.exists():
+        raise FileNotFoundError(
+            f"Không tìm thấy mô hình tại: {model_path}. "
+            "Hãy chạy `python backend/train_models.py` để tạo các mô hình."
+        )
+    prediction_models[algorithm] = joblib.load(model_path)
 
 model_names = {
     "svm": "Support Vector Machine (SVM)",

@@ -46,7 +46,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 
 model = Pipeline([
     ("scaler", StandardScaler()),
-    ("svm", SVC(kernel="linear"))
+    ("svm", SVC(kernel="linear", C=0.1))
 ])
 
 
@@ -90,7 +90,7 @@ f1 = f1_score(
 )
 
 
-print("\n===== BASELINE SVM =====")
+print("\n===== SVM TUYẾN TÍNH (C=0.1) =====")
 
 print(f"Accuracy : {accuracy:.4f}")
 print(f"Precision: {precision:.4f}")
@@ -133,13 +133,13 @@ cv = StratifiedKFold(
 
 cv_scores = cross_val_score(
     model,
-    X,
-    y,
+    X_train,
+    y_train,
     cv=cv,
     scoring="accuracy"
 )
 
-print("\n===== 5-FOLD CROSS-VALIDATION =====")
+print("\n===== 5-FOLD CROSS-VALIDATION TRÊN TẬP HUẤN LUYỆN =====")
 
 for i, score in enumerate(cv_scores, start=1):
     print(f"Fold {i}: {score:.4f}")

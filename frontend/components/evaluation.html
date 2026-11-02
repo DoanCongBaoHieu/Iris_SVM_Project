@@ -4,24 +4,24 @@
         <h2>Đánh giá chi tiết mô hình</h2>
     </div>
     <p class="section-description">
-        Kết quả đánh giá chi tiết SVM trên cùng tập kiểm tra (20%, chia phân tầng, random_state = 42), gồm ma trận nhầm lẫn và báo cáo phân loại.
+        Kết quả đánh giá SVM trên 30 mẫu kiểm tra (chia phân tầng, random_state = 42), gồm ma trận nhầm lẫn và báo cáo phân loại. Mô hình triển khai được huấn luyện lại trên đủ 150 mẫu.
     </p>
 
     <!-- TỔNG QUAN CHỈ SỐ -->
     <div class="evaluation-metrics">
         <div class="evaluation-metric">
             <div class="evaluation-metric-icon">🎯</div>
-            <div class="evaluation-metric-value">100.00%</div>
+            <div class="evaluation-metric-value">93.33%</div>
             <div class="evaluation-metric-label">Độ chính xác trên tập kiểm tra</div>
         </div>
         <div class="evaluation-metric">
             <div class="evaluation-metric-icon">🔄</div>
-            <div class="evaluation-metric-value">96.67%</div>
+            <div class="evaluation-metric-value">97.50%</div>
             <div class="evaluation-metric-label">Độ chính xác kiểm định chéo</div>
         </div>
         <div class="evaluation-metric">
             <div class="evaluation-metric-icon">📊</div>
-            <div class="evaluation-metric-value">1.00</div>
+            <div class="evaluation-metric-value">0.93</div>
             <div class="evaluation-metric-label">Điểm F1 trung bình theo lớp</div>
         </div>
         <div class="evaluation-metric">
@@ -47,8 +47,8 @@
                 </thead>
                 <tbody>
                     <tr><th>Setosa</th><td class="correct">10</td><td>0</td><td>0</td></tr>
-                    <tr><th>Versicolor</th><td>0</td><td class="correct">10</td><td>0</td></tr>
-                    <tr><th>Virginica</th><td>0</td><td>0</td><td class="correct">10</td></tr>
+                    <tr><th>Versicolor</th><td>0</td><td class="correct">9</td><td>1</td></tr>
+                    <tr><th>Virginica</th><td>0</td><td>1</td><td class="correct">9</td></tr>
                 </tbody>
             </table>
         </div>
@@ -62,14 +62,14 @@
                 </thead>
                 <tbody>
                     <tr><td>Setosa</td><td>1.00</td><td>1.00</td><td>1.00</td></tr>
-                    <tr><td>Versicolor</td><td>1.00</td><td>1.00</td><td>1.00</td></tr>
-                    <tr><td>Virginica</td><td>1.00</td><td>1.00</td><td>1.00</td></tr>
+                    <tr><td>Versicolor</td><td>0.90</td><td>0.90</td><td>0.90</td></tr>
+                    <tr><td>Virginica</td><td>0.90</td><td>0.90</td><td>0.90</td></tr>
                 </tbody>
             </table>
             <div class="report-summary">
-                <div><strong>Độ chính xác tổng thể</strong><span>100.00%</span></div>
-                <div><strong>F1 trung bình theo lớp</strong><span>1.00</span></div>
-                <div><strong>F1 trung bình (có trọng số)</strong><span>1.00</span></div>
+                <div><strong>Độ chính xác tổng thể</strong><span>93.33%</span></div>
+                <div><strong>F1 trung bình theo lớp</strong><span>0.93</span></div>
+                <div><strong>F1 trung bình (có trọng số)</strong><span>0.93</span></div>
             </div>
         </div>
     </div>
@@ -80,23 +80,23 @@
     <div class="cv-header">
         <div>
             <h3>🔄 Kiểm định chéo 5 phần</h3>
-            <p>Độ chính xác của mô hình trên từng phần trong quá trình kiểm định chéo.</p>
+            <p>Kiểm định chéo 5 phần trên 120 mẫu huấn luyện, tách biệt với tập kiểm tra.</p>
         </div>
         <div class="cv-summary">
-            <strong>96.67%</strong>
+            <strong>97.50%</strong>
             <span>Độ chính xác trung bình</span>
         </div>
     </div>
 
     <div class="cv-bars">
-        <div class="cv-row"><span>Phần 1</span><div class="cv-bar"><div class="cv-fill" style="width: 100%;"></div></div><strong>100.00%</strong></div>
+        <div class="cv-row"><span>Phần 1</span><div class="cv-bar"><div class="cv-fill" style="width: 95.83%;"></div></div><strong>95.83%</strong></div>
         <div class="cv-row"><span>Phần 2</span><div class="cv-bar"><div class="cv-fill" style="width: 100%;"></div></div><strong>100.00%</strong></div>
-        <div class="cv-row"><span>Phần 3</span><div class="cv-bar"><div class="cv-fill" style="width: 86.67%;"></div></div><strong>86.67%</strong></div>
-        <div class="cv-row"><span>Phần 4</span><div class="cv-bar"><div class="cv-fill" style="width: 100%;"></div></div><strong>100.00%</strong></div>
-        <div class="cv-row"><span>Phần 5</span><div class="cv-bar"><div class="cv-fill" style="width: 96.67%;"></div></div><strong>96.67%</strong></div>
+        <div class="cv-row"><span>Phần 3</span><div class="cv-bar"><div class="cv-fill" style="width: 95.83%;"></div></div><strong>95.83%</strong></div>
+        <div class="cv-row"><span>Phần 4</span><div class="cv-bar"><div class="cv-fill" style="width: 95.83%;"></div></div><strong>95.83%</strong></div>
+        <div class="cv-row"><span>Phần 5</span><div class="cv-bar"><div class="cv-fill" style="width: 100%;"></div></div><strong>100.00%</strong></div>
     </div>
     <div class="cv-footer">
-        <span>Trung bình: <strong>96.67%</strong></span>
-        <span>Độ lệch chuẩn: <strong>5.16%</strong></span>
+        <span>Trung bình: <strong>97.50%</strong></span>
+        <span>Độ lệch chuẩn: <strong>2.04%</strong></span>
     </div>
 </div>
