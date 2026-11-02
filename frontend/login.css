@@ -687,9 +687,10 @@ body {
 
 .iris-exhibit-heading h1 em {
     color: #bd8cff;
-    font-family: "Brush Script MT", "Segoe Script", cursive;
-    font-size: 1.15em;
-    font-weight: 400;
+    font-family: "Dancing Script", "Segoe Script", "Brush Script MT", cursive;
+    font-size: 1.2em;
+    font-weight: 600;
+    letter-spacing: 0.01em;
 }
 
 .iris-exhibit-subtitle {
