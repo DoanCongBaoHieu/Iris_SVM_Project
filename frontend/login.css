@@ -216,6 +216,104 @@ body {
     margin: 0 auto;
 }
 
+.login-puppy {
+    width: 150px;
+    height: 128px;
+    margin: -20px auto 10px;
+}
+
+.login-puppy svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.puppy-ear {
+    fill: #b98566;
+    stroke: #8d604b;
+    stroke-width: 3;
+}
+
+.puppy-head,
+.puppy-body {
+    fill: #fffaf0;
+    stroke: #d6c6b7;
+    stroke-width: 3;
+}
+
+.puppy-cheek {
+    fill: #f5b5b4;
+    opacity: 0.7;
+}
+
+.puppy-eyes {
+    fill: #302b32;
+    transition: opacity 140ms ease;
+}
+
+.puppy-eye-shine {
+    fill: #ffffff;
+}
+
+.puppy-muzzle {
+    fill: #ffffff;
+}
+
+.puppy-nose {
+    fill: #302b32;
+}
+
+.puppy-smile {
+    fill: none;
+    stroke: #6d5550;
+    stroke-linecap: round;
+    stroke-width: 2.5;
+}
+
+.puppy-cover-paws {
+    fill: #d99672;
+    stroke: #8d604b;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 180ms ease, transform 220ms ease;
+}
+
+.puppy-arm {
+    fill: none;
+    stroke: #d99672;
+    stroke-width: 12;
+    stroke-linecap: round;
+}
+
+.login-puppy.is-covering .puppy-cover-paws {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.login-puppy.is-covering .puppy-eyes {
+    opacity: 0;
+}
+
+.puppy-body {
+    fill: #f4e8db;
+}
+
+.puppy-collar {
+    fill: none;
+    stroke: #d64f91;
+    stroke-linecap: round;
+    stroke-width: 7;
+}
+
+.puppy-tag {
+    fill: #f6c95d;
+    stroke: #d5a532;
+    stroke-width: 1.5;
+}
+
 /* =========================================
    FORM HEADER
 ========================================= */
@@ -304,6 +402,35 @@ body {
     background: #ffffff;
 
     box-shadow: 0 0 0 4px rgba(107, 87, 223, 0.10);
+}
+
+.password-input-wrap {
+    position: relative;
+}
+
+.password-input-wrap input {
+    padding-right: 68px;
+}
+
+.toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    padding: 6px 5px;
+    border: 0;
+    background: transparent;
+    color: #624dd2;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.toggle-password:focus-visible {
+    outline: 2px solid #6b57df;
+    outline-offset: 2px;
+    border-radius: 4px;
 }
 
 /* =========================================
@@ -433,6 +560,10 @@ body {
     .login-form-section {
         padding: 45px 35px;
     }
+
+    .login-puppy {
+        margin-top: -12px;
+    }
 }
 
 @media (max-width: 500px) {
@@ -456,6 +587,12 @@ body {
 
     .login-form-section {
         padding: 35px 25px;
+    }
+
+    .login-puppy {
+        width: 130px;
+        height: 112px;
+        margin-top: -8px;
     }
 
     .login-form-section h2 {

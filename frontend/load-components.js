@@ -22,15 +22,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
 
         await Promise.all([
-            loadComponent("comp-header", "components/header.html?v=3"),
-            loadComponent("comp-history", "components/history.html"),
-            loadComponent("comp-prediction", "components/prediction.html"),
-            loadComponent("comp-model-info", "components/model-info.html"),
-            loadComponent("comp-evaluation", "components/evaluation.html"),
-            loadComponent("comp-dataset", "components/dataset.html"),
-            loadComponent("comp-svm-theory", "components/svm-theory.html"),
-            loadComponent("comp-process", "components/process.html"),
-            loadComponent("comp-api-footer", "components/api-footer.html")
+            loadComponent("comp-header", "components/header.html?v=4"),
+            loadComponent("comp-history", "components/history.html?v=3"),
+            loadComponent("comp-prediction", "components/prediction.html?v=5"),
+            loadComponent("comp-model-info", "components/model-info.html?v=4"),
+            loadComponent("comp-evaluation", "components/evaluation.html?v=3"),
+            loadComponent("comp-dataset", "components/dataset.html?v=3"),
+            loadComponent("comp-svm-theory", "components/svm-theory.html?v=3"),
+            loadComponent("comp-process", "components/process.html?v=3"),
+            loadComponent("comp-api-footer", "components/api-footer.html?v=3")
         ]);
         // ================================================
 // MỞ POPUP ĐỔI MẬT KHẨU

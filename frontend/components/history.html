@@ -21,6 +21,13 @@
         >
             🔄 Làm mới
         </button>
+        <button
+            type="button"
+            id="delete-all-history-button"
+            class="history-delete-button"
+        >
+            🗑 Xóa toàn bộ
+        </button>
     </div>
 
     <div id="history-message" class="history-message"></div>
@@ -31,18 +38,19 @@
                 <tr>
                     <th>#</th>
                     <th>Thời gian</th>
-                    <th>Sepal Length</th>
-                    <th>Sepal Width</th>
-                    <th>Petal Length</th>
-                    <th>Petal Width</th>
+                    <th>Chiều dài đài hoa</th>
+                    <th>Chiều rộng đài hoa</th>
+                    <th>Chiều dài cánh hoa</th>
+                    <th>Chiều rộng cánh hoa</th>
                     <th>Kết quả</th>
                     <th>Thời gian xử lý</th>
+                    <th>Thao tác</th>
                 </tr>
             </thead>
 
             <tbody id="history-table-body">
                 <tr>
-                    <td colspan="8" class="history-empty">
+                    <td colspan="9" class="history-empty">
                         Chưa có lịch sử dự đoán.
                     </td>
                 </tr>
@@ -56,7 +64,7 @@
         id="history-prev-button"
         class="history-page-button"
     >
-        ← Trước
+        ← Trang trước
     </button>
 
     <div
@@ -69,7 +77,7 @@
         id="history-next-button"
         class="history-page-button"
     >
-        Sau →
+        Trang sau →
     </button>
 
 </div>

@@ -8,6 +8,30 @@ const loginButton = document.getElementById("login-button");
 const usernameInput = document.getElementById("login-username");
 const passwordInput = document.getElementById("login-password");
 const loginError = document.getElementById("login-error");
+const togglePasswordButton = document.getElementById("toggle-password");
+const loginPuppy = document.getElementById("login-puppy");
+
+
+function updatePuppyState() {
+    const shouldCoverEyes =
+        passwordInput.type === "password" && passwordInput.value.length > 0;
+
+    loginPuppy.classList.toggle("is-covering", shouldCoverEyes);
+}
+
+
+passwordInput.addEventListener("input", updatePuppyState);
+passwordInput.addEventListener("blur", updatePuppyState);
+
+togglePasswordButton.addEventListener("click", () => {
+    const showPassword = passwordInput.type === "password";
+    passwordInput.type = showPassword ? "text" : "password";
+    togglePasswordButton.textContent = showPassword ? "Ẩn" : "Hiện";
+    togglePasswordButton.setAttribute("aria-label", showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu");
+    togglePasswordButton.setAttribute("aria-pressed", String(showPassword));
+    updatePuppyState();
+    passwordInput.focus();
+});
 
 
 function showLoginError(message) {
@@ -64,7 +88,7 @@ async function login() {
         window.location.href = "index.html";
 
     } catch (error) {
-        console.error("Login error:", error);
+        console.error("Lỗi đăng nhập:", error);
 
         showLoginError(
             error.message || "Không thể kết nối đến máy chủ."

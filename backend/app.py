@@ -1,13 +1,22 @@
+from pathlib import Path
+
 from fastapi import FastAPI, Depends, HTTPException
 from pydantic import BaseModel, Field
 import joblib
 import numpy as np
 import time
+from sklearn.datasets import load_iris
+from sklearn.ensemble import RandomForestClassifier
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy import text
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.tree import DecisionTreeClassifier
+from sqlalchemy import delete, func, text
 from sqlalchemy.orm import Session
 
-from backend.database import get_db
+from backend.database import Base, engine, get_db
 from backend.models import User, PredictionHistory
 import bcrypt
 from sqlalchemy import select
@@ -17,8 +26,8 @@ from sqlalchemy import select
 # ============================================
 
 app = FastAPI(
-    title="Iris SVM Classification API",
-    description="API phân loại hoa Iris bằng mô hình SVM",
+    title="Iris Classification API",
+    description="API phân loại hoa Iris bằng nhiều thuật toán học máy",
     version="1.0.0"
 )
 app.add_middleware(
@@ -40,9 +49,42 @@ app.add_middleware(
 # 2. LOAD MODEL
 # ============================================
 
-model = joblib.load(
-    "model/iris_svm_model.pkl"
-)
+MODEL_PATH = Path(__file__).resolve().parents[1] / "model" / "iris_svm_model.pkl"
+
+if not MODEL_PATH.exists():
+    raise FileNotFoundError(f"Không tìm thấy mô hình tại: {MODEL_PATH}")
+
+model = joblib.load(MODEL_PATH)
+
+iris_dataset = load_iris()
+prediction_models = {
+    "svm": model,
+    "knn": Pipeline([
+        ("scaler", StandardScaler()),
+        ("classifier", KNeighborsClassifier(n_neighbors=5))
+    ]),
+    "tree": DecisionTreeClassifier(random_state=42),
+    "random_forest": RandomForestClassifier(
+        n_estimators=100,
+        random_state=42
+    ),
+    "logistic": Pipeline([
+        ("scaler", StandardScaler()),
+        ("classifier", LogisticRegression(max_iter=1000, random_state=42))
+    ])
+}
+
+for algorithm, estimator in prediction_models.items():
+    if algorithm != "svm":
+        estimator.fit(iris_dataset.data, iris_dataset.target)
+
+model_names = {
+    "svm": "Support Vector Machine (SVM)",
+    "knn": "K-Nearest Neighbors (K-NN)",
+    "tree": "Decision Tree",
+    "random_forest": "Random Forest",
+    "logistic": "Logistic Regression"
+}
 
 
 # ============================================
@@ -69,6 +111,12 @@ class IrisInput(BaseModel):
     user_id: int | None = Field(
         default=None,
         description="ID người dùng"
+    )
+
+    algorithms: list[str] = Field(
+        default_factory=lambda: ["svm"],
+        min_length=1,
+        description="Các thuật toán cần dùng để dự đoán"
     )
 
     sepal_length: float = Field(
@@ -150,14 +198,23 @@ class ChangePasswordInput(BaseModel):
     )
 
 # ============================================
-# 5. API ROOT
+# 5. DATABASE INITIALIZATION
+# ============================================
+
+@app.on_event("startup")
+def create_database_tables():
+    Base.metadata.create_all(bind=engine)
+
+
+# ============================================
+# 6. API ROOT
 # ============================================
 
 @app.get("/")
 def root():
 
     return {
-        "message": "Iris SVM API is running"
+        "message": "Iris classification API is running"
     }
 
 
@@ -167,6 +224,25 @@ def root():
 
 @app.post("/predict")
 def predict(data: IrisInput, db: Session = Depends(get_db)):
+    if len(set(data.algorithms)) != len(data.algorithms):
+        raise HTTPException(
+            status_code=422,
+            detail="Danh sách thuật toán không được chứa lựa chọn trùng lặp."
+        )
+
+    unsupported_algorithms = [
+        algorithm
+        for algorithm in data.algorithms
+        if algorithm not in prediction_models
+    ]
+    if unsupported_algorithms:
+        raise HTTPException(
+            status_code=422,
+            detail=(
+                "Thuật toán không được hỗ trợ: "
+                + ", ".join(unsupported_algorithms)
+            )
+        )
 
     # Kiểm tra user nếu có user_id
     user = None
@@ -192,17 +268,21 @@ def predict(data: IrisInput, db: Session = Depends(get_db)):
         ]
     ])
 
-    # Đo thời gian chạy mô hình
-    start_time = time.perf_counter()
+    results = []
+    for algorithm in data.algorithms:
+        start_time = time.perf_counter()
+        prediction = int(prediction_models[algorithm].predict(features)[0])
+        prediction_time_ms = (time.perf_counter() - start_time) * 1000
 
-    prediction = model.predict(features)[0]
+        results.append({
+            "algorithm": algorithm,
+            "model_name": model_names[algorithm],
+            "prediction": prediction,
+            "species": target_names[prediction],
+            "prediction_time_ms": round(prediction_time_ms, 4)
+        })
 
-    end_time = time.perf_counter()
-
-    prediction_time_ms = (end_time - start_time) * 1000
-
-    # Xác định loài hoa
-    species = target_names[prediction]
+    primary_result = results[0]
 
     # Lưu lịch sử nếu có user_id
     if user is not None:
@@ -212,9 +292,9 @@ def predict(data: IrisInput, db: Session = Depends(get_db)):
             sepal_width=data.sepal_width,
             petal_length=data.petal_length,
             petal_width=data.petal_width,
-            prediction=int(prediction),
-            species=species,
-            prediction_time_ms=prediction_time_ms
+            prediction=primary_result["prediction"],
+            species=primary_result["species"],
+            prediction_time_ms=primary_result["prediction_time_ms"]
         )
 
         db.add(history)
@@ -222,10 +302,12 @@ def predict(data: IrisInput, db: Session = Depends(get_db)):
         db.refresh(history)
 
     return {
-        "prediction": int(prediction),
-        "species": species,
-        "message": f"Mô hình dự đoán hoa thuộc loài {species.capitalize()}.",
-        "prediction_time_ms": round(prediction_time_ms, 4),
+        **primary_result,
+        "message": (
+            f"Mô hình {primary_result['model_name']} dự đoán hoa thuộc "
+            f"loài {primary_result['species'].capitalize()}."
+        ),
+        "results": results,
         "history_saved": user is not None
     }
 
@@ -251,10 +333,11 @@ def database_test(db: Session = Depends(get_db)):
 
 @app.post("/register")
 def register(data: RegisterInput, db: Session = Depends(get_db)):
+    username = data.username.strip()
 
-    # Kiểm tra username đã tồn tại
+    # Kiểm tra username đã tồn tại (case-insensitive)
     existing_user = db.execute(
-        select(User).where(User.username == data.username)
+        select(User).where(func.lower(User.username) == username.lower())
     ).scalar_one_or_none()
 
     if existing_user:
@@ -265,13 +348,13 @@ def register(data: RegisterInput, db: Session = Depends(get_db)):
 
     # Hash mật khẩu
     password_hash = bcrypt.hashpw(
-    data.password.encode("utf-8"),
-    bcrypt.gensalt()
-).decode("utf-8")
+        data.password.encode("utf-8"),
+        bcrypt.gensalt()
+    ).decode("utf-8")
 
     # Tạo người dùng mới
     new_user = User(
-        username=data.username,
+        username=username,
         password_hash=password_hash
     )
 
@@ -296,9 +379,11 @@ def login(
     db: Session = Depends(get_db)
 ):
     try:
-        # Tìm người dùng
+        username = data.username.strip()
+
+        # Tìm người dùng (case-insensitive)
         user = db.execute(
-            select(User).where(User.username == data.username)
+            select(User).where(func.lower(User.username) == username.lower())
         ).scalar_one_or_none()
 
         if not user:
@@ -443,4 +528,71 @@ def get_prediction_history(
             }
             for item in histories
         ]
+    }
+
+
+@app.delete("/history/{user_id}/{history_id}")
+def delete_prediction_history(
+    user_id: int,
+    history_id: int,
+    db: Session = Depends(get_db)
+):
+    user = db.execute(
+        select(User).where(User.id == user_id)
+    ).scalar_one_or_none()
+
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="Không tìm thấy người dùng."
+        )
+
+    history = db.execute(
+        select(PredictionHistory).where(
+            PredictionHistory.id == history_id,
+            PredictionHistory.user_id == user_id
+        )
+    ).scalar_one_or_none()
+
+    if not history:
+        raise HTTPException(
+            status_code=404,
+            detail="Không tìm thấy bản ghi lịch sử của tài khoản này."
+        )
+
+    db.delete(history)
+    db.commit()
+
+    return {
+        "message": "Đã xóa bản ghi lịch sử dự đoán.",
+        "deleted": 1
+    }
+
+
+@app.delete("/history/{user_id}")
+def delete_all_prediction_history(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+    user = db.execute(
+        select(User).where(User.id == user_id)
+    ).scalar_one_or_none()
+
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="Không tìm thấy người dùng."
+        )
+
+    result = db.execute(
+        delete(PredictionHistory).where(
+            PredictionHistory.user_id == user_id
+        )
+    )
+    deleted_count = result.rowcount or 0
+    db.commit()
+
+    return {
+        "message": f"Đã xóa {deleted_count} bản ghi lịch sử dự đoán.",
+        "deleted": deleted_count
     }

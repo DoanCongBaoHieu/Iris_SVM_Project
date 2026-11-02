@@ -211,6 +211,63 @@ body {
     box-shadow: 0 0 0 4px rgba(76, 146, 125, 0.12);
 }
 
+.model-selection {
+    min-width: 0;
+    margin: 24px 0 18px;
+    padding: 0;
+    border: 0;
+}
+
+.model-selection legend {
+    margin-bottom: 10px;
+    color: #536b65;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.model-option-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+    gap: 10px;
+}
+
+.model-option {
+    display: flex;
+    min-width: 0;
+    min-height: 48px;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid #d4e3df;
+    border-radius: 10px;
+    color: #345850;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.4;
+    transition: 0.2s ease;
+}
+
+.model-option:has(input:checked) {
+    border-color: #4c927d;
+    background: #eaf6f2;
+    color: #176b5d;
+}
+
+.model-option input {
+    flex: 0 0 auto;
+    width: 17px;
+    height: 17px;
+    accent-color: #286b5b;
+}
+
+.model-option span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
 
 /* ==========================================
    NÚT DỰ ĐOÁN
@@ -355,23 +412,49 @@ body {
     margin-bottom: 8px;
 }
 
-#prediction-message {
-    color: #6e8781;
-    margin-bottom: 12px;
+.model-results {
+    margin-top: 24px;
+    text-align: left;
 }
 
-#prediction-code {
-    display: inline-block;
+.model-results h3 {
+    margin: 0 0 12px;
+    color: #286b5b;
+    font-size: 16px;
+}
 
-    padding: 6px 15px;
+.model-result-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
+    gap: 12px;
+}
 
-    border-radius: 20px;
+.model-result-card {
+    display: grid;
+    min-width: 0;
+    gap: 7px;
+    padding: 14px;
+    border: 1px solid #dcebe5;
+    border-radius: 12px;
+    background: #f7fbf9;
+    line-height: 1.5;
+}
 
-    background: #e5f3ed;
-    color: #367764;
-
+.model-result-card strong {
+    display: block;
+    color: #286b5b;
     font-size: 13px;
+}
+
+.model-result-card span {
+    display: block;
+    color: #345850;
     font-weight: 700;
+}
+
+.model-result-card small {
+    display: block;
+    color: #829994;
 }
 
 
@@ -429,6 +512,57 @@ body {
     color: #286b5b;
     font-size: 20px;
     font-weight: 750;
+}
+
+.model-evaluation-section h2 {
+    margin-bottom: 8px;
+    color: #315de5;
+    text-align: left;
+}
+
+.model-evaluation-section > .section-description {
+    margin-bottom: 22px;
+}
+
+.model-evaluation-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.model-evaluation-table {
+    width: 100%;
+    min-width: 680px;
+    border-collapse: collapse;
+    color: #526b9a;
+    text-align: center;
+}
+
+.model-evaluation-table th,
+.model-evaluation-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #e1e8f5;
+    white-space: nowrap;
+}
+
+.model-evaluation-table thead th {
+    color: #64799e;
+    font-weight: 600;
+}
+
+.model-evaluation-table tbody th {
+    color: #315de5;
+    font-weight: 700;
+    text-align: left;
+}
+
+.model-evaluation-table .evaluation-score-high {
+    color: #00a878;
+    font-weight: 800;
+}
+
+.model-evaluation-table .evaluation-score-medium {
+    color: #f07818;
+    font-weight: 800;
 }
 
 
@@ -1388,24 +1522,6 @@ body {
     letter-spacing: -0.5px;
 }
 
-/* Thông báo */
-#prediction-message {
-    max-width: 420px;
-    margin-left: auto;
-    margin-right: auto;
-    line-height: 1.7;
-}
-
-/* Class */
-#prediction-code {
-    padding: 7px 16px;
-
-    background: #e6f4ef;
-    border: 1px solid #d2ebe3;
-
-    box-shadow: 0 3px 8px rgba(44, 91, 79, 0.04);
-}
-
 /* ==========================================
    RESPONSIVE
 ========================================== */
@@ -1768,29 +1884,6 @@ body {
     font-weight: 850;
 
     color: #176b5d;
-}
-
-#prediction-message {
-    max-width: 420px;
-
-    margin: 8px auto 15px;
-
-    color: #637d76;
-    line-height: 1.7;
-}
-
-#prediction-code {
-    padding: 8px 17px;
-
-    border: 1px solid #cde5dd;
-    border-radius: 20px;
-
-    background: #e9f6f1;
-
-    color: #287562;
-
-    font-size: 13px;
-    font-weight: 800;
 }
 
 /* ==========================================
@@ -3707,6 +3800,35 @@ html {
     transition: all 0.2s ease;
 }
 
+.history-delete-button {
+    padding: 10px 16px;
+    border: 1px solid #f1c5c5;
+    border-radius: 10px;
+    background: #fff3f3;
+    color: #b42332;
+    font-family: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.history-delete-button:hover:not(:disabled) {
+    background: #ffe4e4;
+    border-color: #e89a9a;
+    transform: translateY(-1px);
+}
+
+.history-delete-button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+    transform: none;
+}
+
+.history-delete-record-button {
+    padding: 7px 10px;
+    font-size: 12px;
+}
+
 .history-refresh-button:hover {
     background: #dff2ec;
     transform: translateY(-1px);
@@ -4178,6 +4300,34 @@ body.dark-mode .input-group label {
     color: #f1f5f9 !important; /* Trắng sáng rõ nét */
 }
 
+body.dark-mode .model-option {
+    border-color: #475569;
+    color: #e2e8f0;
+}
+
+body.dark-mode .model-option:has(input:checked) {
+    background: #0f172a;
+    border-color: #38bdf8;
+}
+
+body.dark-mode .model-result-card {
+    background: #334155;
+    border-color: #475569;
+}
+
+body.dark-mode .model-evaluation-table {
+    color: #cbd5e1;
+}
+
+body.dark-mode .model-evaluation-table th,
+body.dark-mode .model-evaluation-table td {
+    border-color: #334155;
+}
+
+body.dark-mode .model-evaluation-table tbody th {
+    color: #93c5fd;
+}
+
 /* 3. Chữ bên trong ô nhập liệu (Placeholder khi chưa gõ) */
 body.dark-mode input::placeholder {
     color: #64748b !important;
@@ -4222,6 +4372,130 @@ body.dark-mode .process-section p,
 body.dark-mode .process-description,
 body.dark-mode .section-header p {
     color: #cbd5e1 !important;
+}
+
+/* Tách riêng kết quả tổng thể và kết quả của từng mô hình */
+.prediction-result:not(.hidden) {
+    padding: 22px 18px;
+    border: 1px solid #dcebe5;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.88);
+}
+
+.model-results:not(.hidden) {
+    margin-top: 22px;
+    padding: 18px;
+    border: 1px solid #cfe2dc;
+    border-top: 4px solid #3c927b;
+    border-radius: 18px;
+    background: #f1f8f5;
+    text-align: left;
+}
+
+.model-results h3 {
+    margin: 0 0 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #d5e7e1;
+    color: #205e51;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+.model-result-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.model-result-card {
+    gap: 0;
+    padding: 0 14px;
+    overflow: hidden;
+    border: 1px solid #d2e3dd;
+    border-radius: 13px;
+    background: #ffffff;
+}
+
+.model-result-card > strong {
+    padding: 13px 0 11px;
+    color: #205e51;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+
+.model-result-detail {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 9px 0;
+    border-top: 1px solid #edf3f1;
+}
+
+.model-result-label {
+    flex: 0 0 auto;
+    color: #718b85;
+    font-size: 12px;
+}
+
+.model-result-detail > span:not(.model-result-label) {
+    color: #31574e;
+    font-weight: 700;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
+.model-result-detail > .model-result-time {
+    color: #718b85 !important;
+    font-size: 12px;
+    font-weight: 500 !important;
+}
+
+body.dark-mode .prediction-result:not(.hidden) {
+    border-color: #475569;
+    background: #263548;
+}
+
+body.dark-mode .model-results:not(.hidden) {
+    border-color: #475569;
+    border-top-color: #38bdf8;
+    background: #1e293b;
+}
+
+body.dark-mode .model-results h3 {
+    border-color: #475569;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .model-result-card {
+    background: #334155;
+    border-color: #475569;
+}
+
+body.dark-mode .model-result-card > strong,
+body.dark-mode .model-result-detail > span:not(.model-result-label) {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .model-result-label {
+    color: #94a3b8 !important;
+}
+
+body.dark-mode .model-result-detail {
+    border-color: #475569;
+}
+
+@media (max-width: 850px) {
+    .model-result-list {
+        grid-template-columns: 1fr;
+    }
+
+    .prediction-result:not(.hidden) {
+        padding: 18px 14px;
+    }
+
+    .model-results:not(.hidden) {
+        padding: 15px;
+    }
 }
 
 /* 3. Tiêu đề và chữ bên trong 6 ô quy trình (01 đến 06) */

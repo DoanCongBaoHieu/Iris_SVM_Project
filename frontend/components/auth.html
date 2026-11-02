@@ -1,0 +1,171 @@
+<section id="auth-section" class="auth-section">
+
+    <!-- ==============================
+         MÀN HÌNH ĐĂNG NHẬP
+    =============================== -->
+
+    <div id="login-view" class="auth-view">
+
+        <div class="auth-welcome">
+            CHÀO MỪNG BẠN
+        </div>
+
+        <h2 class="auth-title">
+            Đăng nhập
+        </h2>
+
+        <p class="auth-description">
+            Đăng nhập để bắt đầu sử dụng hệ thống phân loại hoa Iris.
+        </p>
+
+        <div class="auth-form">
+
+            <div class="auth-input-group">
+                <label for="login-username">
+                    Tên đăng nhập
+                </label>
+
+                <input
+                    type="text"
+                    id="login-username"
+                    placeholder="Nhập tên đăng nhập"
+                    autocomplete="username"
+                >
+            </div>
+
+            <div class="auth-input-group">
+                <label for="login-password">
+                    Mật khẩu
+                </label>
+
+                <input
+                    type="password"
+                    id="login-password"
+                    placeholder="Nhập mật khẩu"
+                    autocomplete="current-password"
+                >
+            </div>
+
+            <div id="login-error" class="auth-message"></div>
+
+            <button
+                type="button"
+                id="login-button"
+                class="auth-button"
+            >
+                Đăng nhập
+            </button>
+
+        </div>
+
+        <div class="auth-switch">
+            Chưa có tài khoản?
+            <button
+                type="button"
+                id="show-register-button"
+                class="auth-link-button"
+            >
+                Đăng ký
+            </button>
+        </div>
+
+    </div>
+
+
+    <!-- ==============================
+         MÀN HÌNH ĐĂNG KÝ
+    =============================== -->
+
+    <div
+        id="register-view"
+        class="auth-view hidden"
+    >
+
+        <div class="auth-welcome">
+            THAM GIA CÙNG CHÚNG TÔI
+        </div>
+
+        <h2 class="auth-title">
+            Tạo tài khoản
+        </h2>
+
+        <p class="auth-description">
+            Tạo tài khoản để lưu lại lịch sử dự đoán của bạn.
+        </p>
+
+        <div class="auth-form">
+
+            <div class="auth-input-group">
+                <label for="register-username">
+                    Tên đăng nhập
+                </label>
+
+                <input
+                    type="text"
+                    id="register-username"
+                    placeholder="Tối thiểu 3 ký tự"
+                    autocomplete="username"
+                >
+            </div>
+
+            <div class="auth-input-group">
+                <label for="register-password">
+                    Mật khẩu
+                </label>
+
+                <input
+                    type="password"
+                    id="register-password"
+                    placeholder="Tối thiểu 6 ký tự"
+                    autocomplete="new-password"
+                >
+            </div>
+
+            <div id="register-error" class="auth-message"></div>
+
+            <button
+                type="button"
+                id="register-button"
+                class="auth-button"
+            >
+                Đăng ký
+            </button>
+
+        </div>
+
+        <div class="auth-switch">
+            Đã có tài khoản?
+            <button
+                type="button"
+                id="show-login-button"
+                class="auth-link-button"
+            >
+                Đăng nhập
+            </button>
+        </div>
+
+    </div>
+
+
+    <!-- ==============================
+         TRẠNG THÁI SAU KHI ĐĂNG NHẬP
+    =============================== -->
+
+    <div
+        id="user-session"
+        class="user-session hidden"
+    >
+
+        <span id="user-session-text"></span>
+
+        <button
+            type="button"
+            id="logout-button"
+            class="logout-button"
+        >
+            Đăng xuất
+        </button>
+
+    </div>
+
+</section>

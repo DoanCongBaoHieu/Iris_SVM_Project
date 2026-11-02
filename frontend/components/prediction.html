@@ -7,24 +7,50 @@
         </p>
 
         <div class="input-group">
-            <label for="sepal-length">Sepal Length <span>(cm)</span></label>
+            <label for="sepal-length">Chiều dài đài hoa <span>(cm)</span></label>
             <input type="number" id="sepal-length" placeholder="Ví dụ: 5.1" step="0.1">
         </div>
 
         <div class="input-group">
-            <label for="sepal-width">Sepal Width <span>(cm)</span></label>
+            <label for="sepal-width">Chiều rộng đài hoa <span>(cm)</span></label>
             <input type="number" id="sepal-width" placeholder="Ví dụ: 3.5" step="0.1">
         </div>
 
         <div class="input-group">
-            <label for="petal-length">Petal Length <span>(cm)</span></label>
+            <label for="petal-length">Chiều dài cánh hoa <span>(cm)</span></label>
             <input type="number" id="petal-length" placeholder="Ví dụ: 1.4" step="0.1">
         </div>
 
         <div class="input-group">
-            <label for="petal-width">Petal Width <span>(cm)</span></label>
+            <label for="petal-width">Chiều rộng cánh hoa <span>(cm)</span></label>
             <input type="number" id="petal-width" placeholder="Ví dụ: 0.2" step="0.1">
         </div>
+
+        <fieldset class="model-selection">
+            <legend>Chọn thuật toán (có thể chọn nhiều):</legend>
+            <div class="model-option-grid">
+                <label class="model-option">
+                    <input type="checkbox" name="prediction-model" value="svm" checked>
+                    <span>Support Vector Machine (SVM)</span>
+                </label>
+                <label class="model-option">
+                    <input type="checkbox" name="prediction-model" value="knn">
+                    <span>K-Nearest Neighbors (K-NN)</span>
+                </label>
+                <label class="model-option">
+                    <input type="checkbox" name="prediction-model" value="tree">
+                    <span>Decision Tree</span>
+                </label>
+                <label class="model-option">
+                    <input type="checkbox" name="prediction-model" value="random_forest">
+                    <span>Random Forest</span>
+                </label>
+                <label class="model-option">
+                    <input type="checkbox" name="prediction-model" value="logistic">
+                    <span>Logistic Regression</span>
+                </label>
+            </div>
+        </fieldset>
 
         <div id="error-message"></div>
 
@@ -57,8 +83,7 @@
             </div>
             <div class="species-label">Loài hoa được dự đoán</div>
             <div id="species-name">-</div>
-            <p id="prediction-message">-</p>
-            <div id="prediction-code">Class: -</div>
         </div>
+        <div id="model-results" class="model-results hidden" aria-live="polite"></div>
     </section>
 </div>

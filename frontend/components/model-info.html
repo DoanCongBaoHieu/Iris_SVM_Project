@@ -1,25 +1,57 @@
-<section class="model-section">
-    <h2>🤖 Thông tin mô hình SVM</h2>
-    <div class="model-grid">
-        <div class="model-card">
-            <div class="label">Model</div>
-            <div class="value">SVM</div>
-        </div>
-        <div class="model-card">
-            <div class="label">Kernel</div>
-            <div class="value">Linear</div>
-        </div>
-        <div class="model-card">
-            <div class="label">Best C</div>
-            <div class="value">0.1</div>
-        </div>
-        <div class="model-card">
-            <div class="label">CV Accuracy</div>
-            <div class="value">97.50%</div>
-        </div>
-        <div class="model-card">
-            <div class="label">Test Accuracy</div>
-            <div class="value">93.33%</div>
-        </div>
+<section class="model-section model-evaluation-section">
+    <h2>📊 Đánh giá mô hình</h2>
+    <p class="section-description">
+        So sánh 5 mô hình trên cùng tập kiểm tra (20%, chia phân tầng, random_state = 42). Độ chuẩn xác, độ bao phủ và điểm F1 được tính theo trung bình có trọng số.
+    </p>
+
+    <div class="model-evaluation-table-wrapper">
+        <table class="model-evaluation-table">
+            <thead>
+                <tr>
+                    <th scope="col">Thuật toán</th>
+                    <th scope="col">Độ chính xác tổng thể (%)</th>
+                    <th scope="col">Độ chuẩn xác (%)</th>
+                    <th scope="col">Độ bao phủ (%)</th>
+                    <th scope="col">Điểm F1 (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">Support Vector Machine (SVM)</th>
+                    <td class="evaluation-score-high">100.00%</td>
+                    <td>100.00%</td>
+                    <td>100.00%</td>
+                    <td>100.00%</td>
+                </tr>
+                <tr>
+                    <th scope="row">K-Nearest Neighbors (K-NN)</th>
+                    <td class="evaluation-score-medium">93.33%</td>
+                    <td>94.44%</td>
+                    <td>93.33%</td>
+                    <td>93.27%</td>
+                </tr>
+                <tr>
+                    <th scope="row">Decision Tree</th>
+                    <td class="evaluation-score-medium">93.33%</td>
+                    <td>93.33%</td>
+                    <td>93.33%</td>
+                    <td>93.33%</td>
+                </tr>
+                <tr>
+                    <th scope="row">Random Forest</th>
+                    <td class="evaluation-score-medium">90.00%</td>
+                    <td>90.24%</td>
+                    <td>90.00%</td>
+                    <td>89.97%</td>
+                </tr>
+                <tr>
+                    <th scope="row">Logistic Regression</th>
+                    <td class="evaluation-score-medium">93.33%</td>
+                    <td>93.33%</td>
+                    <td>93.33%</td>
+                    <td>93.33%</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </section>

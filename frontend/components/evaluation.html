@@ -4,37 +4,37 @@
         <h2>Đánh giá chi tiết mô hình</h2>
     </div>
     <p class="section-description">
-        Kết quả đánh giá mô hình SVM trên tập kiểm tra gồm Confusion Matrix và Classification Report.
+        Kết quả đánh giá chi tiết SVM trên cùng tập kiểm tra (20%, chia phân tầng, random_state = 42), gồm ma trận nhầm lẫn và báo cáo phân loại.
     </p>
 
     <!-- TỔNG QUAN CHỈ SỐ -->
     <div class="evaluation-metrics">
         <div class="evaluation-metric">
             <div class="evaluation-metric-icon">🎯</div>
-            <div class="evaluation-metric-value">93.33%</div>
-            <div class="evaluation-metric-label">Test Accuracy</div>
+            <div class="evaluation-metric-value">100.00%</div>
+            <div class="evaluation-metric-label">Độ chính xác trên tập kiểm tra</div>
         </div>
         <div class="evaluation-metric">
             <div class="evaluation-metric-icon">🔄</div>
-            <div class="evaluation-metric-value">97.50%</div>
-            <div class="evaluation-metric-label">CV Accuracy</div>
+            <div class="evaluation-metric-value">96.67%</div>
+            <div class="evaluation-metric-label">Độ chính xác kiểm định chéo</div>
         </div>
         <div class="evaluation-metric">
             <div class="evaluation-metric-icon">📊</div>
-            <div class="evaluation-metric-value">0.93</div>
-            <div class="evaluation-metric-label">Macro F1-score</div>
+            <div class="evaluation-metric-value">1.00</div>
+            <div class="evaluation-metric-label">Điểm F1 trung bình theo lớp</div>
         </div>
         <div class="evaluation-metric">
             <div class="evaluation-metric-icon">⚙️</div>
-            <div class="evaluation-metric-value">Linear</div>
-            <div class="evaluation-metric-label">Best Kernel</div>
+            <div class="evaluation-metric-value">Tuyến tính</div>
+            <div class="evaluation-metric-label">Hàm nhân tốt nhất</div>
         </div>
     </div>
 
     <div class="evaluation-grid">
-        <!-- CONFUSION MATRIX -->
+        <!-- Ma trận nhầm lẫn -->
         <div class="evaluation-card">
-            <h3>🧩 Confusion Matrix</h3>
+            <h3>🧩 Ma trận nhầm lẫn</h3>
             <p class="matrix-description">Ma trận thể hiện số lượng mẫu được dự đoán đúng và nhầm giữa ba loài hoa.</p>
             <table class="confusion-matrix">
                 <thead>
@@ -47,56 +47,56 @@
                 </thead>
                 <tbody>
                     <tr><th>Setosa</th><td class="correct">10</td><td>0</td><td>0</td></tr>
-                    <tr><th>Versicolor</th><td>0</td><td class="correct">9</td><td>1</td></tr>
-                    <tr><th>Virginica</th><td>0</td><td>1</td><td class="correct">9</td></tr>
+                    <tr><th>Versicolor</th><td>0</td><td class="correct">10</td><td>0</td></tr>
+                    <tr><th>Virginica</th><td>0</td><td>0</td><td class="correct">10</td></tr>
                 </tbody>
             </table>
         </div>
 
-        <!-- CLASSIFICATION REPORT -->
+        <!-- Báo cáo phân loại -->
         <div class="evaluation-card">
-            <h3>📋 Classification Report</h3>
+            <h3>📋 Báo cáo phân loại</h3>
             <table class="classification-table">
                 <thead>
-                    <tr><th>Loài</th><th>Precision</th><th>Recall</th><th>F1-score</th></tr>
+                    <tr><th>Loài</th><th>Độ chuẩn xác</th><th>Độ bao phủ</th><th>Điểm F1</th></tr>
                 </thead>
                 <tbody>
                     <tr><td>Setosa</td><td>1.00</td><td>1.00</td><td>1.00</td></tr>
-                    <tr><td>Versicolor</td><td>0.90</td><td>0.90</td><td>0.90</td></tr>
-                    <tr><td>Virginica</td><td>0.90</td><td>0.90</td><td>0.90</td></tr>
+                    <tr><td>Versicolor</td><td>1.00</td><td>1.00</td><td>1.00</td></tr>
+                    <tr><td>Virginica</td><td>1.00</td><td>1.00</td><td>1.00</td></tr>
                 </tbody>
             </table>
             <div class="report-summary">
-                <div><strong>Accuracy</strong><span>93.33%</span></div>
-                <div><strong>Macro Avg F1</strong><span>0.93</span></div>
-                <div><strong>Weighted Avg F1</strong><span>0.93</span></div>
+                <div><strong>Độ chính xác tổng thể</strong><span>100.00%</span></div>
+                <div><strong>F1 trung bình theo lớp</strong><span>1.00</span></div>
+                <div><strong>F1 trung bình (có trọng số)</strong><span>1.00</span></div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- CROSS VALIDATION -->
+<!-- Kiểm định chéo -->
 <div class="cv-section">
     <div class="cv-header">
         <div>
-            <h3>🔄 5-Fold Cross-Validation</h3>
-            <p>Độ chính xác của mô hình trên từng fold trong quá trình đánh giá chéo.</p>
+            <h3>🔄 Kiểm định chéo 5 phần</h3>
+            <p>Độ chính xác của mô hình trên từng phần trong quá trình kiểm định chéo.</p>
         </div>
         <div class="cv-summary">
-            <strong>97.50%</strong>
-            <span>Mean Accuracy</span>
+            <strong>96.67%</strong>
+            <span>Độ chính xác trung bình</span>
         </div>
     </div>
 
     <div class="cv-bars">
-        <div class="cv-row"><span>Fold 1</span><div class="cv-bar"><div class="cv-fill" style="width: 95.83%;"></div></div><strong>95.83%</strong></div>
-        <div class="cv-row"><span>Fold 2</span><div class="cv-bar"><div class="cv-fill" style="width: 100%;"></div></div><strong>100.00%</strong></div>
-        <div class="cv-row"><span>Fold 3</span><div class="cv-bar"><div class="cv-fill" style="width: 95.83%;"></div></div><strong>95.83%</strong></div>
-        <div class="cv-row"><span>Fold 4</span><div class="cv-bar"><div class="cv-fill" style="width: 95.83%;"></div></div><strong>95.83%</strong></div>
-        <div class="cv-row"><span>Fold 5</span><div class="cv-bar"><div class="cv-fill" style="width: 100%;"></div></div><strong>100.00%</strong></div>
+        <div class="cv-row"><span>Phần 1</span><div class="cv-bar"><div class="cv-fill" style="width: 100%;"></div></div><strong>100.00%</strong></div>
+        <div class="cv-row"><span>Phần 2</span><div class="cv-bar"><div class="cv-fill" style="width: 100%;"></div></div><strong>100.00%</strong></div>
+        <div class="cv-row"><span>Phần 3</span><div class="cv-bar"><div class="cv-fill" style="width: 86.67%;"></div></div><strong>86.67%</strong></div>
+        <div class="cv-row"><span>Phần 4</span><div class="cv-bar"><div class="cv-fill" style="width: 100%;"></div></div><strong>100.00%</strong></div>
+        <div class="cv-row"><span>Phần 5</span><div class="cv-bar"><div class="cv-fill" style="width: 96.67%;"></div></div><strong>96.67%</strong></div>
     </div>
     <div class="cv-footer">
-        <span>Mean: <strong>97.50%</strong></span>
-        <span>Std: <strong>2.04%</strong></span>
+        <span>Trung bình: <strong>96.67%</strong></span>
+        <span>Độ lệch chuẩn: <strong>5.16%</strong></span>
     </div>
 </div>

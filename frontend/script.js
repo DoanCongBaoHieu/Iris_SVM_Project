@@ -55,11 +55,8 @@ const elements = {
     speciesName:
         document.getElementById("species-name"),
 
-    predictionMessage:
-        document.getElementById("prediction-message"),
-
-    predictionCode:
-        document.getElementById("prediction-code")
+    modelResults:
+        document.getElementById("model-results")
 };
 
 
@@ -308,10 +305,6 @@ function displayResult(data) {
     const species =
         data.species;
 
-    const prediction =
-        data.prediction;
-
-
     // ----------------------------------------------
     // Hiển thị tên loài
     // ----------------------------------------------
@@ -320,27 +313,59 @@ function displayResult(data) {
         species;
 
 
-    // ----------------------------------------------
-    // Hiển thị mã lớp
-    // ----------------------------------------------
+    if (elements.modelResults) {
+        const results =
+            Array.isArray(data.results) && data.results.length > 0
+                ? data.results
+                : [data];
 
-    elements.predictionCode.textContent =
-        prediction;
+        elements.modelResults.replaceChildren();
 
+        if (results.length > 1) {
+            const heading = document.createElement("h3");
+            heading.textContent = "Kết quả của từng thuật toán";
+            elements.modelResults.appendChild(heading);
 
-    // ----------------------------------------------
-    // Hiển thị thông báo
-    // ----------------------------------------------
+            const resultList = document.createElement("div");
+            resultList.className = "model-result-list";
 
-    if (data.message) {
+            results.forEach(result => {
+                const card = document.createElement("div");
+                card.className = "model-result-card";
 
-        elements.predictionMessage.textContent =
-            data.message;
+                const modelName = document.createElement("strong");
+                modelName.textContent = result.model_name;
 
-    } else {
+                const speciesName = document.createElement("span");
+                speciesName.textContent = result.species;
 
-        elements.predictionMessage.textContent =
-            `Mô hình dự đoán đây là hoa ${species}.`;
+                const speciesDetail = document.createElement("div");
+                speciesDetail.className = "model-result-detail";
+                const speciesLabel = document.createElement("span");
+                speciesLabel.className = "model-result-label";
+                speciesLabel.textContent = "Loài dự đoán";
+                speciesDetail.append(speciesLabel, speciesName);
+
+                const timeDetail = document.createElement("div");
+                timeDetail.className = "model-result-detail";
+                const timeLabel = document.createElement("span");
+                timeLabel.className = "model-result-label";
+                timeLabel.textContent = "Thời gian xử lý";
+                const predictionTime = document.createElement("span");
+                predictionTime.className = "model-result-time";
+                predictionTime.textContent =
+                    `${Number(result.prediction_time_ms).toFixed(4)} mili giây`;
+                timeDetail.append(timeLabel, predictionTime);
+
+                card.append(modelName, speciesDetail, timeDetail);
+                resultList.appendChild(card);
+            });
+
+            elements.modelResults.appendChild(resultList);
+            elements.modelResults.classList.remove("hidden");
+        } else {
+            elements.modelResults.classList.add("hidden");
+        }
     }
 
 
@@ -402,6 +427,23 @@ async function predictFlower() {
         return;
     }
 
+    const algorithms = Array.from(
+        document.querySelectorAll('input[name="prediction-model"]:checked')
+    ).map(input => input.value);
+
+    if (algorithms.length === 0) {
+        showError("Vui lòng chọn ít nhất một thuật toán.");
+        return;
+    }
+
+    const storedUserId = localStorage.getItem("user_id");
+    const userId = Number(storedUserId);
+
+    if (!storedUserId || !Number.isInteger(userId) || userId <= 0) {
+        showError("Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại.");
+        return;
+    }
+
 
     // ----------------------------------------------
     // Bật loading
@@ -417,7 +459,8 @@ async function predictFlower() {
         // ------------------------------------------
 
         const requestData = {
-            user_id: Number(localStorage.getItem("user_id")),
+            user_id: userId,
+            algorithms,
             ...flowerData
         };
         const result =
@@ -443,6 +486,15 @@ async function predictFlower() {
         // ------------------------------------------
 
         displayResult(result);
+
+        if (result.history_saved) {
+            await loadPredictionHistory();
+        } else {
+            showHistoryMessage(
+                "Dự đoán thành công nhưng chưa được lưu lịch sử. Vui lòng đăng nhập lại.",
+                "error"
+            );
+        }
 
     } catch (error) {
 
@@ -964,6 +1016,9 @@ const historyTableBody =
 const refreshHistoryButton =
     document.getElementById("refresh-history-button");
 
+const deleteAllHistoryButton =
+    document.getElementById("delete-all-history-button");
+
 const historyPrevButton =
     document.getElementById("history-prev-button");
 
@@ -1063,6 +1118,10 @@ function renderHistoryPage() {
     const totalItems =
         historyData.length;
 
+    if (deleteAllHistoryButton) {
+        deleteAllHistoryButton.disabled = totalItems === 0;
+    }
+
     const totalPages =
         Math.ceil(
             totalItems / HISTORY_ITEMS_PER_PAGE
@@ -1076,7 +1135,7 @@ function renderHistoryPage() {
         historyTableBody.innerHTML = `
             <tr>
                 <td
-                    colspan="8"
+                    colspan="9"
                     class="history-empty"
                 >
                     📭 Bạn chưa có lần dự đoán nào.
@@ -1177,9 +1236,19 @@ function renderHistoryPage() {
                             item.prediction_time_ms !== undefined
                                 ? `${Number(
                                     item.prediction_time_ms
-                                ).toFixed(4)} ms`
+                                            ).toFixed(4)} mili giây`
                                 : "-"
                         }
+                    </td>
+
+                    <td>
+                        <button
+                            type="button"
+                            class="history-delete-button history-delete-record-button"
+                            data-history-id="${Number(item.id)}"
+                        >
+                            🗑 Xóa
+                        </button>
                     </td>
 
                 </tr>
@@ -1216,7 +1285,7 @@ function renderHistoryPagination(totalPages) {
 
         historyPageInfo.textContent =
             historyData.length > 0
-                ? `Hiển thị ${historyData.length} bản ghi`
+                ? `Tổng cộng ${historyData.length} bản ghi`
                 : "";
 
         if (historyPrevButton) {
@@ -1301,7 +1370,7 @@ function renderHistoryPagination(totalPages) {
 
 
     historyPageInfo.textContent =
-        `Hiển thị ${startItem}–${endItem} / ${historyData.length} bản ghi`;
+        `Đang xem ${startItem}–${endItem} / ${historyData.length} bản ghi`;
 }
 
 
@@ -1335,7 +1404,7 @@ async function loadPredictionHistory() {
     historyTableBody.innerHTML = `
         <tr>
             <td
-                colspan="8"
+                colspan="9"
                 class="history-empty"
             >
                 ⏳ Đang tải lịch sử dự đoán...
@@ -1419,12 +1488,18 @@ async function loadPredictionHistory() {
         historyData = [];
 
         currentHistoryPage = 1;
+        if (historyTotal) {
+            historyTotal.textContent = "0";
+        }
+        if (deleteAllHistoryButton) {
+            deleteAllHistoryButton.disabled = true;
+        }
 
 
         historyTableBody.innerHTML = `
             <tr>
                 <td
-                    colspan="8"
+                    colspan="9"
                     class="history-empty"
                 >
                     ❌ Không thể tải lịch sử dự đoán.
@@ -1452,6 +1527,92 @@ async function loadPredictionHistory() {
         }
 
     }
+}
+
+async function deleteHistoryRecord(historyId, button) {
+    const userId = localStorage.getItem("user_id");
+    const record = historyData.find(item => item.id === historyId);
+
+    if (!userId || !record) {
+        showHistoryMessage(
+            "Không tìm thấy bản ghi hoặc phiên đăng nhập không hợp lệ.",
+            "error"
+        );
+        return;
+    }
+
+    if (!window.confirm(
+        `Bạn có chắc muốn xóa lịch sử dự đoán hoa ${formatSpecies(record.species)} này không?`
+    )) {
+        return;
+    }
+
+    button.disabled = true;
+
+    try {
+        const result = await requestAPI(
+            `${API_BASE_URL}/history/${encodeURIComponent(userId)}/${historyId}`,
+            "DELETE"
+        );
+        await loadPredictionHistory();
+        showHistoryMessage(result.message, "success");
+    } catch (error) {
+        showHistoryMessage(
+            error.message || "Không thể xóa bản ghi lịch sử.",
+            "error"
+        );
+    } finally {
+        button.disabled = false;
+    }
+}
+
+if (historyTableBody) {
+    historyTableBody.addEventListener("click", event => {
+        const button = event.target.closest(".history-delete-record-button");
+
+        if (!button) {
+            return;
+        }
+
+        const historyId = Number(button.dataset.historyId);
+        if (Number.isInteger(historyId) && historyId > 0) {
+            deleteHistoryRecord(historyId, button);
+        }
+    });
+}
+
+if (deleteAllHistoryButton) {
+    deleteAllHistoryButton.addEventListener("click", async () => {
+        const userId = localStorage.getItem("user_id");
+
+        if (!userId || historyData.length === 0) {
+            return;
+        }
+
+        if (!window.confirm(
+            `Bạn có chắc muốn xóa toàn bộ ${historyData.length} bản ghi lịch sử dự đoán không? Thao tác này không thể hoàn tác.`
+        )) {
+            return;
+        }
+
+        deleteAllHistoryButton.disabled = true;
+
+        try {
+            const result = await requestAPI(
+                `${API_BASE_URL}/history/${encodeURIComponent(userId)}`,
+                "DELETE"
+            );
+            await loadPredictionHistory();
+            showHistoryMessage(result.message, "success");
+        } catch (error) {
+            showHistoryMessage(
+                error.message || "Không thể xóa lịch sử dự đoán.",
+                "error"
+            );
+        } finally {
+            deleteAllHistoryButton.disabled = false;
+        }
+    });
 }
 
 
