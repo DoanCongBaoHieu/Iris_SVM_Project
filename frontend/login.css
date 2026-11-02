@@ -766,12 +766,14 @@ body {
     font-weight: 600;
 }
 
-.iris-card-caption {
+.iris-info-card .iris-card-caption {
     margin: 2px 0 0;
     color: #c1a8e7;
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 12px;
-    font-style: italic;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 1.4;
 }
 
 .iris-card-rule {
