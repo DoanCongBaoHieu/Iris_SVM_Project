@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta, timezone
 import time
 from pathlib import Path
 
@@ -419,6 +420,19 @@ def change_password(
     }
 
 
+def serialize_history_timestamp(created_at: datetime) -> str:
+    if created_at.tzinfo is None:
+        # SQL Server stores CURRENT_TIMESTAMP in server-local time; SQLite/PostgreSQL use UTC.
+        if engine.dialect.name == "mssql":
+            created_at = created_at.replace(
+                tzinfo=timezone(timedelta(hours=7))
+            )
+        else:
+            created_at = created_at.replace(tzinfo=timezone.utc)
+
+    return created_at.isoformat()
+
+
 @app.get("/history/{user_id}")
 def get_prediction_history(
     user_id: int,
@@ -454,7 +468,7 @@ def get_prediction_history(
                 "prediction": item.prediction,
                 "species": item.species,
                 "prediction_time_ms": item.prediction_time_ms,
-                "created_at": item.created_at
+                "created_at": serialize_history_timestamp(item.created_at)
             }
             for item in histories
         ]

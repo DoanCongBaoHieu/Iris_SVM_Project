@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phân loại hoa Iris</title>
+    <script>
+        if (!localStorage.getItem("user_id") || !localStorage.getItem("username")) {
+            window.location.replace("login.html?v=9");
+        }
+    </script>
     <link rel="stylesheet" href="style.css?v=20">
 </head>
 <body class="dark-mode">
