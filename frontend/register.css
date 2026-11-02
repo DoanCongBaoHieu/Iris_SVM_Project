@@ -473,3 +473,125 @@ body {
         padding: 35px 25px;
     }
 }
+
+/* Match the standalone login page's dark violet and teal palette. */
+body {
+    background:
+        radial-gradient(circle at 12% 10%, rgba(113, 45, 205, 0.18), transparent 30%),
+        #03040a;
+    color: #f5f0ff;
+}
+
+.register-card {
+    border: 1px solid rgba(143, 102, 255, 0.42);
+    background: linear-gradient(155deg, #141020, #080c18);
+    box-shadow:
+        0 0 28px rgba(94, 58, 180, 0.14),
+        0 22px 60px rgba(0, 0, 0, 0.38),
+        inset 0 0 24px rgba(92, 116, 218, 0.06);
+}
+
+.register-brand-section {
+    background:
+        radial-gradient(ellipse at 100% 0%, rgba(121, 238, 233, 0.16), transparent 42%),
+        linear-gradient(145deg, #17132a 0%, #21163b 52%, #101a2d 100%);
+    border-right: 1px solid rgba(143, 102, 255, 0.25);
+}
+
+.register-brand-section::before {
+    border-color: rgba(138, 246, 242, 0.24);
+    box-shadow:
+        0 0 0 55px rgba(147, 103, 255, 0.06),
+        0 0 0 110px rgba(121, 238, 233, 0.035);
+}
+
+.register-brand-section::after {
+    background: rgba(121, 238, 233, 0.12);
+}
+
+.register-brand-icon {
+    background: rgba(147, 103, 255, 0.2);
+    box-shadow: 0 0 18px rgba(113, 45, 205, 0.18);
+}
+
+.register-brand-label {
+    color: #9ce8e7;
+}
+
+.register-brand-content h1 {
+    color: #e4d8ff;
+}
+
+.register-brand-footer {
+    color: #b7b1c9;
+}
+
+.register-form-section {
+    background: transparent;
+}
+
+.register-form-group label {
+    color: #e2dcf1;
+}
+
+.register-form-group input {
+    border-color: rgba(142, 128, 190, 0.52);
+    background: #10111d;
+    color: #f5f0ff;
+}
+
+.register-form-group input::placeholder {
+    color: #938da5;
+}
+
+.register-form-group input:focus {
+    border-color: #79eee9;
+    background: #121321;
+    box-shadow:
+        0 0 0 3px rgba(121, 238, 233, 0.12),
+        0 0 16px rgba(93, 71, 185, 0.12);
+}
+
+.register-message.error {
+    border-color: rgba(255, 113, 132, 0.45);
+    background: rgba(90, 24, 43, 0.35);
+    color: #ffb5c0;
+}
+
+.register-message.success {
+    border-color: rgba(74, 222, 128, 0.35);
+    background: rgba(20, 83, 45, 0.32);
+    color: #86efac;
+}
+
+#register-button {
+    border: 1px solid #7251ce;
+    background: linear-gradient(110deg, #6744c3, #8138ad);
+    color: #fff;
+    box-shadow: 0 8px 22px rgba(83, 55, 169, 0.28);
+}
+
+#register-button:hover:not(:disabled) {
+    border-color: #8af6f2;
+    background: linear-gradient(110deg, #7350d7, #8b45bc);
+    box-shadow: 0 0 22px rgba(112, 90, 221, 0.38);
+}
+
+.register-login {
+    color: #b7b1c9;
+}
+
+.register-login a {
+    color: #9d7cff;
+}
+
+.register-login a:hover {
+    color: #8af6f2;
+}
+
+@media (max-width: 850px) {
+    .register-brand-section {
+        border-right: 0;
+        border-bottom: 1px solid rgba(143, 102, 255, 0.25);
+    }
+}

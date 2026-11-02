@@ -12,19 +12,28 @@
             <div class="api-card-icon">⚡</div>
             <h3>FastAPI</h3>
             <p>Máy chủ cung cấp dịch vụ dự đoán qua giao diện lập trình REST.</p>
-            <div class="api-badge">● API đang hoạt động</div>
+            <div class="api-card-meta">
+                <span class="api-meta-label">Trạng thái dịch vụ</span>
+                <span class="api-badge"><span aria-hidden="true">●</span> Đang hoạt động</span>
+            </div>
         </div>
         <div class="api-card">
             <div class="api-card-icon">🔗</div>
             <h3>POST /predict</h3>
             <p>Nhận 4 thông số và danh sách thuật toán; trả về kết quả của từng mô hình được chọn.</p>
-            <div class="endpoint">Gửi dữ liệu&nbsp;&nbsp;/predict</div>
+            <div class="api-card-meta">
+                <span class="api-meta-label">Endpoint</span>
+                <code class="endpoint">POST /predict</code>
+            </div>
         </div>
         <div class="api-card">
             <div class="api-card-icon">🤖</div>
             <h3>Các mô hình</h3>
             <p>Support Vector Machine, K-Nearest Neighbors, Decision Tree, Random Forest và Logistic Regression.</p>
-            <div class="api-badge">Có thể chọn nhiều mô hình</div>
+            <div class="api-card-meta">
+                <span class="api-meta-label">Tùy chọn</span>
+                <span class="api-badge">Có thể chọn nhiều mô hình</span>
+            </div>
         </div>
         <div class="api-card">
             <div class="api-card-icon">🌐</div>
@@ -41,7 +50,43 @@
     </div>
 </section>
 
-<footer class="footer">
-    <p>Hệ thống phân loại hoa Iris</p>
-    <p>Đồ án học máy</p>
+<footer class="footer contact-footer" aria-labelledby="contact-footer-title">
+    <div class="contact-footer-content">
+        <p class="contact-footer-kicker">PHÂN LOẠI HOA IRIS · ĐỒ ÁN HỌC MÁY</p>
+        <h2 id="contact-footer-title">Thông tin liên hệ</h2>
+        <span class="contact-footer-divider" aria-hidden="true"></span>
+
+        <address class="contact-details">
+            <div class="contact-detail">
+                <span class="contact-detail-label">Họ và tên</span>
+                <strong>Đoàn Công Bảo Hiếu</strong>
+            </div>
+            <div class="contact-detail">
+                <span class="contact-detail-label">Lớp</span>
+                <strong>24CKDL</strong>
+            </div>
+            <div class="contact-detail">
+                <span class="contact-detail-label">Giảng viên hướng dẫn</span>
+                <strong>Phan Trần Đức Minh</strong>
+            </div>
+            <div class="contact-detail">
+                <span class="contact-detail-label">Trường</span>
+                <strong>Trường Đại học Sư phạm - Đại học Đà Nẵng</strong>
+            </div>
+            <div class="contact-detail">
+                <span class="contact-detail-label">Điện thoại</span>
+                <a href="tel:+84797666417">0797 666 417</a>
+            </div>
+            <div class="contact-detail">
+                <span class="contact-detail-label">Email</span>
+                <a href="mailto:doancongbaohieu2006@gmail.com">doancongbaohieu2006@gmail.com</a>
+            </div>
+        </address>
+
+        <div class="contact-footer-brand" aria-hidden="true">
+            <span>IRIS</span>
+            <span class="contact-footer-flower">✿</span>
+        </div>
+        <p class="contact-footer-caption">Hệ thống phân loại hoa bằng học máy</p>
+    </div>
 </footer>

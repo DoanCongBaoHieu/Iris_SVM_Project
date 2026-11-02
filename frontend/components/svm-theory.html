@@ -7,8 +7,47 @@
         SVM là thuật toán học máy có giám sát, phân loại dữ liệu bằng cách tìm siêu phẳng tối ưu để tách biệt các lớp.
     </p>
 
+    <p class="svm-flow-caption">Chọn một bước để đến phần liên quan trong trang.</p>
+    <nav class="svm-flow" aria-label="Điều hướng quy trình SVM">
+        <a class="flow-item" href="#dataset"><span>1</span><strong>Dữ liệu Iris</strong></a>
+        <span class="flow-arrow" aria-hidden="true">→</span>
+        <a class="flow-item" href="#model-training"><span>2</span><strong>Huấn luyện mô hình</strong></a>
+        <span class="flow-arrow" aria-hidden="true">→</span>
+        <a class="flow-item" href="#svm-boundary"><span>3</span><strong>Tìm ranh giới</strong></a>
+        <span class="flow-arrow" aria-hidden="true">→</span>
+        <a class="flow-item" href="#prediction"><span>4</span><strong>Dự đoán loài hoa</strong></a>
+    </nav>
+
+    <section id="model-training" class="svm-training-panel" aria-labelledby="model-training-title">
+        <div class="svm-training-heading">
+            <span class="svm-training-icon" aria-hidden="true">⚙️</span>
+            <div>
+                <h3 id="model-training-title">Quy trình huấn luyện SVM</h3>
+                <p>Dữ liệu được chia phân tầng theo tỉ lệ 80:20 (random_state = 42).</p>
+            </div>
+        </div>
+        <div class="svm-training-steps">
+            <article class="svm-training-step">
+                <span>01</span>
+                <h4>Chuẩn hóa đặc trưng</h4>
+                <p>StandardScaler đưa 4 số đo về cùng thang đo trước khi huấn luyện.</p>
+            </article>
+            <article class="svm-training-step">
+                <span>02</span>
+                <h4>Huấn luyện SVM tuyến tính</h4>
+                <p>Mô hình học ranh giới phân loại từ 120 mẫu thuộc tập huấn luyện.</p>
+            </article>
+            <article class="svm-training-step">
+                <span>03</span>
+                <h4>Kiểm tra mô hình</h4>
+                <p>Đánh giá khả năng dự đoán trên 30 mẫu chưa dùng để huấn luyện.</p>
+            </article>
+        </div>
+        <a class="svm-training-results-link" href="#evaluation">Xem kết quả đánh giá <span aria-hidden="true">→</span></a>
+    </section>
+
     <div class="svm-overview">
-        <div class="svm-main-card">
+        <div class="svm-main-card" id="svm-boundary">
             <div class="svm-card-icon">🎯</div>
             <div>
                 <h3>SVM hoạt động như thế nào?</h3>
@@ -47,13 +86,4 @@
         </div>
     </div>
 
-    <div class="svm-flow">
-        <div class="flow-item"><span>1</span><strong>Dữ liệu Iris</strong></div>
-        <div class="flow-arrow">→</div>
-        <div class="flow-item"><span>2</span><strong>Huấn luyện mô hình</strong></div>
-        <div class="flow-arrow">→</div>
-        <div class="flow-item"><span>3</span><strong>Tìm ranh giới</strong></div>
-        <div class="flow-arrow">→</div>
-        <div class="flow-item"><span>4</span><strong>Dự đoán loài hoa</strong></div>
-    </div>
 </section>

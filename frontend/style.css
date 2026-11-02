@@ -2,17 +2,32 @@
    CẤU HÌNH CHUNG
 ========================================== */
 
+:root {
+    color-scheme: light;
+    --page-background: #f8fafc;
+    --surface-background: #f8fafc;
+    --surface-raised: #f1f7f5;
+    --text-primary: #23443d;
+    --text-secondary: #647a74;
+    --border-color: #dce8e4;
+    --accent-color: #176b5d;
+    --metric-color: #267b69;
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     font-family: "Segoe UI", Arial, sans-serif;
-    /* Đổi màu nền tối hơn một chút để nổi bật các thẻ trắng */
-    background: #e2edea; /* Hoặc thử màu #eef3f1 nếu bạn muốn sáng hơn chút */
-    color: #23443d;
+    background: var(--page-background);
+    color: var(--text-primary);
     min-height: 100vh;
     line-height: 1.6;
 }
@@ -374,7 +389,7 @@ body {
 
 .flower-image-container {
     width: 270px;
-    height: 210px;
+    max-width: 100%;
     margin: 0 auto 20px;
 
     background: white;
@@ -391,9 +406,10 @@ body {
 }
 
 .flower-image-container img {
+    display: block;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
+    object-fit: contain;
 }
 
 .species-label {
@@ -668,7 +684,7 @@ body {
 
     .flower-image-container {
         width: 220px;
-        height: 180px;
+        max-width: 100%;
     }
 }
 /* ==========================================
@@ -1493,7 +1509,7 @@ body {
 /* Khung ảnh */
 .flower-image-container {
     width: 300px;
-    height: 225px;
+    max-width: 100%;
 
     border: 5px solid #ffffff;
     border-radius: 22px;
@@ -1570,7 +1586,7 @@ body {
 
     .flower-image-container {
         width: 260px;
-        height: 200px;
+        max-width: 100%;
     }
 }
 /* ==========================================
@@ -1848,7 +1864,7 @@ body {
 
 .flower-image-container {
     width: 320px;
-    height: 240px;
+    max-width: 100%;
 
     margin: 0 auto 25px;
 
@@ -1866,6 +1882,10 @@ body {
 }
 
 .flower-image-container img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
     border-radius: 19px;
 }
 
@@ -1919,7 +1939,7 @@ body {
 
     .flower-image-container {
         width: 260px;
-        height: 200px;
+        max-width: 100%;
     }
 
     .sample-buttons button {
@@ -4103,29 +4123,25 @@ html {
 
 
 
-/* ==========================================
-   NÂNG CẤP UI (NHÓM 1) - AN TOÀN 100%
-========================================== */
-
-/* 1. TÙY BIẾN THANH CUỘN (CUSTOM SCROLLBAR) */
+/* Thanh cuộn */
 ::-webkit-scrollbar {
     width: 10px;
 }
 ::-webkit-scrollbar-track {
-    background: #f0f7f5; /* Màu nền thanh cuộn trùng với tone trang web */
+    background: #f0f7f5;
 }
 ::-webkit-scrollbar-thumb {
     background: #b9d6cf;
     border-radius: 10px;
-    border: 2px solid #f0f7f5; /* Tạo viền giả để thanh trượt trông thon gọn hơn */
+    border: 2px solid #f0f7f5;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #36927a; /* Đổi màu xanh đậm khi trỏ chuột vào thanh cuộn */
+    background: #36927a;
 }
 
 
 
-/* 2. HIỆU ỨNG TRƯỢT VÀ MỜ KHI HIỆN KẾT QUẢ DỰ ĐOÁN */
+/* Hiệu ứng hiện kết quả */
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -4137,20 +4153,17 @@ html {
     }
 }
 
-/* Đổi tên thành một class riêng biệt để JS dễ điều khiển */
 .animate-pop {
     animation: fadeInUp 0.5s ease-out forwards;
 }
 
 .prediction-result:not(.hidden) {
-    /* Khi kết quả xuất hiện (mất class hidden), hiệu ứng này sẽ được kích hoạt */
     animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 
-/* 3. HIỆU ỨNG VIỀN PHÁT SÁNG (GLOW EFFECT) & NỔI BẬT ẢNH HOA */
+/* Hiệu ứng ảnh hoa */
 .flower-image-container {
-    /* Thêm một lớp bóng mờ màu xanh ngọc lan tỏa xung quanh ảnh (glow) */
     box-shadow:
         0 18px 40px rgba(35, 91, 79, 0.15),
         0 0 25px rgba(54, 146, 122, 0.15) !important;
@@ -4158,7 +4171,6 @@ html {
 }
 
 .flower-image-container:hover {
-    /* Khi trỏ chuột vào, ảnh hơi phóng to và phát sáng mạnh hơn */
     transform: translateY(-5px) scale(1.02) !important;
     box-shadow:
         0 22px 45px rgba(35, 91, 79, 0.2),
@@ -4166,17 +4178,15 @@ html {
 }
 
 
-/* ==========================================
-   VÒNG XOAY LOADING (SPINNER) CHO NÚT DỰ ĐOÁN
-========================================== */
+/* Vòng xoay khi dự đoán */
 .spinner {
     display: inline-block;
     width: 20px;
     height: 20px;
-    border: 3px solid rgba(255, 255, 255, 0.3); /* Viền mờ */
+    border: 3px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
-    border-top-color: #ffffff; /* Cạnh viền sáng để tạo hiệu ứng xoay */
-    animation: spin 1s ease-in-out infinite; /* Xoay liên tục */
+    border-top-color: #ffffff;
+    animation: spin 1s ease-in-out infinite;
     margin-right: 10px;
     vertical-align: middle;
     margin-top: -2px;
@@ -4189,10 +4199,7 @@ html {
 }
 
 
-/* ==========================================
-   20. CHẾ ĐỘ TỐI (DARK MODE)
-========================================== */
-/* Nút bấm mặt trăng/mặt trời */
+/* Chế độ tối */
 .theme-toggle-btn {
     background: #f3faf7;
     border: 1px solid #d7ebe4;
@@ -4207,13 +4214,20 @@ html {
     transform: scale(1.05);
 }
 
-/* --- KHI BODY CÓ CLASS .dark-mode --- */
 body.dark-mode {
-    background: #0f172a; /* Nền trang web (Xanh đen đậm) */
-    color: #e2e8f0;      /* Chữ thường (Xám trắng) */
+    color-scheme: dark;
+    --page-background: #0b1220;
+    --surface-background: #1e293b;
+    --surface-raised: #243247;
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --border-color: #334155;
+    --accent-color: #34d399;
+    --metric-color: #34d399;
+    background: var(--page-background);
+    color: var(--text-primary);
 }
 
-/* Đổi màu nền của tất cả các khối (Thẻ/Card) */
 body.dark-mode .header,
 body.dark-mode .prediction-container,
 body.dark-mode .input-section,
@@ -4227,24 +4241,21 @@ body.dark-mode .history-section,
 body.dark-mode .auth-section,
 body.dark-mode .floating-side-menu,
 body.dark-mode .password-modal-content {
-    background: #1e293b !important; /* Xanh đen nhạt hơn */
+    background: #1e293b !important;
     border-color: #334155 !important;
     box-shadow: 0 15px 45px rgba(0, 0, 0, 0.4) !important;
 }
 
-/* Chữ tiêu đề nổi bật */
 body.dark-mode h1, body.dark-mode h2, body.dark-mode h3,
 body.dark-mode .input-group label, body.dark-mode .section-title h2,
 body.dark-mode #species-name {
-    color: #f8fafc !important; /* Trắng sáng */
+    color: #f8fafc !important;
 }
 
-/* Chữ mô tả (Xám nhạt) */
 body.dark-mode p, body.dark-mode .section-description, body.dark-mode span:not(.spinner) {
     color: #94a3b8;
 }
 
-/* Ô nhập liệu (Input) */
 body.dark-mode input {
     background: #0f172a !important;
     border-color: #334155 !important;
@@ -4255,7 +4266,6 @@ body.dark-mode input:focus {
     box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.15) !important;
 }
 
-/* Các khối nhỏ bên trong (Dataset cards, SVM cards, Evaluation metrics) */
 body.dark-mode .dataset-card, body.dark-mode .svm-main-card,
 body.dark-mode .svm-info-card, body.dark-mode .api-card,
 body.dark-mode .evaluation-card, body.dark-mode .evaluation-metric,
@@ -4266,14 +4276,12 @@ body.dark-mode .species-card {
     border-color: #475569 !important;
 }
 
-/* Đổi giao diện các thẻ phụ (Header API, Tài khoản, Menu nổi) */
 body.dark-mode .api-status, body.dark-mode .user-account, body.dark-mode .theme-toggle-btn {
     background: #334155;
     border-color: #475569;
     color: #e2e8f0;
 }
 
-/* Đổi Gradient Nút dự đoán sang tone Xanh Dương cho hợp Dark Mode */
 body.dark-mode .predict-button {
     background: linear-gradient(135deg, #0ea5e9, #2563eb) !important;
     box-shadow: 0 10px 24px rgba(14, 165, 233, 0.25) !important;
@@ -4283,21 +4291,16 @@ body.dark-mode .predict-button:hover {
 }
 
 
-/* ==========================================
-   SỬA MÀU CHỮ TRONG DARK MODE CHO DỄ NHÌN
-========================================== */
-
-/* 1. Các đoạn văn bản mô tả, chữ phụ (Tăng độ sáng lên màu xám sáng) */
+/* Màu chữ chế độ tối */
 body.dark-mode p,
 body.dark-mode .section-description,
 body.dark-mode span:not(.spinner),
 body.dark-mode .input-group span {
-    color: #cbd5e1 !important; /* Xám sáng dễ đọc */
+    color: #cbd5e1 !important;
 }
 
-/* 2. Tiêu đề nhỏ, nhãn tên các thông số đầu vào */
 body.dark-mode .input-group label {
-    color: #f1f5f9 !important; /* Trắng sáng rõ nét */
+    color: #f1f5f9 !important;
 }
 
 body.dark-mode .model-option {
@@ -4328,50 +4331,728 @@ body.dark-mode .model-evaluation-table tbody th {
     color: #93c5fd;
 }
 
-/* 3. Chữ bên trong ô nhập liệu (Placeholder khi chưa gõ) */
 body.dark-mode input::placeholder {
     color: #64748b !important;
 }
 
 
-/* ==========================================
-   HIỆU ỨNG PHÁT SÁNG CHO CHỮ TRÊN MENU (DARK MODE)
-========================================== */
 body.dark-mode .header-nav a,
 body.dark-mode .nav-link {
-    color: #94a3b8 !important; /* Màu chữ mặc định */
+    color: #94a3b8 !important;
     transition: all 0.3s ease;
 }
 
-/* Khi rê chuột vào hoặc ở mục đang chọn -> Chữ phát sáng rực rỡ */
 body.dark-mode .header-nav a:hover,
 body.dark-mode .nav-link:hover,
 body.dark-mode .header-nav a.active,
 body.dark-mode .nav-link.active {
-    color: #38bdf8 !important; /* Đổi sang màu xanh dương sáng */
+    color: #38bdf8 !important;
     text-shadow: 0 0 10px rgba(56, 189, 248, 0.6),
-                 0 0 20px rgba(56, 189, 248, 0.4); /* Tạo hiệu ứng hào quang phát sáng */
+                 0 0 20px rgba(56, 189, 248, 0.4);
 }
 
 
-
-/* ==========================================
-   SỬA LỖI MẤT CHỮ TRONG PHẦN QUY TRÌNH (DARK MODE)
-========================================== */
-
-/* 1. Tiêu đề lớn của phần quy trình */
+/* Quy trình ở chế độ tối */
 body.dark-mode .process-section h2,
 body.dark-mode .process-title,
 body.dark-mode .section-header h2 {
     color: #f8fafc !important;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3); /* Hiệu ứng phát sáng nhẹ */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
-/* 2. Dòng mô tả phụ phía dưới tiêu đề */
 body.dark-mode .process-section p,
 body.dark-mode .process-description,
 body.dark-mode .section-header p {
     color: #cbd5e1 !important;
+}
+
+/* Make API status chips read as static metadata, not actions. */
+.api-card-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 7px;
+}
+
+.api-meta-label {
+    color: #73877f;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.api-badge {
+    border-radius: 8px;
+    background: #f0f5f3;
+    border-color: #dce7e3;
+    color: #52665f;
+    cursor: default;
+}
+
+.api-badge > span {
+    color: #21865e;
+}
+
+.endpoint {
+    border-style: dashed;
+    background: #f3f6f8;
+    color: #405366;
+}
+
+/* Connect each process card in reading order. */
+.process-card:not(:nth-child(3n))::after {
+    position: absolute;
+    top: 50%;
+    right: -20px;
+    z-index: 1;
+    color: #7aa99e;
+    content: "→";
+    font-size: 22px;
+    font-weight: 700;
+    transform: translate(50%, -50%);
+}
+
+.process-card:nth-child(3) {
+    grid-column: 3;
+    grid-row: 1;
+}
+
+.process-card:nth-child(4) {
+    grid-column: 3;
+    grid-row: 2;
+}
+
+.process-card:nth-child(5) {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+.process-card:nth-child(6) {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.process-card:nth-child(3)::after {
+    top: auto;
+    right: 50%;
+    bottom: -22px;
+    content: "↓";
+    transform: translate(50%, 50%);
+}
+
+.process-card:nth-child(4)::after,
+.process-card:nth-child(5)::after {
+    right: auto;
+    left: -20px;
+    content: "←";
+    transform: translate(-50%, -50%);
+}
+
+@media (max-width: 850px) {
+    .process-card:nth-child(n) {
+        grid-column: auto;
+        grid-row: auto;
+    }
+
+    .process-card:nth-child(1) { grid-column: 1; grid-row: 1; }
+    .process-card:nth-child(2) { grid-column: 2; grid-row: 1; }
+    .process-card:nth-child(3) { grid-column: 2; grid-row: 2; }
+    .process-card:nth-child(4) { grid-column: 1; grid-row: 2; }
+    .process-card:nth-child(5) { grid-column: 1; grid-row: 3; }
+    .process-card:nth-child(6) { grid-column: 2; grid-row: 3; }
+
+    .process-card:nth-child(2)::after,
+    .process-card:nth-child(4)::after {
+        top: auto;
+        right: 50%;
+        bottom: -22px;
+        left: auto;
+        content: "↓";
+        transform: translate(50%, 50%);
+    }
+
+    .process-card:nth-child(3)::after {
+        top: 50%;
+        right: auto;
+        bottom: auto;
+        left: -20px;
+        content: "←";
+        transform: translate(-50%, -50%);
+    }
+
+    .process-card:nth-child(5)::after {
+        top: 50%;
+        right: -20px;
+        bottom: auto;
+        left: auto;
+        content: "→";
+        transform: translate(50%, -50%);
+    }
+}
+
+@media (max-width: 550px) {
+    .process-card:nth-child(n) {
+        grid-column: auto;
+        grid-row: auto;
+    }
+
+    .process-card:not(:last-child)::after {
+        top: auto;
+        right: 50%;
+        bottom: -22px;
+        left: auto;
+        content: "↓";
+        transform: translate(50%, 50%);
+    }
+}
+
+/* Keep the SVM step navigation prominent and visibly interactive. */
+.svm-flow-caption {
+    margin: 0 0 10px;
+    color: #718b85;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.svm-flow {
+    margin-bottom: 24px;
+}
+
+.svm-flow .flow-item {
+    padding: 8px 10px;
+    border-radius: 10px;
+    color: #315e55;
+    text-decoration: none;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.svm-flow .flow-item:hover {
+    background: #e8f4ef;
+    color: #176b5d;
+    transform: translateY(-2px);
+}
+
+.svm-flow .flow-item:focus-visible {
+    outline: 3px solid #38bdf8;
+    outline-offset: 3px;
+}
+
+.svm-flow .flow-arrow {
+    flex-shrink: 0;
+    pointer-events: none;
+}
+
+.svm-training-panel {
+    margin: 0 0 24px;
+    padding: 24px;
+    border: 1px solid #dcece7;
+    border-radius: 18px;
+    background: #f7fbf9;
+    scroll-margin-top: 24px;
+}
+
+.svm-training-heading {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.svm-training-icon {
+    display: grid;
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    place-items: center;
+    border-radius: 13px;
+    background: #e4f2ec;
+    font-size: 21px;
+}
+
+.svm-training-heading h3 {
+    margin: 0 0 4px;
+    color: #176b5d;
+    font-size: 18px;
+}
+
+.svm-training-heading p {
+    margin: 0;
+    color: #718b85;
+    font-size: 13px;
+}
+
+.svm-training-steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.svm-training-step {
+    padding: 17px;
+    border: 1px solid #e0ebe6;
+    border-radius: 13px;
+    background: #ffffff;
+}
+
+.svm-training-step > span {
+    color: #438c78;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+}
+
+.svm-training-step h4 {
+    margin: 8px 0 6px;
+    color: #315e55;
+    font-size: 14px;
+}
+
+.svm-training-step p {
+    margin: 0;
+    color: #71827d;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.svm-training-results-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    color: #176b5d;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.svm-training-results-link:hover {
+    text-decoration: underline;
+}
+
+.svm-training-results-link:focus-visible {
+    outline: 3px solid #38bdf8;
+    outline-offset: 3px;
+}
+
+body.dark-mode .svm-training-panel {
+    border-color: #33475f !important;
+    background: #111c2c !important;
+}
+
+body.dark-mode .svm-training-icon {
+    background: #23364b !important;
+}
+
+body.dark-mode .svm-training-heading h3,
+body.dark-mode .svm-training-step h4 {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .svm-training-heading p,
+body.dark-mode .svm-training-step p {
+    color: #cbd5e1 !important;
+}
+
+body.dark-mode .svm-training-step {
+    border-color: #33475f !important;
+    background: #1b2b40 !important;
+}
+
+body.dark-mode .svm-training-step > span,
+body.dark-mode .svm-training-results-link {
+    color: #a7f3d0 !important;
+}
+
+/* Keep dataset values close to their labels and add measurable species context. */
+#dataset .info-row {
+    justify-content: flex-start;
+    gap: 20px;
+}
+
+#dataset .info-row strong {
+    min-width: 28px;
+}
+
+.species-note {
+    margin: 24px 0 -12px;
+    color: #718b85;
+    font-size: 13px;
+}
+
+.species-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0 8px;
+}
+
+.species-measurements {
+    display: grid;
+    gap: 7px;
+    margin: 10px 8px 0;
+}
+
+.species-measurements div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding-top: 7px;
+    border-top: 1px solid #e6eeeb;
+}
+
+.species-measurements span {
+    color: #71827d;
+    font-size: 12px;
+}
+
+.species-measurements strong {
+    color: #315e55;
+    font-size: 12px;
+    text-align: right;
+}
+
+body.dark-mode .api-meta-label {
+    color: #a7b6c8 !important;
+}
+
+body.dark-mode .api-badge {
+    background: #1b2b40 !important;
+    border-color: #33475f !important;
+    color: #cbd5e1 !important;
+}
+
+body.dark-mode .api-badge > span {
+    color: #4ade80 !important;
+}
+
+body.dark-mode .endpoint {
+    background: #111c2c !important;
+    border-color: #3a4b60 !important;
+    color: #d3deeb !important;
+}
+
+body.dark-mode .process-card::after {
+    color: #67c9bd !important;
+}
+
+body.dark-mode .svm-flow-caption {
+    color: #cbd5e1 !important;
+}
+
+body.dark-mode .svm-flow .flow-item {
+    color: #d3deeb !important;
+}
+
+body.dark-mode .svm-flow .flow-item:hover {
+    background: #23364b !important;
+    color: #a7f3d0 !important;
+}
+
+body.dark-mode .species-note {
+    color: #cbd5e1 !important;
+}
+
+body.dark-mode .species-measurements div {
+    border-color: #33475f !important;
+}
+
+body.dark-mode .species-measurements span {
+    color: #cbd5e1 !important;
+}
+
+body.dark-mode .species-measurements strong {
+    color: #a7f3d0 !important;
+}
+
+@media (max-width: 700px) {
+    .svm-flow {
+        align-items: stretch;
+        gap: 5px;
+        padding: 14px;
+    }
+
+    .svm-flow .flow-item {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .svm-flow .flow-arrow {
+        line-height: 1;
+    }
+
+    .svm-training-steps {
+        grid-template-columns: 1fr;
+    }
+
+    .svm-training-panel {
+        padding: 18px;
+    }
+}
+
+body.dark-mode {
+    background: #080d18;
+    color: #e2e8f0;
+}
+
+body.dark-mode .header {
+    background: #101827 !important;
+    border-color: #26364a !important;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28) !important;
+}
+
+body.dark-mode .header-top {
+    gap: 24px;
+}
+
+body.dark-mode .brand-icon {
+    background: #17283a;
+    box-shadow: none;
+}
+
+body.dark-mode .header h1,
+body.dark-mode .input-section h2,
+body.dark-mode .result-section h2 {
+    color: #8be4d1 !important;
+}
+
+body.dark-mode .header p {
+    color: #a6b4c6 !important;
+}
+
+body.dark-mode .navbar {
+    border-top-color: #26364a;
+}
+
+body.dark-mode .navbar a {
+    color: #b7c3d3;
+}
+
+body.dark-mode .navbar a:hover {
+    background: #1a2c3d;
+    color: #8be4d1;
+}
+
+body.dark-mode .header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+body.dark-mode .theme-toggle-btn {
+    display: grid;
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    place-items: center;
+    padding: 0;
+    border: 1px solid #35465c;
+    border-radius: 12px;
+    background: #172235;
+    color: #f5d477;
+}
+
+body.dark-mode .theme-toggle-btn:hover {
+    background: #21314a;
+}
+
+body.dark-mode .api-status {
+    display: flex;
+    min-height: 40px;
+    padding: 8px 12px;
+    border: 1px solid #24564e;
+    border-radius: 11px;
+    background: #112923;
+    color: #9ce8ce;
+    font-size: 12px;
+}
+
+body.dark-mode .api-status span:not(.status-dot) {
+    color: #9ce8ce !important;
+}
+
+body.dark-mode .user-account {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #e2e8f0;
+}
+
+body.dark-mode .user-icon {
+    display: none;
+}
+
+body.dark-mode .current-username {
+    max-width: 150px;
+    padding: 8px 12px;
+    border: 1px solid #34445a;
+    border-radius: 10px;
+    background: #172235;
+    color: #d7e2f1 !important;
+    line-height: 1.4;
+}
+
+body.dark-mode .change-password-button,
+body.dark-mode .logout-button {
+    min-height: 40px;
+    padding: 8px 12px;
+    border: 1px solid #3b4b60;
+    border-radius: 10px;
+    background: #172235;
+    color: #d4dfed;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.3;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+body.dark-mode .change-password-button:hover {
+    transform: translateY(-1px);
+    border-color: #528e86;
+    background: #1d3440;
+}
+
+body.dark-mode .logout-button {
+    border-color: #67404d;
+    background: #2a1b28;
+    color: #ffc0c8;
+}
+
+body.dark-mode .logout-button:hover {
+    transform: translateY(-1px);
+    border-color: #a45465;
+    background: #39212f;
+}
+
+body.dark-mode .prediction-container,
+body.dark-mode .input-section,
+body.dark-mode .result-section,
+body.dark-mode .model-section,
+body.dark-mode .dataset-section,
+body.dark-mode .evaluation-section,
+body.dark-mode .svm-section,
+body.dark-mode .api-section,
+body.dark-mode .history-section,
+body.dark-mode .process-section,
+body.dark-mode .floating-side-menu,
+body.dark-mode .password-modal-content {
+    background: #101827 !important;
+    border-color: #26364a !important;
+    box-shadow: 0 16px 42px rgba(0, 0, 0, 0.22) !important;
+}
+
+body.dark-mode .input-group input,
+body.dark-mode .password-form-group input {
+    background: #0c1421 !important;
+    border-color: #35445a !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .dataset-card,
+body.dark-mode .svm-main-card,
+body.dark-mode .svm-info-card,
+body.dark-mode .api-card,
+body.dark-mode .evaluation-card,
+body.dark-mode .evaluation-metric,
+body.dark-mode .sample-buttons,
+body.dark-mode .result-placeholder .icon,
+body.dark-mode .auth-card,
+body.dark-mode .info-row,
+body.dark-mode .feature-item,
+body.dark-mode .species-card,
+body.dark-mode .model-option,
+body.dark-mode .model-result-card,
+body.dark-mode .process-card,
+body.dark-mode .step-item {
+    background: #152133 !important;
+    border-color: #2b3c52 !important;
+    color: #d8e2ef;
+}
+
+body.dark-mode .prediction-result:not(.hidden),
+body.dark-mode .model-results:not(.hidden) {
+    border-color: #2b3c52;
+    background: #121d2c;
+}
+
+body.dark-mode .floating-side-menu {
+    background: #101827;
+    border-color: #26364a;
+}
+
+body.dark-mode .side-link {
+    color: #b7c3d3;
+}
+
+body.dark-mode .side-link:hover {
+    background: #1a2c3d;
+    color: #8be4d1;
+}
+
+body.dark-mode .side-link.active {
+    background: linear-gradient(135deg, #176b5d, #287d70);
+    color: #fff;
+}
+
+body.dark-mode ::-webkit-scrollbar-track {
+    background: #0b111c;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb {
+    border-color: #0b111c;
+    background: #36465c;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb:hover {
+    background: #4b9b8c;
+}
+
+@media (max-width: 850px) {
+    body.dark-mode .header-top {
+        align-items: flex-start;
+    }
+
+    body.dark-mode .header-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 600px) {
+    body.dark-mode .header-actions {
+        align-items: center;
+        gap: 8px;
+    }
+
+    body.dark-mode .api-status {
+        display: flex;
+    }
+
+    body.dark-mode .user-account {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    body.dark-mode .current-username {
+        max-width: 120px;
+    }
+
+    body.dark-mode .user-account .change-password-button,
+    body.dark-mode .user-account .logout-button {
+        width: auto;
+        flex: 0 0 auto;
+    }
 }
 
 /* Tách riêng kết quả tổng thể và kết quả của từng mô hình */
@@ -4498,7 +5179,6 @@ body.dark-mode .model-result-detail {
     }
 }
 
-/* 3. Tiêu đề và chữ bên trong 6 ô quy trình (01 đến 06) */
 body.dark-mode .process-card h3,
 body.dark-mode .process-card p,
 body.dark-mode .step-title,
@@ -4506,7 +5186,6 @@ body.dark-mode .step-desc {
     color: #e2e8f0 !important;
 }
 
-/* 4. Tăng độ sáng cho các ô card quy trình để chữ nổi bật hơn */
 body.dark-mode .process-card,
 body.dark-mode .step-item {
     background: #1e293b !important;
@@ -4514,11 +5193,7 @@ body.dark-mode .step-item {
 }
 
 
-/* ==========================================
-   HOÀN THIỆN DARK MODE CHO PHẦN ĐÁNH GIÁ (EVALUATION)
-========================================== */
-
-/* 1. Làm đồng bộ nền các thẻ trong phần Đánh giá */
+/* Đánh giá ở chế độ tối */
 body.dark-mode .evaluation-section,
 body.dark-mode .cross-validation-card,
 body.dark-mode .confusion-matrix-container,
@@ -4527,7 +5202,6 @@ body.dark-mode .classification-report-container {
     border-color: #334155 !important;
 }
 
-/* 2. Sửa màu chữ và số trong bảng Confusion Matrix & Classification Report */
 body.dark-mode .confusion-matrix-container th,
 body.dark-mode .confusion-matrix-container td,
 body.dark-mode .classification-report-container th,
@@ -4535,7 +5209,6 @@ body.dark-mode .classification-report-container td {
     color: #f8fafc !important;
 }
 
-/* 3. Làm nổi bật các con số Accuracy / F1-score ở các thẻ tổng kết */
 body.dark-mode .evaluation-metric,
 body.dark-mode .accuracy-card {
     background: #334155 !important;
@@ -4544,14 +5217,10 @@ body.dark-mode .accuracy-card {
 
 body.dark-mode .evaluation-metric span,
 body.dark-mode .accuracy-value {
-    color: #38bdf8 !important; /* Số liệu hiển thị màu xanh dương sáng phát sáng */
+    color: #38bdf8 !important;
     text-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
 }
 
-
-/* ==========================================
-   KHẮC PHỤC TRIỆT ĐỂ NỀN TRẮNG CỦA THẺ ĐÁNH GIÁ (DARK MODE)
-========================================== */
 
 body.dark-mode .cross-validation-card,
 body.dark-mode .evaluation-section .card,
@@ -4562,25 +5231,16 @@ body.dark-mode .metrics-container {
     color: #f8fafc !important;
 }
 
-/* Đổi màu các dòng chữ mờ hoặc nhãn bên trong thẻ thành sáng hơn */
 body.dark-mode .cross-validation-card p,
 body.dark-mode .cross-validation-card span {
     color: #cbd5e1 !important;
 }
 
-/* Đổi màu chữ tiêu đề phụ của Fold sang xám sáng */
 body.dark-mode .cross-validation-card .fold-label,
 body.dark-mode .cross-validation-card span:not(.accuracy-value) {
     color: #94a3b8 !important;
 }
-
-
-
-/* ==========================================
-   SỬA TRIỆT ĐỂ LỖI GIAO DIỆN DARK MODE
-========================================== */
-
-/* 1. Sửa khung 5-Fold Cross-Validation sang nền tối hoàn toàn */
+/* Kiểm định chéo ở chế độ tối */
 body.dark-mode .cross-validation-card,
 body.dark-mode .cv-section,
 body.dark-mode .evaluation-section .card,
@@ -4591,7 +5251,6 @@ body.dark-mode .metrics-container {
     color: #f1f5f9 !important;
 }
 
-/* Chữ và số trong khung Cross-Validation */
 body.dark-mode .cv-header p,
 body.dark-mode .cv-footer,
 body.dark-mode .cv-row > span,
@@ -4610,7 +5269,7 @@ body.dark-mode .cv-row > strong {
 }
 
 
-/* 2. Sửa phần Giới thiệu bộ dữ liệu Iris (Dataset) */
+/* Dữ liệu Iris ở chế độ tối */
 body.dark-mode #dataset,
 body.dark-mode #dataset .dataset-card,
 body.dark-mode #dataset .info-row,
@@ -4623,7 +5282,128 @@ body.dark-mode #dataset .species-card {
 body.dark-mode #dataset .info-row span,
 body.dark-mode #dataset > .section-description,
 body.dark-mode #dataset .species-card span {
-    color: #94a3b8 !important;
+    color: #cbd5e1 !important;
+}
+
+body.dark-mode .evaluation-metric-label,
+body.dark-mode #dataset .info-row span {
+    color: #cbd5e1 !important;
+}
+
+body.dark-mode .report-summary div {
+    background: #1b2b40 !important;
+    border: 1px solid #33475f;
+}
+
+body.dark-mode .report-summary strong {
+    color: #cbd5e1 !important;
+}
+
+body.dark-mode .report-summary span {
+    color: #67e8f9 !important;
+}
+
+body.dark-mode .classification-table th {
+    background: #23364b !important;
+    border-color: #3a4b60 !important;
+    color: #a7f3d0 !important;
+}
+
+body.dark-mode .classification-table td {
+    border-color: #33475f !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .history-table-wrapper {
+    border-color: #33475f !important;
+    background: #111c2c !important;
+}
+
+body.dark-mode .history-table {
+    background: #111c2c !important;
+}
+
+body.dark-mode .history-table thead {
+    background: #1b2b40 !important;
+}
+
+body.dark-mode .history-table th {
+    border-color: #33475f !important;
+    color: #a7f3d0 !important;
+    font-size: 12px;
+    line-height: 1.35;
+    padding: 12px 10px;
+}
+
+body.dark-mode .history-table th span,
+body.dark-mode .history-table th small {
+    display: block;
+    color: inherit !important;
+}
+
+body.dark-mode .history-table th small {
+    margin-top: 2px;
+    color: #9fb0c4 !important;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+body.dark-mode .history-table td {
+    border-color: #29394e !important;
+    color: #d3deeb !important;
+}
+
+body.dark-mode .history-table tbody tr:hover {
+    background: #1a2a3e !important;
+}
+
+body.dark-mode .history-species {
+    color: #67e8f9 !important;
+}
+
+body.dark-mode .history-empty {
+    color: #b6c4d6 !important;
+}
+
+body.dark-mode .history-summary,
+body.dark-mode .history-summary strong {
+    color: #d3deeb !important;
+}
+
+body.dark-mode .history-refresh-button {
+    border-color: #35566a !important;
+    background: #1b3446 !important;
+    color: #a5e8f3 !important;
+}
+
+body.dark-mode .history-delete-button {
+    border-color: #68404d !important;
+    background: #382631 !important;
+    color: #fda4af !important;
+}
+
+body.dark-mode .history-page-button,
+body.dark-mode .history-page-number {
+    border-color: #33475f !important;
+    background: #1b2b40 !important;
+    color: #d3deeb !important;
+}
+
+body.dark-mode .history-page-button:hover:not(:disabled),
+body.dark-mode .history-page-number:hover {
+    background: #263a52 !important;
+}
+
+body.dark-mode .history-page-number.active {
+    border-color: #0e7490 !important;
+    background: #0e7490 !important;
+    color: #f0fdfa !important;
+}
+
+body.dark-mode .history-page-button:disabled {
+    border-color: #29394e !important;
+    background: #172335 !important;
+    color: #718198 !important;
 }
 
 body.dark-mode #dataset .info-row strong,
@@ -4633,7 +5413,6 @@ body.dark-mode #dataset .species-card h3 {
 }
 
 
-/* 3. Sửa tiêu đề lớn bị mờ ở phần Quy trình xây dựng mô hình */
 body.dark-mode .process-section {
     background: #1e293b !important;
     border: 1px solid #334155 !important;
@@ -4647,4 +5426,257 @@ body.dark-mode .process-section h2 {
 
 body.dark-mode .section-header p {
     color: #cbd5e1 !important;
+}
+
+/* Apply the theme palette after legacy component overrides. */
+body.dark-mode {
+    background: var(--page-background) !important;
+}
+
+body.dark-mode .header,
+body.dark-mode .prediction-container,
+body.dark-mode .input-section,
+body.dark-mode .result-section,
+body.dark-mode .model-section,
+body.dark-mode .dataset-section,
+body.dark-mode .evaluation-section,
+body.dark-mode .svm-section,
+body.dark-mode .api-section,
+body.dark-mode .history-section,
+body.dark-mode .process-section,
+body.dark-mode .floating-side-menu,
+body.dark-mode .password-modal-content {
+    background: var(--surface-background) !important;
+    border-color: var(--border-color) !important;
+}
+
+body.dark-mode .dataset-card,
+body.dark-mode .svm-main-card,
+body.dark-mode .svm-info-card,
+body.dark-mode .api-card,
+body.dark-mode .evaluation-card,
+body.dark-mode .evaluation-metric,
+body.dark-mode .info-row,
+body.dark-mode .feature-item,
+body.dark-mode .species-card,
+body.dark-mode .process-card,
+body.dark-mode .model-result-card,
+body.dark-mode .report-summary div {
+    background: var(--surface-background) !important;
+    border-color: var(--border-color) !important;
+}
+
+body.dark-mode .evaluation-metric .evaluation-metric-value,
+body.dark-mode .report-summary span {
+    color: var(--metric-color) !important;
+    text-shadow: none !important;
+}
+
+body.dark-mode .evaluation-metric .evaluation-metric-label,
+body.dark-mode .report-summary strong,
+body.dark-mode #dataset .info-row span,
+body.dark-mode #dataset .species-card span {
+    color: var(--text-secondary) !important;
+}
+
+body.dark-mode .history-table-wrapper,
+body.dark-mode .history-table,
+body.dark-mode .history-table tbody,
+body.dark-mode .history-table tbody tr,
+body.dark-mode .history-table td {
+    background: var(--surface-background) !important;
+}
+
+body.dark-mode .history-table thead,
+body.dark-mode .history-table th {
+    background: var(--surface-raised) !important;
+}
+
+body.dark-mode .history-table th,
+body.dark-mode .history-table th span,
+body.dark-mode .history-table th small {
+    color: var(--text-secondary) !important;
+}
+
+body.dark-mode .history-table td,
+body.dark-mode .history-summary,
+body.dark-mode .history-summary strong {
+    color: #e2e8f0 !important;
+}
+
+/* Contact footer inspired by the supplied dark slate reference. */
+.footer.contact-footer {
+    width: 100%;
+    margin: 45px 0 0;
+    padding: 58px 24px 30px;
+    border: 0;
+    background: #3e5268;
+    color: #eef2f6;
+    text-align: center;
+}
+
+.contact-footer-content {
+    width: min(100%, 760px);
+    margin: 0 auto;
+}
+
+.contact-footer-kicker {
+    margin: 0 0 10px;
+    color: #c5d0dc;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+}
+
+.contact-footer h2 {
+    margin: 0;
+    color: #f8fafc;
+    font-size: clamp(24px, 4vw, 32px);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.contact-footer-divider {
+    display: block;
+    width: 82px;
+    height: 3px;
+    margin: 18px auto 28px;
+    background: #d7e1e9;
+}
+
+.contact-details {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 36px;
+    margin: 0;
+    font-style: normal;
+}
+
+.contact-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.contact-detail-label {
+    color: #c5d0dc;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.contact-detail strong,
+.contact-detail a {
+    color: #f8fafc;
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+    text-decoration: none;
+}
+
+.contact-detail a:hover {
+    color: #a7f3d0;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+.contact-detail a:focus-visible {
+    border-radius: 3px;
+    outline: 2px solid #a7f3d0;
+    outline-offset: 4px;
+}
+
+.contact-footer-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 40px;
+    color: #f8fafc;
+    font-size: clamp(42px, 9vw, 76px);
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    line-height: 1;
+}
+
+.contact-footer-flower {
+    color: #d78a55;
+    font-size: 0.72em;
+}
+
+.contact-footer-caption {
+    margin: 12px 0 0;
+    color: #d6dee7;
+    font-size: 14px;
+}
+
+@media (max-width: 560px) {
+    .footer.contact-footer {
+        margin-top: 32px;
+        padding: 42px 22px 26px;
+    }
+
+    .contact-details {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .contact-detail strong,
+    .contact-detail a {
+        font-size: 16px;
+    }
+
+    .contact-footer-brand {
+        margin-top: 30px;
+    }
+}
+
+body:not(.dark-mode) .evaluation-metric,
+body:not(.dark-mode) .history-table,
+body:not(.dark-mode) .history-table tbody,
+body:not(.dark-mode) .history-table tbody tr,
+body:not(.dark-mode) .history-table td,
+body:not(.dark-mode) .report-summary div {
+    background: var(--surface-background) !important;
+}
+
+body.dark-mode .svm-flow {
+    border-color: #334155 !important;
+    background: #1e293b !important;
+}
+
+body.dark-mode .svm-flow .flow-item,
+body.dark-mode .svm-flow .flow-item strong {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .svm-flow .flow-item span {
+    background: #334155 !important;
+    color: #34d399 !important;
+}
+
+body.dark-mode .svm-flow .flow-arrow {
+    color: #94a3b8 !important;
+}
+
+body.dark-mode .svm-flow .flow-item:hover {
+    background: #26364a !important;
+}
+
+body.dark-mode .svm-flow .flow-item:hover,
+body.dark-mode .svm-flow .flow-item:hover strong {
+    color: #a7f3d0 !important;
+}
+
+body.dark-mode .svm-flow .flow-item:hover span {
+    background: #14532d !important;
+    color: #86efac !important;
+}
+
+body.dark-mode #dataset .feature-item span {
+    background: #334155 !important;
+    color: #34d399 !important;
 }

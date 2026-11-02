@@ -65,9 +65,9 @@ const elements = {
 // ======================================================
 
 const FLOWER_IMAGES = {
-    setosa: "images/setosa.jpg",
-    versicolor: "images/versicolor.jpg",
-    virginica: "images/virginica.jpg"
+    setosa: "images/setosa.jpg?v=2",
+    versicolor: "images/versicolor.jpg?v=2",
+    virginica: "images/virginica.jpg?v=2"
 };
 
 
@@ -146,10 +146,6 @@ function validateInput() {
         parseFloat(elements.petalWidth.value);
 
 
-    // ----------------------------------------------
-    // Kiểm tra ô trống
-    // ----------------------------------------------
-
     if (
         Number.isNaN(sepalLength) ||
         Number.isNaN(sepalWidth) ||
@@ -164,10 +160,6 @@ function validateInput() {
         return null;
     }
 
-
-    // ----------------------------------------------
-    // Kiểm tra giá trị phải lớn hơn 0
-    // ----------------------------------------------
 
     if (
         sepalLength <= 0 ||
@@ -184,10 +176,6 @@ function validateInput() {
     }
 
 
-    // ----------------------------------------------
-    // Trả về dữ liệu
-    // ----------------------------------------------
-
     return {
         sepal_length: sepalLength,
         sepal_width: sepalWidth,
@@ -198,7 +186,7 @@ function validateInput() {
 
 
 // ======================================================
-// 7. HIỂN THỊ TRẠNG THÁI LOADING (CÓ VÒNG XOAY)
+// 7. Trạng thái đang dự đoán
 // ======================================================
 
 function setLoading(isLoading) {
@@ -208,12 +196,10 @@ function setLoading(isLoading) {
 
     if (isLoading) {
         elements.predictButton.disabled = true;
-        // Thêm vòng xoay (spinner) vào trước chữ
         elements.predictButton.innerHTML =
             '<span class="spinner"></span> ĐANG DỰ ĐOÁN...';
     } else {
         elements.predictButton.disabled = false;
-        // Trả lại giao diện ban đầu
         elements.predictButton.innerHTML =
             '🌸 DỰ ĐOÁN LOÀI HOA';
     }
@@ -238,7 +224,6 @@ async function requestAPI(
     };
 
 
-    // Chỉ thêm body khi có dữ liệu
     if (data !== null) {
 
         options.body =
@@ -249,10 +234,6 @@ async function requestAPI(
     const response =
         await fetch(url, options);
 
-
-    // ----------------------------------------------
-    // Đọc response
-    // ----------------------------------------------
 
     let responseData = null;
 
@@ -266,10 +247,6 @@ async function requestAPI(
         responseData = null;
     }
 
-
-    // ----------------------------------------------
-    // Kiểm tra lỗi HTTP
-    // ----------------------------------------------
 
     if (!response.ok) {
 
@@ -304,10 +281,6 @@ function displayResult(data) {
 
     const species =
         data.species;
-
-    // ----------------------------------------------
-    // Hiển thị tên loài
-    // ----------------------------------------------
 
     elements.speciesName.textContent =
         species;
@@ -369,10 +342,6 @@ function displayResult(data) {
     }
 
 
-    // ----------------------------------------------
-    // Hiển thị ảnh hoa
-    // ----------------------------------------------
-
     const imagePath =
         FLOWER_IMAGES[species.toLowerCase()];
 
@@ -386,10 +355,6 @@ function displayResult(data) {
             `Hoa Iris ${species}`;
     }
 
-
-    // ----------------------------------------------
-    // Hiển thị khu vực kết quả
-    // ----------------------------------------------
 
     elements.resultPlaceholder.classList.add(
         "hidden"
@@ -648,7 +613,7 @@ const logoutButton = document.getElementById("logout-button");
 
 // Nếu chưa đăng nhập → quay về trang Login
 if (!userId || !username) {
-    window.location.href = "login.html";
+    window.location.href = "login.html?v=9";
 }
 
 // Hiển thị tài khoản đang đăng nhập
@@ -664,7 +629,7 @@ if (logoutButton) {
         localStorage.removeItem("user_id");
         localStorage.removeItem("username");
 
-        window.location.href = "login.html";
+        window.location.href = "login.html?v=9";
     });
 }
 // ======================================================
@@ -1073,7 +1038,9 @@ function formatHistoryDate(dateValue) {
         return "-";
     }
 
-    const date = new Date(dateValue);
+    const timestamp = String(dateValue).trim();
+    const hasTimezone = /(?:Z|[+-]\d{2}:\d{2})$/i.test(timestamp);
+    const date = new Date(hasTimezone ? timestamp : `${timestamp}+07:00`);
 
     if (Number.isNaN(date.getTime())) {
         return dateValue;
@@ -1085,7 +1052,9 @@ function formatHistoryDate(dateValue) {
         year: "numeric",
         hour: "2-digit",
         minute: "2-digit",
-        second: "2-digit"
+        second: "2-digit",
+        timeZone: "Asia/Ho_Chi_Minh",
+        hourCycle: "h23"
     });
 }
 
@@ -1691,44 +1660,26 @@ if (refreshHistoryButton) {
 
 loadPredictionHistory();
 
-
-
-
-
-
-
-
-
-
-
-
-
-// ======================================================
-// HIỆU ỨNG TỰ ĐỘNG SÁNG MENU BÊN CẠNH (SCROLL SPY)
-// ======================================================
-
 function initSideMenu() {
-    // Lấy danh sách các nút bên cạnh (ngoại trừ nút Lên đầu trang)
-    const sideLinks = document.querySelectorAll('.floating-side-menu .side-link:not(.back-top)');
+    const sideLinks = document.querySelectorAll(
+        ".floating-side-menu .side-link:not(.back-top)"
+    );
 
     window.addEventListener('scroll', () => {
         let currentSection = '';
 
-        // Kiểm tra xem đang cuộn tới thẻ nào
         sideLinks.forEach(link => {
             const sectionId = link.getAttribute('href').substring(1);
             const section = document.getElementById(sectionId);
 
             if (section) {
                 const sectionTop = section.offsetTop;
-                // Nếu cuộn qua phần đầu của mục đó một chút thì nhận diện là đang ở mục đó
                 if (window.scrollY >= sectionTop - 300) {
                     currentSection = sectionId;
                 }
             }
         });
 
-        // Bật màu xanh cho nút tương ứng, xóa màu của các nút khác
         sideLinks.forEach(link => {
             link.classList.remove('active');
             if (link.getAttribute('href') === `#${currentSection}`) {
@@ -1738,46 +1689,43 @@ function initSideMenu() {
     });
 }
 
-// Do giao diện của bạn load component động, ta chờ 1 giây để các khối HTML ghép xong rồi mới chạy
-setTimeout(initSideMenu, 1000);
+initSideMenu();
 
-
-
-// ======================================================
-// 20. CHẾ ĐỘ TỐI (DARK MODE)
-// ======================================================
 function initDarkMode() {
-    // 1. Kiểm tra xem người dùng đã từng bật Dark Mode trước đó chưa (lưu trong máy)
-    const isDarkMode = localStorage.getItem('darkMode') === 'true';
+    const savedTheme = localStorage.getItem('darkMode');
+    const isDarkMode = savedTheme === null || savedTheme === 'true';
 
-    // 2. Hàm áp dụng giao diện
     const applyTheme = (dark) => {
         const body = document.body;
         const toggleBtn = document.getElementById('theme-toggle');
 
         if (dark) {
             body.classList.add('dark-mode');
-            if(toggleBtn) toggleBtn.textContent = '☀️'; // Đổi icon sang Mặt trời
+            if (toggleBtn) {
+                toggleBtn.textContent = '☀️';
+                toggleBtn.title = 'Chuyển sang giao diện sáng';
+                toggleBtn.setAttribute('aria-label', 'Chuyển sang giao diện sáng');
+            }
         } else {
             body.classList.remove('dark-mode');
-            if(toggleBtn) toggleBtn.textContent = '🌙'; // Đổi icon sang Mặt trăng
+            if (toggleBtn) {
+                toggleBtn.textContent = '🌙';
+                toggleBtn.title = 'Chuyển sang giao diện tối';
+                toggleBtn.setAttribute('aria-label', 'Chuyển sang giao diện tối');
+            }
         }
     };
 
-    // 3. Chạy giao diện ngay khi load trang
     applyTheme(isDarkMode);
 
-    // 4. Lắng nghe sự kiện click vào nút (Vì header load động nên ta bắt sự kiện trên document)
-    document.addEventListener('click', function(event) {
+    document.addEventListener('click', event => {
         const toggleBtn = event.target.closest('#theme-toggle');
-        if (!toggleBtn) return; // Nếu không click trúng nút thì bỏ qua
+        if (!toggleBtn) return;
 
-        // Đảo ngược trạng thái
         const isDarkNow = document.body.classList.contains('dark-mode');
         localStorage.setItem('darkMode', !isDarkNow);
         applyTheme(!isDarkNow);
     });
 }
 
-// Khởi chạy tính năng
 initDarkMode();

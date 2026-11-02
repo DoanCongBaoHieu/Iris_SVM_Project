@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phân loại hoa Iris</title>
-    <link rel="stylesheet" href="style.css?v=5">
+    <link rel="stylesheet" href="style.css?v=20">
 </head>
-<body>
+<body class="dark-mode">
     <div class="container">
         <!-- Các khối Component sẽ được JS tự động đổ vào đây -->
         <div id="comp-header"></div>
@@ -48,8 +48,9 @@
         <div id="comp-dataset"></div>
         <div id="comp-svm-theory"></div>
         <div id="comp-process"></div>
-        <div id="comp-api-footer"></div>
     </div>
+
+    <div id="comp-api-footer"></div>
 
     <!-- =========================================
          MENU ĐIỀU HƯỚNG BÊN CẠNH (FLOATING MENU)
@@ -57,8 +58,8 @@
     <div class="floating-side-menu">
         <a href="#prediction" class="side-link">🔮 Dự đoán</a>
         <a href="#history" class="side-link">🕘 Lịch sử</a>
-        <a href="#dataset" class="side-link">🌸 Dữ liệu Iris</a>
         <a href="#evaluation" class="side-link">📊 Đánh giá</a>
+        <a href="#dataset" class="side-link">🌸 Dữ liệu Iris</a>
         <a href="#svm-theory" class="side-link">🧠 Tìm hiểu SVM</a>
         <a href="#api-info" class="side-link">⚡ API</a>
         <a href="#" class="side-link back-top">⬆ Lên đầu trang</a>
@@ -67,6 +68,6 @@
     <!-- =========================================
          SCRIPT GHÉP NỐI UI
     ========================================== -->
-    <script src="load-components.js?v=9"></script>
+    <script src="load-components.js?v=15"></script>
 </body>
 </html>

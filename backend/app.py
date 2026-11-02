@@ -1,29 +1,24 @@
+import time
 from pathlib import Path
 
-from fastapi import FastAPI, Depends, HTTPException
-from pydantic import BaseModel, Field
+import bcrypt
+from fastapi import Depends, FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 import joblib
 import numpy as np
-import time
+from pydantic import BaseModel, Field
 from sklearn.datasets import load_iris
 from sklearn.ensemble import RandomForestClassifier
-from fastapi.middleware.cors import CORSMiddleware
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier
-from sqlalchemy import delete, func, text
+from sqlalchemy import delete, func, select, text
 from sqlalchemy.orm import Session
 
 from backend.database import Base, engine, get_db
-from backend.models import User, PredictionHistory
-import bcrypt
-from sqlalchemy import select
-
-# ============================================
-# 1. KHỞI TẠO FASTAPI
-# ============================================
+from backend.models import PredictionHistory, User
 
 app = FastAPI(
     title="Iris Classification API",
@@ -44,10 +39,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-# ============================================
-# 2. LOAD MODEL
-# ============================================
 
 MODEL_PATH = Path(__file__).resolve().parents[1] / "model" / "iris_svm_model.pkl"
 
@@ -87,25 +78,11 @@ model_names = {
 }
 
 
-# ============================================
-# 3. TÊN CÁC LỚP
-# ============================================
-
 target_names = [
     "setosa",
     "versicolor",
     "virginica"
 ]
-# ============================================
-# PASSWORD HASHING
-# ============================================
-
-
-
-
-# ============================================
-# 4. ĐỊNH NGHĨA INPUT
-# ============================================
 
 class IrisInput(BaseModel):
     user_id: int | None = Field(
@@ -197,18 +174,10 @@ class ChangePasswordInput(BaseModel):
         description="Mật khẩu mới"
     )
 
-# ============================================
-# 5. DATABASE INITIALIZATION
-# ============================================
-
 @app.on_event("startup")
 def create_database_tables():
     Base.metadata.create_all(bind=engine)
 
-
-# ============================================
-# 6. API ROOT
-# ============================================
 
 @app.get("/")
 def root():
@@ -217,10 +186,6 @@ def root():
         "message": "Iris classification API is running"
     }
 
-
-# ============================================
-# 6. API PREDICT
-# ============================================
 
 @app.post("/predict")
 def predict(data: IrisInput, db: Session = Depends(get_db)):
@@ -244,7 +209,6 @@ def predict(data: IrisInput, db: Session = Depends(get_db)):
             )
         )
 
-    # Kiểm tra user nếu có user_id
     user = None
 
     if data.user_id is not None:
@@ -258,7 +222,6 @@ def predict(data: IrisInput, db: Session = Depends(get_db)):
                 detail="Không tìm thấy người dùng."
             )
 
-    # Chuẩn bị dữ liệu đầu vào
     features = np.array([
         [
             data.sepal_length,
@@ -284,7 +247,6 @@ def predict(data: IrisInput, db: Session = Depends(get_db)):
 
     primary_result = results[0]
 
-    # Lưu lịch sử nếu có user_id
     if user is not None:
         history = PredictionHistory(
             user_id=user.id,
@@ -311,10 +273,6 @@ def predict(data: IrisInput, db: Session = Depends(get_db)):
         "history_saved": user is not None
     }
 
-# ============================================
-# 7. API KIỂM TRA KẾT NỐI CSDL
-# ============================================
-
 @app.get("/db-test")
 def database_test(db: Session = Depends(get_db)):
 
@@ -327,15 +285,10 @@ def database_test(db: Session = Depends(get_db)):
         "test": value
     }
 
-# ============================================
-# 8. API ĐĂNG KÝ
-# ============================================
-
 @app.post("/register")
 def register(data: RegisterInput, db: Session = Depends(get_db)):
     username = data.username.strip()
 
-    # Kiểm tra username đã tồn tại (case-insensitive)
     existing_user = db.execute(
         select(User).where(func.lower(User.username) == username.lower())
     ).scalar_one_or_none()
@@ -346,13 +299,11 @@ def register(data: RegisterInput, db: Session = Depends(get_db)):
             detail="Tên đăng nhập đã tồn tại."
         )
 
-    # Hash mật khẩu
     password_hash = bcrypt.hashpw(
         data.password.encode("utf-8"),
         bcrypt.gensalt()
     ).decode("utf-8")
 
-    # Tạo người dùng mới
     new_user = User(
         username=username,
         password_hash=password_hash
@@ -369,10 +320,6 @@ def register(data: RegisterInput, db: Session = Depends(get_db)):
     }
 
 
-# ============================================
-# 9. API ĐĂNG NHẬP
-# ============================================
-
 @app.post("/login")
 def login(
     data: LoginInput,
@@ -381,7 +328,6 @@ def login(
     try:
         username = data.username.strip()
 
-        # Tìm người dùng (case-insensitive)
         user = db.execute(
             select(User).where(func.lower(User.username) == username.lower())
         ).scalar_one_or_none()
@@ -392,7 +338,6 @@ def login(
                 detail="Tên đăng nhập hoặc mật khẩu không đúng."
             )
 
-        # Kiểm tra hash
         if not user.password_hash:
             raise Exception("password_hash của người dùng đang bị NULL.")
 
@@ -426,16 +371,11 @@ def login(
             status_code=500,
             detail=f"Lỗi đăng nhập: {type(e).__name__}: {str(e)}"
         )
-# ======================================================
-# ĐỔI MẬT KHẨU
-# ======================================================
-
 @app.post("/change-password")
 def change_password(
     data: ChangePasswordInput,
     db: Session = Depends(get_db)
 ):
-    # Tìm người dùng
     user = db.execute(
         select(User).where(User.id == data.user_id)
     ).scalar_one_or_none()
@@ -446,7 +386,6 @@ def change_password(
             detail="Không tìm thấy người dùng."
         )
 
-    # Kiểm tra mật khẩu hiện tại
     if not bcrypt.checkpw(
         data.current_password.encode("utf-8"),
         user.password_hash.encode("utf-8")
@@ -456,7 +395,6 @@ def change_password(
             detail="Mật khẩu hiện tại không đúng."
         )
 
-    # Không cho đổi thành chính mật khẩu cũ
     if bcrypt.checkpw(
         data.new_password.encode("utf-8"),
         user.password_hash.encode("utf-8")
@@ -466,13 +404,11 @@ def change_password(
             detail="Mật khẩu mới phải khác mật khẩu hiện tại."
         )
 
-    # Mã hóa mật khẩu mới
     new_password_hash = bcrypt.hashpw(
         data.new_password.encode("utf-8"),
         bcrypt.gensalt()
     ).decode("utf-8")
 
-    # Cập nhật vào database
     user.password_hash = new_password_hash
 
     db.commit()
@@ -483,16 +419,11 @@ def change_password(
     }
 
 
-# ============================================
-# 10. API LẤY LỊCH SỬ DỰ ĐOÁN
-# ============================================
-
 @app.get("/history/{user_id}")
 def get_prediction_history(
     user_id: int,
     db: Session = Depends(get_db)
 ):
-    # Kiểm tra người dùng
     user = db.execute(
         select(User).where(User.id == user_id)
     ).scalar_one_or_none()
@@ -503,7 +434,6 @@ def get_prediction_history(
             detail="Không tìm thấy người dùng."
         )
 
-    # Lấy lịch sử dự đoán
     histories = db.execute(
         select(PredictionHistory)
         .where(PredictionHistory.user_id == user_id)

@@ -4,157 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Đăng nhập | Phân loại hoa Iris</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="login.css">
+    <title>Khám phá hoa Iris | Phân loại hoa Iris</title>
+    <link rel="stylesheet" href="login.css?v=11">
 </head>
 
 <body>
-
     <main class="login-page">
+        <header class="page-header">
+            <a class="page-brand" href="#top">
+                <span class="page-brand-icon" aria-hidden="true">🌸</span>
+                <span>Phân loại hoa Iris</span>
+            </a>
+            <nav class="page-nav" aria-label="Điều hướng chính">
+                <a class="is-active" href="#top" aria-current="page">Giới thiệu</a>
+                <a class="header-login-link" href="login-form.html">Đăng nhập</a>
+            </nav>
+        </header>
 
-        <div class="login-card">
+        <section class="intro-section iris-exhibit" id="top" aria-labelledby="intro-title">
+            <div class="iris-exhibit-heading">
+                <p class="intro-kicker">IRIS · BỘ DỮ LIỆU HOA KINH ĐIỂN</p>
+                <h1 id="intro-title">Mỗi đóa hoa<br><em>kể một câu chuyện</em></h1>
+                <p class="iris-exhibit-subtitle">Khám phá ba loài Iris qua những đặc trưng làm nên sự khác biệt.</p>
+            </div>
 
-            <!-- PANEL GIỚI THIỆU -->
-            <section class="login-brand-section">
+            <div class="iris-exhibit-grid">
+                <article class="iris-info-card iris-setosa-card">
+                    <span class="iris-card-index">01 · SETOSA</span>
+                    <h2>Iris setosa</h2>
+                    <p class="iris-card-caption">Diên vĩ lông cứng</p>
+                    <div class="iris-card-rule"></div>
+                    <h3><span aria-hidden="true">⌖</span> Môi trường sống</h3>
+                    <p>Thường gặp ở những vùng khí hậu mát thuộc Bắc bán cầu.</p>
+                    <h3><span aria-hidden="true">✳</span> Đặc điểm hình thái</h3>
+                    <p>Trong bộ dữ liệu Iris, Setosa có cánh hoa ngắn nhất, trung bình khoảng 1,0 cm.</p>
+                    <img src="images/setosa.jpg?v=2" alt="Hoa Iris Setosa">
+                </article>
 
-                <div class="login-brand">
-                    <div class="login-brand-icon">
-                        🌸
-                    </div>
+                <figure class="iris-feature-flower">
+                    <span class="iris-orbit iris-orbit-one"></span>
+                    <span class="iris-orbit iris-orbit-two"></span>
+                    <img src="images/iris-neon-feature.png?v=1" alt="Hoa Iris phát sáng với cánh tím xanh và thân lá xanh ngọc">
+                    <figcaption>IRIS · FLORAL STUDY <span>NO. 001 — 003</span></figcaption>
+                </figure>
 
-                    <span class="login-brand-name">
-                        Phân loại hoa Iris
-                    </span>
-                </div>
+                <article class="iris-info-card iris-virginica-card">
+                    <span class="iris-card-index">03 · VIRGINICA</span>
+                    <h2>Iris virginica</h2>
+                    <p class="iris-card-caption">Diên vĩ đầm lầy miền Nam</p>
+                    <div class="iris-card-rule"></div>
+                    <h3><span aria-hidden="true">⌖</span> Môi trường sống</h3>
+                    <p>Thường sinh trưởng tại các vùng đất ẩm và đầm lầy.</p>
+                    <h3><span aria-hidden="true">✳</span> Đặc điểm hình thái</h3>
+                    <p>Trong bộ dữ liệu, Virginica có cánh hoa dài nhất, trung bình khoảng 5,6 cm.</p>
+                    <img src="images/virginica.jpg?v=2" alt="Hoa Iris Virginica màu xanh">
+                </article>
 
+                <article class="iris-info-card iris-versicolor-card">
+                    <span class="iris-card-index">02 · VERSICOLOR</span>
+                    <h2>Iris versicolor</h2>
+                    <p class="iris-card-caption">Diên vĩ xanh · Blue Flag</p>
+                    <div class="iris-card-rule"></div>
+                    <h3><span aria-hidden="true">⌖</span> Môi trường sống</h3>
+                    <p>Phát triển tốt ở vùng đất ẩm, ven hồ và bờ suối.</p>
+                    <h3><span aria-hidden="true">✳</span> Đặc điểm hình thái</h3>
+                    <p>Chiều dài cánh hoa trung bình trong bộ dữ liệu vào khoảng 4,3 cm.</p>
+                    <img src="images/versicolor.jpg?v=2" alt="Hoa Iris Versicolor màu tím">
+                </article>
+            </div>
 
-                <div class="login-brand-content">
-
-                    <div class="login-brand-label">
-                        Phân loại hoa Iris với 5 mô hình học máy
-                    </div>
-
-                    <h1>
-                        Đăng nhập<br>
-                        để tiếp tục.
-                    </h1>
-
-                </div>
-
-
-                <div class="login-brand-footer">
-                    Phân loại hoa Iris · KHOA HỌC DỮ LIỆU
-                </div>
-
-            </section>
-
-
-            <!-- FORM ĐĂNG NHẬP -->
-            <section class="login-form-section">
-
-                <div class="login-form-wrapper">
-
-                    <div class="login-puppy" id="login-puppy" aria-hidden="true">
-                        <svg viewBox="0 0 180 150" role="presentation">
-                            <path class="puppy-ear" d="M47 48C27 26 18 42 25 72c4 17 13 24 28 17M133 48c20-22 29-6 22 24-4 17-13 24-28 17"/>
-                            <ellipse class="puppy-head" cx="90" cy="76" rx="57" ry="53"/>
-                            <ellipse class="puppy-cheek" cx="57" cy="86" rx="12" ry="8"/>
-                            <ellipse class="puppy-cheek" cx="123" cy="86" rx="12" ry="8"/>
-                            <g class="puppy-eyes">
-                                <ellipse cx="70" cy="67" rx="5" ry="7"/>
-                                <ellipse cx="110" cy="67" rx="5" ry="7"/>
-                                <circle class="puppy-eye-shine" cx="72" cy="64" r="2"/>
-                                <circle class="puppy-eye-shine" cx="112" cy="64" r="2"/>
-                            </g>
-                            <ellipse class="puppy-muzzle" cx="90" cy="85" rx="19" ry="14"/>
-                            <path class="puppy-nose" d="M82 81c0-5 16-5 16 0 0 4-6 7-8 7s-8-3-8-7z"/>
-                            <path class="puppy-smile" d="M90 88v5m0 0c-5 7-11 3-12 0m12 0c5 7 11 3 12 0"/>
-                            <g class="puppy-cover-paws">
-                                <path class="puppy-arm" d="M61 127c2-17 5-30 12-45m46 45c-2-17-5-30-12-45"/>
-                                <ellipse cx="71" cy="67" rx="18" ry="18" transform="rotate(18 71 67)"/>
-                                <ellipse cx="109" cy="67" rx="18" ry="18" transform="rotate(-18 109 67)"/>
-                            </g>
-                            <path class="puppy-body" d="M61 132c3-17 13-25 29-25s26 8 29 25"/>
-                            <path class="puppy-collar" d="M67 115c13 8 33 8 46 0"/>
-                            <path class="puppy-tag" d="m90 119 7 8-7 8-7-8z"/>
-                        </svg>
-                    </div>
-
-                    <div class="login-form-group">
-
-                        <label for="login-username">
-                            Tên đăng nhập
-                        </label>
-
-                        <input
-                            type="text"
-                            id="login-username"
-                            placeholder="Nhập tên đăng nhập"
-                            autocomplete="username"
-                        >
-
-                    </div>
-
-
-                    <div class="login-form-group">
-
-                        <label for="login-password">
-                            Mật khẩu
-                        </label>
-
-                        <div class="password-input-wrap">
-                            <input
-                                type="password"
-                                id="login-password"
-                                placeholder="Nhập mật khẩu"
-                                autocomplete="current-password"
-                            >
-                            <button
-                                type="button"
-                                id="toggle-password"
-                                class="toggle-password"
-                                aria-label="Hiện mật khẩu"
-                                aria-pressed="false"
-                            >Hiện</button>
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        id="login-error"
-                        class="login-message"
-                    ></div>
-
-
-                    <button
-                        type="button"
-                        id="login-button"
-                    >
-                        Đăng nhập
-                    </button>
-
-
-                    <p class="login-register">
-                        Chưa có tài khoản?
-                        <a href="register.html">
-                            Đăng ký
-                        </a>
-                    </p>
-
-                </div>
-
-            </section>
-
-        </div>
-
+            <div class="iris-exhibit-footer">
+                <div class="iris-stat"><strong>150</strong><span>MẪU HOA</span></div>
+                <div class="iris-stat"><strong>03</strong><span>LOÀI HOA</span></div>
+                <div class="iris-stat"><strong>04</strong><span>ĐẶC TRƯNG</span></div>
+                <div class="iris-stat"><strong>05</strong><span>MÔ HÌNH HỌC MÁY</span></div>
+                <a class="intro-cta" href="login-form.html">Bắt đầu khám phá <span aria-hidden="true">&nbsp;→</span></a>
+            </div>
+        </section>
     </main>
-
-
-    <script src="login.js"></script>
-
 </body>
 </html>

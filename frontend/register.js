@@ -282,7 +282,7 @@ async function register() {
         setTimeout(() => {
 
             window.location.href =
-                "login.html";
+                "login-form.html?v=1";
 
         }, 1200);
 
