@@ -2,15 +2,13 @@ from pathlib import Path
 
 import joblib
 from sklearn.datasets import load_iris
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
-from sklearn.model_selection import StratifiedKFold, cross_val_score, train_test_split
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
-from sklearn.tree import DecisionTreeClassifier
+
+from backend.kernels import laplacian_kernel
 
 
 MODEL_DIR = Path(__file__).resolve().parents[1] / "model"
@@ -18,22 +16,25 @@ MODEL_DIR = Path(__file__).resolve().parents[1] / "model"
 
 def create_models():
     return {
-        "svm": Pipeline([
+        "svm_linear": Pipeline([
             ("scaler", StandardScaler()),
             ("classifier", SVC(kernel="linear", C=0.1))
         ]),
-        "knn": Pipeline([
+        "svm_rbf": Pipeline([
             ("scaler", StandardScaler()),
-            ("classifier", KNeighborsClassifier(n_neighbors=5))
+            ("classifier", SVC(kernel="rbf", C=1.0, gamma="scale"))
         ]),
-        "tree": DecisionTreeClassifier(random_state=42),
-        "random_forest": RandomForestClassifier(
-            n_estimators=100,
-            random_state=42
-        ),
-        "logistic": Pipeline([
+        "svm_poly": Pipeline([
             ("scaler", StandardScaler()),
-            ("classifier", LogisticRegression(max_iter=1000, random_state=42))
+            ("classifier", SVC(kernel="poly", degree=3, C=1.0, gamma="scale"))
+        ]),
+        "svm_sigmoid": Pipeline([
+            ("scaler", StandardScaler()),
+            ("classifier", SVC(kernel="sigmoid", C=1.0, gamma="scale"))
+        ]),
+        "svm_laplacian": Pipeline([
+            ("scaler", StandardScaler()),
+            ("classifier", SVC(kernel=laplacian_kernel, C=1.0))
         ])
     }
 
@@ -59,21 +60,6 @@ def main():
             f"recall={recall_score(y_test, predictions, average='weighted'):.4f}, "
             f"f1={f1_score(y_test, predictions, average='weighted'):.4f}"
         )
-
-        if algorithm == "svm":
-            cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
-            scores = cross_val_score(
-                estimator,
-                X_train,
-                y_train,
-                cv=cv,
-                scoring="accuracy"
-            )
-            print(
-                "svm 5-fold CV on training set: "
-                f"scores={scores.tolist()}, "
-                f"mean={scores.mean():.4f}, std={scores.std():.4f}"
-            )
 
         estimator.fit(iris.data, iris.target)
         model_path = MODEL_DIR / f"iris_{algorithm}_model.pkl"

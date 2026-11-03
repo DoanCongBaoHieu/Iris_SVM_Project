@@ -36,11 +36,11 @@ app.add_middleware(
 
 MODEL_DIR = Path(__file__).resolve().parents[1] / "model"
 MODEL_FILES = {
-    "svm": "iris_svm_model.pkl",
-    "knn": "iris_knn_model.pkl",
-    "tree": "iris_tree_model.pkl",
-    "random_forest": "iris_random_forest_model.pkl",
-    "logistic": "iris_logistic_model.pkl"
+    "svm_linear": "iris_svm_linear_model.pkl",
+    "svm_rbf": "iris_svm_rbf_model.pkl",
+    "svm_poly": "iris_svm_poly_model.pkl",
+    "svm_sigmoid": "iris_svm_sigmoid_model.pkl",
+    "svm_laplacian": "iris_svm_laplacian_model.pkl"
 }
 
 prediction_models = {}
@@ -54,11 +54,11 @@ for algorithm, filename in MODEL_FILES.items():
     prediction_models[algorithm] = joblib.load(model_path)
 
 model_names = {
-    "svm": "Support Vector Machine (SVM)",
-    "knn": "K-Nearest Neighbors (K-NN)",
-    "tree": "Decision Tree",
-    "random_forest": "Random Forest",
-    "logistic": "Logistic Regression"
+    "svm_linear": "SVM kernel tuyến tính (Linear)",
+    "svm_rbf": "SVM kernel RBF",
+    "svm_poly": "SVM kernel đa thức (Polynomial)",
+    "svm_sigmoid": "SVM kernel Sigmoid",
+    "svm_laplacian": "SVM kernel Laplacian"
 }
 
 
@@ -75,7 +75,7 @@ class IrisInput(BaseModel):
     )
 
     algorithms: list[str] = Field(
-        default_factory=lambda: ["svm"],
+        default_factory=lambda: ["svm_rbf"],
         min_length=1,
         description="Các thuật toán cần dùng để dự đoán"
     )

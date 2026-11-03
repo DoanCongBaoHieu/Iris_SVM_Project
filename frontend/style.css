@@ -5559,6 +5559,24 @@ body.dark-mode .history-summary strong {
     gap: 5px;
 }
 
+.contact-detail-instructor {
+    grid-column: 1 / -1;
+    align-items: center;
+    text-align: center;
+    padding: 4px 0 8px;
+}
+
+.contact-profile-image {
+    width: 112px;
+    height: 112px;
+    margin: 4px 0;
+    border: 3px solid rgba(255, 255, 255, 0.75);
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center 28%;
+    box-shadow: 0 8px 24px rgba(7, 20, 38, 0.28);
+}
+
 .contact-detail-label {
     color: #c5d0dc;
     font-size: 12px;
