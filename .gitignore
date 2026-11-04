@@ -1,7 +1,9 @@
-.venv/
+﻿.venv/
 __pycache__/
 *.pyc
 .vscode/
 .env
 iris_svm.db
 *.db
+.Rhistory
+
