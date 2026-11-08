@@ -34,13 +34,13 @@
             </article>
             <article class="svm-training-step">
                 <span>02</span>
-                <h4>Huấn luyện SVM tuyến tính</h4>
-                <p>Mô hình học ranh giới phân loại từ 120 mẫu thuộc tập huấn luyện.</p>
+                <h4>Huấn luyện năm kernel SVM</h4>
+                <p>Cùng một tập 120 mẫu được dùng để fit các cấu hình Linear, RBF, Polynomial, Sigmoid và Laplacian.</p>
             </article>
             <article class="svm-training-step">
                 <span>03</span>
-                <h4>Kiểm tra mô hình</h4>
-                <p>Đánh giá trên 30 mẫu chưa dùng để huấn luyện; sau đó huấn luyện lại mô hình triển khai trên đủ 150 mẫu.</p>
+                <h4>Đánh giá và lưu model</h4>
+                <p>So sánh trên 30 mẫu chưa dùng để fit; sau đó fit lại từng pipeline trên đủ 150 mẫu để triển khai.</p>
             </article>
         </div>
         <a class="svm-training-results-link" href="#evaluation">Xem kết quả đánh giá <span aria-hidden="true">→</span></a>
@@ -67,17 +67,17 @@
         <div class="svm-info-card">
             <div class="svm-info-number">01</div>
             <h3>Hàm nhân tuyến tính</h3>
-            <p>Mô hình Iris sử dụng hàm nhân tuyến tính để xây dựng ranh giới phân loại.</p>
+            <p>Dự án so sánh năm kernel SVM: Linear, RBF, Polynomial, Sigmoid và Laplacian.</p>
         </div>
         <div class="svm-info-card">
             <div class="svm-info-number">02</div>
             <h3>Tham số C</h3>
-            <p>Giá trị tham số tối ưu được lựa chọn thông qua phương pháp tìm kiếm lưới là <strong>C = 0.1</strong>.</p>
+            <p>Các cấu hình dùng C = 0.1 cho Linear và C = 1.0 cho bốn kernel còn lại; script hiện tại dùng các giá trị cấu hình cố định.</p>
         </div>
         <div class="svm-info-card">
             <div class="svm-info-number">03</div>
-            <h3>Kiểm định chéo</h3>
-            <p>Mô hình được đánh giá bằng kiểm định chéo 5 phần trên tập huấn luyện, với độ chính xác trung bình <strong>97.50%</strong>.</p>
+            <h3>Đánh giá trên tập kiểm tra</h3>
+            <p>Năm kernel được so sánh trên cùng 30 mẫu kiểm tra bằng cách chia phân tầng 80/20, random_state = 42. Script hiện tại chưa chạy kiểm định chéo.</p>
         </div>
         <div class="svm-info-card">
             <div class="svm-info-number">04</div>

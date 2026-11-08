@@ -7,9 +7,9 @@
     <div class="process-grid">
         <div class="process-card"><div class="process-number">01</div><div class="process-icon">📊</div><h3>Chuẩn bị dữ liệu</h3><p>Sử dụng bộ dữ liệu Iris gồm 150 mẫu, 4 đặc trưng đầu vào và 3 lớp hoa.</p></div>
         <div class="process-card"><div class="process-number">02</div><div class="process-icon">✂️</div><h3>Chia dữ liệu</h3><p>Dữ liệu được chia thành tập huấn luyện và tập kiểm tra để xây dựng, đánh giá mô hình.</p></div>
-        <div class="process-card"><div class="process-number">03</div><div class="process-icon">🤖</div><h3>Huấn luyện mô hình</h3><p>Huấn luyện 5 thuật toán phân loại để nhận dạng và so sánh kết quả trên cùng bộ dữ liệu Iris.</p></div>
-        <div class="process-card"><div class="process-number">04</div><div class="process-icon">🔄</div><h3>Kiểm định chéo</h3><p>Đánh giá độ ổn định của mô hình SVM bằng phương pháp kiểm định chéo 5 phần.</p></div>
-        <div class="process-card"><div class="process-number">05</div><div class="process-icon">📈</div><h3>Đánh giá mô hình</h3><p>So sánh 5 mô hình trên cùng tập kiểm tra bằng độ chính xác, độ chuẩn xác, độ bao phủ và điểm F1.</p></div>
+        <div class="process-card"><div class="process-number">03</div><div class="process-icon">🤖</div><h3>Huấn luyện 5 kernel SVM</h3><p>Dùng cùng thuật toán SVC với kernel Linear, RBF, Polynomial, Sigmoid và Laplacian để so sánh trên dữ liệu Iris.</p></div>
+        <div class="process-card"><div class="process-number">04</div><div class="process-icon">🔄</div><h3>Đánh giá trên tập kiểm tra</h3><p>Dùng một phép chia phân tầng 80/20 với random_state = 42; script hiện tại chưa chạy kiểm định chéo.</p></div>
+        <div class="process-card"><div class="process-number">05</div><div class="process-icon">📈</div><h3>So sánh các chỉ số</h3><p>Đo accuracy, precision, recall và F1 weighted trên cùng 30 mẫu kiểm tra để so sánh năm kernel.</p></div>
         <div class="process-card"><div class="process-number">06</div><div class="process-icon">🌸</div><h3>Dự đoán loài hoa</h3><p>Nhập 4 thông số hình thái, chọn một hoặc nhiều mô hình và so sánh kết quả dự đoán.</p></div>
     </div>
 </section>

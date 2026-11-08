@@ -45,7 +45,7 @@ Mở terminal tại thư mục gốc dự án:
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
+.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
 ### 2. Tạo hoặc cập nhật các mô hình
@@ -53,7 +53,7 @@ python -m pip install -r requirements.txt
 Các tệp model đã huấn luyện có sẵn trong `model/`. Để huấn luyện lại và tính các chỉ số trên tập kiểm tra:
 
 ```powershell
-python -m backend.train_models
+.venv\Scripts\python.exe -m backend.train_models
 ```
 
 Lệnh này thay mới năm tệp `model/iris_svm_*_model.pkl`.
@@ -64,7 +64,7 @@ Thiết lập SQLite để chạy cục bộ mà không cần cấu hình máy c
 
 ```powershell
 $env:DATABASE_URL = "sqlite:///./iris_svm.db"
-uvicorn backend.app:app --reload
+.venv\Scripts\python.exe -m uvicorn backend.app:app --reload
 ```
 
 API chạy tại `http://127.0.0.1:8000`. Tài liệu tương tác của API có tại `http://127.0.0.1:8000/docs`.
