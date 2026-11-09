@@ -1,48 +1,40 @@
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
 
 BASE_DIR = Path(__file__).resolve().parents[1]
-SQLITE_DB_PATH = BASE_DIR / "iris_svm.db"
+load_dotenv(BASE_DIR / ".env")
 
 
-# ======================================================
-# DATABASE CONFIGURATION
-# ======================================================
-
-LOCAL_DATABASE_URL = (
-    "mssql+pyodbc://@.\\SQLEXPRESS/IrisSVM_DB"
-    "?driver=ODBC+Driver+17+for+SQL+Server"
-    "&trusted_connection=yes"
-    "&TrustServerCertificate=yes"
-)
-
-SQLITE_DATABASE_URL = f"sqlite:///{SQLITE_DB_PATH.as_posix()}"
-
-
-# Use an explicit DATABASE_URL when configured, but fall back to SQLite
-# so the app can run in CI or local development environments without SQL
-# Server / ODBC drivers installed.
-DATABASE_URL = os.getenv("DATABASE_URL")
-
+DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
 if not DATABASE_URL:
-    try:
-        import pyodbc  # noqa: F401
-    except ImportError:
-        DATABASE_URL = SQLITE_DATABASE_URL
-    else:
-        DATABASE_URL = LOCAL_DATABASE_URL
+    raise RuntimeError(
+        "DATABASE_URL chưa được cấu hình. Hãy thêm External Database URL "
+        "của PostgreSQL vào file .env ở thư mục gốc dự án."
+    )
 
-
-# SQLAlchemy dùng driver psycopg cho PostgreSQL
-if DATABASE_URL.startswith("postgresql://"):
+# SQLAlchemy dùng driver psycopg cho PostgreSQL. Render có thể cung cấp
+# URL theo dạng postgres://, trong khi SQLAlchemy cần postgresql+psycopg://.
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace(
+        "postgres://",
+        "postgresql+psycopg://",
+        1
+    )
+elif DATABASE_URL.startswith("postgresql://"):
     DATABASE_URL = DATABASE_URL.replace(
         "postgresql://",
         "postgresql+psycopg://",
         1
+    )
+elif not DATABASE_URL.startswith("postgresql+psycopg://"):
+    raise RuntimeError(
+        "Chỉ hỗ trợ PostgreSQL. DATABASE_URL phải bắt đầu bằng "
+        "postgres://, postgresql:// hoặc postgresql+psycopg://."
     )
 
 
@@ -54,9 +46,6 @@ engine_kwargs = {
     "echo": False,
     "pool_pre_ping": True,
 }
-
-if DATABASE_URL.startswith("sqlite"):
-    engine_kwargs["connect_args"] = {"check_same_thread": False}
 
 engine = create_engine(
     DATABASE_URL,

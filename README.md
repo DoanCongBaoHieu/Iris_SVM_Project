@@ -60,16 +60,24 @@ Lệnh này thay mới năm tệp `model/iris_svm_*_model.pkl`.
 
 ### 3. Khởi chạy API
 
-Thiết lập SQLite để chạy cục bộ mà không cần cấu hình máy chủ cơ sở dữ liệu:
+Mở file `.env` ở thư mục gốc dự án và thay URL mẫu bằng **External Database URL**
+của PostgreSQL trong Render Dashboard. File `.env` đã được Git bỏ qua, vì vậy
+thông tin đăng nhập không bị commit. Chỉ cần thiết lập file này một lần:
+
+```env
+DATABASE_URL=postgresql://USER:PASSWORD@HOST:PORT/DATABASE
+```
+
+Không chia sẻ URL này vì nó chứa thông tin đăng nhập. Khi file `.env` đã được
+cấu hình, khởi chạy API bằng:
 
 ```powershell
-$env:DATABASE_URL = "sqlite:///./iris_svm.db"
-.venv\Scripts\python.exe -m uvicorn backend.app:app --reload
+.\.venv\Scripts\python.exe -m uvicorn backend.app:app --reload
 ```
 
 API chạy tại `http://127.0.0.1:8000`. Tài liệu tương tác của API có tại `http://127.0.0.1:8000/docs`.
 
-Nếu không đặt `DATABASE_URL`, backend sẽ ưu tiên SQL Server cục bộ (`.\SQLEXPRESS`) khi driver `pyodbc` khả dụng; nếu không, backend dùng SQLite. Có thể đặt `DATABASE_URL` thành URL PostgreSQL hoặc SQL Server phù hợp với môi trường của bạn.
+Backend chỉ hỗ trợ PostgreSQL và sẽ báo lỗi rõ ràng nếu `DATABASE_URL` chưa được cấu hình.
 
 ### 4. Khởi chạy giao diện web
 
