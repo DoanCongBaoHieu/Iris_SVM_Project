@@ -19,6 +19,44 @@ const API_ENDPOINTS = {
     register: `${API_BASE_URL}/register`
 };
 
+const apiStatus = document.querySelector(".api-status");
+
+async function updateApiStatus() {
+    if (!apiStatus) {
+        return;
+    }
+
+    const statusText = apiStatus.querySelector("[data-api-status-text]");
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+    apiStatus.dataset.state = "checking";
+    statusText.textContent = "Đang kiểm tra API...";
+
+    try {
+        const response = await fetch(API_BASE_URL, {
+            cache: "no-store",
+            signal: controller.signal
+        });
+
+        if (!response.ok) {
+            throw new Error(`API phản hồi HTTP ${response.status}`);
+        }
+
+        apiStatus.dataset.state = "online";
+        statusText.textContent = "API đang hoạt động";
+    } catch (error) {
+        apiStatus.dataset.state = "offline";
+        statusText.textContent = "API không hoạt động";
+        console.warn("Không thể kết nối API:", error);
+    } finally {
+        clearTimeout(timeoutId);
+    }
+}
+
+updateApiStatus();
+setInterval(updateApiStatus, 60000);
+
 
 // ======================================================
 // 2. LẤY CÁC PHẦN TỬ HTML

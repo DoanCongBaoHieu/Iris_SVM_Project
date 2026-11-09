@@ -129,6 +129,28 @@ body {
     box-shadow: 0 0 0 4px rgba(53, 167, 123, 0.12);
 }
 
+.api-status[data-state="checking"] {
+    background: #fff8e6;
+    border-color: #f2dfa8;
+    color: #876513;
+}
+
+.api-status[data-state="checking"] .status-dot {
+    background: #eab839;
+    box-shadow: 0 0 0 4px rgba(234, 184, 57, 0.15);
+}
+
+.api-status[data-state="offline"] {
+    background: #fff0f0;
+    border-color: #f0c4c4;
+    color: #a33a3a;
+}
+
+.api-status[data-state="offline"] .status-dot {
+    background: #dc5656;
+    box-shadow: 0 0 0 4px rgba(220, 86, 86, 0.15);
+}
+
 /* Thanh điều hướng */
 .navbar {
     display: flex;
@@ -4874,6 +4896,26 @@ body.dark-mode .api-status {
 
 body.dark-mode .api-status span:not(.status-dot) {
     color: #9ce8ce !important;
+}
+
+body.dark-mode .api-status[data-state="checking"] {
+    background: #302b1b;
+    border-color: #655322;
+    color: #f5d477;
+}
+
+body.dark-mode .api-status[data-state="checking"] span:not(.status-dot) {
+    color: #f5d477 !important;
+}
+
+body.dark-mode .api-status[data-state="offline"] {
+    background: #351f26;
+    border-color: #69343e;
+    color: #ff9a9a;
+}
+
+body.dark-mode .api-status[data-state="offline"] span:not(.status-dot) {
+    color: #ff9a9a !important;
 }
 
 body.dark-mode .user-account {

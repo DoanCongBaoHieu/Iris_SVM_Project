@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
 
         await Promise.all([
-            loadComponent("comp-header", "components/header.html?v=6"),
+            loadComponent("comp-header", "components/header.html?v=7"),
             loadComponent("comp-history", "components/history.html?v=4"),
             loadComponent("comp-prediction", "components/prediction.html?v=5"),
             loadComponent("comp-model-info", "components/model-info.html?v=5"),
