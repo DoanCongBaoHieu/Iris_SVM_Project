@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         await Promise.all([
             loadComponent("comp-header", "components/header.html?v=7"),
             loadComponent("comp-history", "components/history.html?v=4"),
-            loadComponent("comp-prediction", "components/prediction.html?v=5"),
+            loadComponent("comp-prediction", "components/prediction.html?v=6"),
             loadComponent("comp-model-info", "components/model-info.html?v=5"),
             loadComponent("comp-evaluation", "components/evaluation.html?v=3"),
             loadComponent("comp-dataset", "components/dataset.html?v=5"),

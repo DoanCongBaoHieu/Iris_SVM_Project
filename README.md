@@ -6,7 +6,8 @@ Dự án học máy minh họa cách dùng năm kernel của Support Vector Mach
 
 - Nhập bốn đặc trưng của hoa: chiều dài và chiều rộng đài hoa, chiều dài và chiều rộng cánh hoa.
 - Chọn một hoặc nhiều mô hình để so sánh kết quả dự đoán.
-- Đăng ký, đăng nhập, đổi mật khẩu và lưu/xem lịch sử dự đoán.
+- Đăng nhập bằng Auth0; tài khoản cũ vẫn có thể đăng nhập bằng tên đăng nhập và mật khẩu.
+- Lưu/xem lịch sử dự đoán theo tài khoản.
 - Tìm hiểu dữ liệu Iris, quy trình học máy và các kernel SVM trên giao diện.
 
 ## Năm kernel SVM
@@ -79,6 +80,19 @@ API chạy tại `http://127.0.0.1:8000`. Tài liệu tương tác của API có
 
 Backend chỉ hỗ trợ PostgreSQL và sẽ báo lỗi rõ ràng nếu `DATABASE_URL` chưa được cấu hình.
 
+Auth0 onboarding đã lưu `AUTH0_DOMAIN`, `AUTH0_CLIENT_ID`, `AUTH0_CLIENT_SECRET`
+và `AUTH0_SECRET` vào `.env`. Không đưa các giá trị bí mật này vào frontend hoặc Git.
+Ở môi trường local, `AUTH0_APP_BASE_URL` mặc định là `http://localhost:8000`
+và `AUTH0_FRONTEND_URL` là `http://localhost:5500`. Khi triển khai, đặt
+`AUTH0_APP_BASE_URL` thành URL công khai của API và `AUTH0_FRONTEND_URL` thành URL
+công khai của frontend trong cấu hình môi trường backend. Callback Auth0 cần trỏ
+đến `<AUTH0_APP_BASE_URL>/auth/callback`; `APP_BASE_URL` do onboarding tạo không
+được dùng vì giá trị mặc định của nó không khớp cổng FastAPI.
+
+Tài khoản Auth0 được ánh xạ vào người dùng ứng dụng bằng mã subject ổn định
+(`sub`); chúng không tự động liên kết với tài khoản tên đăng nhập/mật khẩu cũ.
+Khi khởi động, backend tự thêm cột `auth0_sub` cho cơ sở dữ liệu hiện có.
+
 ### 4. Khởi chạy giao diện web
 
 Phục vụ thư mục `frontend/` bằng một máy chủ web tĩnh. Ví dụ, mở terminal thứ hai tại thư mục gốc dự án:
@@ -87,7 +101,7 @@ Phục vụ thư mục `frontend/` bằng một máy chủ web tĩnh. Ví dụ, 
 python -m http.server 5500 --directory frontend
 ```
 
-Mở `http://127.0.0.1:5500`. Khi chạy trên `localhost` hoặc `127.0.0.1`, frontend gọi API tại `http://127.0.0.1:8000`.
+Mở `http://localhost:5500`. Khi chạy trên `localhost` hoặc `127.0.0.1`, frontend gọi API tại `http://localhost:8000`.
 
 ## API dự đoán
 
@@ -105,10 +119,14 @@ Endpoint `POST /predict` nhận các đặc trưng theo centimet và danh sách 
 
 `algorithms` có thể chứa một hoặc nhiều mã trong bảng kernel. Nếu bỏ qua trường này, API dùng `svm_rbf`. Có thể thêm `user_id` để lưu kết quả đầu tiên vào lịch sử của người dùng đã đăng nhập.
 
-Các endpoint tài khoản và lịch sử chính:
+Các endpoint đăng nhập và lịch sử chính:
 
 | Phương thức | Đường dẫn | Mục đích |
 | --- | --- | --- |
+| `GET` | `/auth/login` | Bắt đầu đăng nhập Auth0. |
+| `GET` | `/auth/callback` | Xử lý callback Auth0. |
+| `GET` | `/auth/complete` | Liên kết phiên Auth0 với tài khoản ứng dụng. |
+| `GET` | `/auth/logout` | Đăng xuất Auth0. |
 | `POST` | `/register` | Tạo tài khoản. |
 | `POST` | `/login` | Đăng nhập. |
 | `POST` | `/change-password` | Đổi mật khẩu. |

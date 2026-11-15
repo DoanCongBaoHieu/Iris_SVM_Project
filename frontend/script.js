@@ -10,7 +10,7 @@
 const API_BASE_URL =
     (window.location.hostname === "localhost" ||
      window.location.hostname === "127.0.0.1")
-        ? "http://127.0.0.1:8000"
+        ? "http://localhost:8000"
         : "https://iris-svm-api-oar1.onrender.com";
 
 const API_ENDPOINTS = {
@@ -258,7 +258,8 @@ async function requestAPI(
         method: method,
         headers: {
             "Content-Type": "application/json"
-        }
+        },
+        credentials: "include"
     };
 
 
@@ -333,46 +334,65 @@ function displayResult(data) {
         elements.modelResults.replaceChildren();
 
         if (results.length > 1) {
-            const heading = document.createElement("h3");
-            heading.textContent = "Kết quả của từng thuật toán";
-            elements.modelResults.appendChild(heading);
+            const comparison = document.createElement("details");
+            comparison.className = "model-comparison";
 
-            const resultList = document.createElement("div");
-            resultList.className = "model-result-list";
+            const summary = document.createElement("summary");
+            summary.textContent = `So sánh ${results.length} mô hình`;
+            comparison.appendChild(summary);
+
+            const tableWrap = document.createElement("div");
+            tableWrap.className = "model-comparison-scroll";
+            const table = document.createElement("table");
+            table.className = "model-comparison-table";
+            const thead = document.createElement("thead");
+            const headerRow = document.createElement("tr");
+            ["Thuật toán", "Loài dự đoán", "Thời gian xử lý"].forEach(label => {
+                const th = document.createElement("th");
+                th.scope = "col";
+                th.textContent = label;
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+            const tbody = document.createElement("tbody");
+            const times = results.map(result => Number(result.prediction_time_ms));
+            const maxTime = Math.max(...times);
+            const primarySpecies = String(results[0].species).toLowerCase();
 
             results.forEach(result => {
-                const card = document.createElement("div");
-                card.className = "model-result-card";
+                const row = document.createElement("tr");
+                const algorithmCell = document.createElement("td");
+                const algorithmName = document.createElement("strong");
+                algorithmName.textContent = result.model_name;
+                algorithmCell.appendChild(algorithmName);
 
-                const modelName = document.createElement("strong");
-                modelName.textContent = result.model_name;
+                const speciesCell = document.createElement("td");
+                speciesCell.textContent = result.species;
+                if (String(result.species).toLowerCase() !== primarySpecies) {
+                    speciesCell.classList.add("prediction-disagreement");
+                    speciesCell.setAttribute("aria-label", `\u26A0 Result differs from default model (${results[0].species})`);
+                    speciesCell.textContent = `\u26A0 ${result.species}`;
+                }
 
-                const speciesName = document.createElement("span");
-                speciesName.textContent = result.species;
+                const timeCell = document.createElement("td");
+                timeCell.className = "comparison-time-cell";
+                const timeText = document.createElement("span");
+                const time = Number(result.prediction_time_ms);
+                timeText.textContent = `${time.toFixed(4)} ms`;
+                const bar = document.createElement("span");
+                bar.className = "comparison-time-bar";
+                bar.setAttribute("aria-hidden", "true");
+                bar.style.width = `${maxTime > 0 ? Math.max(4, (time / maxTime) * 100) : 0}%`;
+                timeCell.append(timeText, bar);
 
-                const speciesDetail = document.createElement("div");
-                speciesDetail.className = "model-result-detail";
-                const speciesLabel = document.createElement("span");
-                speciesLabel.className = "model-result-label";
-                speciesLabel.textContent = "Loài dự đoán";
-                speciesDetail.append(speciesLabel, speciesName);
-
-                const timeDetail = document.createElement("div");
-                timeDetail.className = "model-result-detail";
-                const timeLabel = document.createElement("span");
-                timeLabel.className = "model-result-label";
-                timeLabel.textContent = "Thời gian xử lý";
-                const predictionTime = document.createElement("span");
-                predictionTime.className = "model-result-time";
-                predictionTime.textContent =
-                    `${Number(result.prediction_time_ms).toFixed(4)} mili giây`;
-                timeDetail.append(timeLabel, predictionTime);
-
-                card.append(modelName, speciesDetail, timeDetail);
-                resultList.appendChild(card);
+                row.append(algorithmCell, speciesCell, timeCell);
+                tbody.appendChild(row);
             });
 
-            elements.modelResults.appendChild(resultList);
+            table.append(thead, tbody);
+            tableWrap.appendChild(table);
+            comparison.appendChild(tableWrap);
+            elements.modelResults.appendChild(comparison);
             elements.modelResults.classList.remove("hidden");
         } else {
             elements.modelResults.classList.add("hidden");
@@ -430,14 +450,13 @@ async function predictFlower() {
         return;
     }
 
-    const algorithms = Array.from(
+    const selectedAlgorithms = Array.from(
         document.querySelectorAll('input[name="prediction-model"]:checked')
     ).map(input => input.value);
-
-    if (algorithms.length === 0) {
-        showError("Vui lòng chọn ít nhất một thuật toán.");
-        return;
-    }
+    // Always run the default SVM first. Selected kernels are extra comparisons.
+    const algorithms = ["svm_linear", ...selectedAlgorithms.filter(
+        algorithm => algorithm !== "svm_linear"
+    )];
 
     const storedUserId = localStorage.getItem("user_id");
     const userId = Number(storedUserId);
@@ -644,6 +663,7 @@ console.log(
 
 const userId = localStorage.getItem("user_id");
 const username = localStorage.getItem("username");
+const authProvider = localStorage.getItem("auth_provider");
 
 const userAccount = document.getElementById("user-account");
 const currentUsername = document.getElementById("current-username");
@@ -660,12 +680,29 @@ if (userAccount && currentUsername) {
     userAccount.classList.remove("hidden");
 }
 
+if (authProvider === "auth0") {
+    const changePasswordButton = document.getElementById("change-password-button");
+    if (changePasswordButton) {
+        changePasswordButton.classList.add("hidden");
+    }
+}
+
 // Xử lý đăng xuất
 if (logoutButton) {
     logoutButton.addEventListener("click", () => {
 
         localStorage.removeItem("user_id");
         localStorage.removeItem("username");
+
+        if (authProvider === "auth0") {
+            localStorage.removeItem("auth_provider");
+            window.location.assign(
+                `${API_BASE_URL}/auth/logout?returnTo=${encodeURIComponent(
+                    `${API_BASE_URL}/auth/after-logout`
+                )}`
+            );
+            return;
+        }
 
         window.location.href = "login.html?v=9";
     });

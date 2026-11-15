@@ -6,6 +6,8 @@ cloudpickle==3.1.2
 contourpy==1.4.0
 cycler==0.12.1
 fastapi==0.141.1
+auth0-fastapi>=1.0.0b12,<2
+itsdangerous==2.2.0
 fonttools==4.66.0
 h11==0.16.0
 idna==3.20

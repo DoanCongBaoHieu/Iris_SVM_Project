@@ -1,18 +1,60 @@
 from datetime import datetime, timedelta, timezone
+import hashlib
+import os
+import secrets
 import time
 from pathlib import Path
+from urllib.parse import urlencode
 
 import bcrypt
-from fastapi import Depends, FastAPI, HTTPException
+from auth0_fastapi.auth.auth_client import AuthClient
+from auth0_fastapi.config import Auth0Config
+from auth0_fastapi.errors import register_exception_handlers
+from auth0_fastapi.server.routes import register_auth_routes, router as auth0_router
+from fastapi import Depends, FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 import joblib
 import numpy as np
 from pydantic import BaseModel, Field
-from sqlalchemy import delete, func, select, text
+from sqlalchemy import delete, func, inspect, select, text
 from sqlalchemy.orm import Session
+from starlette.middleware.sessions import SessionMiddleware
+
+from dotenv import load_dotenv
 
 from backend.database import Base, engine, get_db
 from backend.models import PredictionHistory, User
+
+load_dotenv(Path(__file__).resolve().parents[1] / ".env")
+
+AUTH0_DOMAIN = os.getenv("AUTH0_DOMAIN")
+AUTH0_CLIENT_ID = os.getenv("AUTH0_CLIENT_ID")
+AUTH0_CLIENT_SECRET = os.getenv("AUTH0_CLIENT_SECRET")
+AUTH0_SECRET = os.getenv("AUTH0_SECRET")
+AUTH0_APP_BASE_URL = os.getenv(
+    "AUTH0_APP_BASE_URL",
+    "http://localhost:8000",
+).rstrip("/")
+AUTH0_FRONTEND_URL = os.getenv(
+    "AUTH0_FRONTEND_URL",
+    "http://localhost:5500",
+).rstrip("/")
+
+missing_auth0_settings = [
+    setting
+    for setting, value in {
+        "AUTH0_DOMAIN": AUTH0_DOMAIN,
+        "AUTH0_CLIENT_ID": AUTH0_CLIENT_ID,
+        "AUTH0_CLIENT_SECRET": AUTH0_CLIENT_SECRET,
+        "AUTH0_SECRET": AUTH0_SECRET,
+    }.items()
+    if not value
+]
+if missing_auth0_settings:
+    raise RuntimeError(
+        "Missing Auth0 configuration: " + ", ".join(missing_auth0_settings)
+    )
 
 app = FastAPI(
     title="Iris Classification API",
@@ -28,10 +70,30 @@ app.add_middleware(
         "https://iris-svm-frontend-alrz.onrender.com",
     ],
 
-    allow_credentials=False,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=AUTH0_SECRET,
+    https_only=AUTH0_APP_BASE_URL.startswith("https://"),
+    same_site="lax",
+)
+
+auth0_config = Auth0Config(
+    domain=AUTH0_DOMAIN,
+    client_id=AUTH0_CLIENT_ID,
+    client_secret=AUTH0_CLIENT_SECRET,
+    app_base_url=AUTH0_APP_BASE_URL,
+    secret=AUTH0_SECRET,
+    authorization_params={"scope": "openid profile email"},
+)
+app.state.config = auth0_config
+app.state.auth_client = AuthClient(auth0_config)
+register_auth_routes(auth0_router, auth0_config)
+app.include_router(auth0_router)
+register_exception_handlers(app)
 
 
 MODEL_DIR = Path(__file__).resolve().parents[1] / "model"
@@ -75,7 +137,7 @@ class IrisInput(BaseModel):
     )
 
     algorithms: list[str] = Field(
-        default_factory=lambda: ["svm_rbf"],
+        default_factory=lambda: ["svm_linear"],
         min_length=1,
         description="Các thuật toán cần dùng để dự đoán"
     )
@@ -161,6 +223,21 @@ class ChangePasswordInput(BaseModel):
 @app.on_event("startup")
 def create_database_tables():
     Base.metadata.create_all(bind=engine)
+    columns = {
+        column["name"]
+        for column in inspect(engine).get_columns("users")
+    }
+    with engine.begin() as connection:
+        if "auth0_sub" not in columns:
+            connection.execute(
+                text("ALTER TABLE users ADD COLUMN auth0_sub VARCHAR(255)")
+            )
+        connection.execute(
+            text(
+                "CREATE UNIQUE INDEX IF NOT EXISTS "
+                "uq_users_auth0_sub ON users (auth0_sub)"
+            )
+        )
 
 
 @app.get("/")
@@ -169,6 +246,63 @@ def root():
     return {
         "message": "Iris classification API is running"
     }
+
+
+@app.get("/auth/complete")
+async def auth_complete(
+    request: Request,
+    response: Response,
+    db: Session = Depends(get_db),
+):
+    auth_client = request.app.state.auth_client
+    await auth_client.require_session(request, response)
+    profile = await auth_client.client.get_user(
+        store_options={"request": request, "response": response}
+    )
+    if not profile or not profile.get("sub"):
+        raise HTTPException(
+            status_code=401,
+            detail="Auth0 session does not include a user profile.",
+        )
+
+    auth0_sub = profile["sub"]
+    user = db.execute(
+        select(User).where(User.auth0_sub == auth0_sub)
+    ).scalar_one_or_none()
+    if user is None:
+        username = "auth0_" + hashlib.sha256(
+            auth0_sub.encode("utf-8")
+        ).hexdigest()[:44]
+        password_hash = bcrypt.hashpw(
+            secrets.token_bytes(32),
+            bcrypt.gensalt(),
+        ).decode("utf-8")
+        user = User(
+            username=username,
+            password_hash=password_hash,
+            auth0_sub=auth0_sub,
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+    callback_data = urlencode({
+        "user_id": user.id,
+        "username": profile.get("name") or profile.get("email") or user.username,
+    })
+    return RedirectResponse(
+        url=f"{AUTH0_FRONTEND_URL}/auth-callback.html#{callback_data}",
+        status_code=303,
+        headers=response.headers,
+    )
+
+
+@app.get("/auth/after-logout")
+def auth_after_logout():
+    return RedirectResponse(
+        url=f"{AUTH0_FRONTEND_URL}/login-form.html",
+        status_code=303,
+    )
 
 
 @app.post("/predict")

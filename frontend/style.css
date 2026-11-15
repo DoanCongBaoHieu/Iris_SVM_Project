@@ -5740,3 +5740,58 @@ body.dark-mode #dataset .feature-item span {
     background: #334155 !important;
     color: #34d399 !important;
 }
+
+
+/* Compact, expandable model comparison table */
+.model-results:not(.hidden) {
+    max-height: 390px;
+    overflow: auto;
+    background: #121d2c;
+    border-color: #334155;
+}
+
+.model-results h3 { display: none; }
+
+.model-comparison { color: #e2e8f0; }
+.model-comparison > summary {
+    cursor: pointer;
+    list-style: none;
+    font-weight: 700;
+    color: #e2e8f0;
+}
+.model-comparison > summary::-webkit-details-marker { display: none; }
+.model-comparison > summary::after {
+    content: "+";
+    float: right;
+    color: #38bdf8;
+    font-size: 18px;
+    line-height: 1;
+}
+.model-comparison[open] > summary::after { content: "-"; }
+.model-comparison-scroll { max-height: 280px; overflow: auto; margin-top: 12px; }
+.model-comparison-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.model-comparison-table th,
+.model-comparison-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #334155;
+    text-align: left;
+    vertical-align: middle;
+}
+.model-comparison-table th { position: sticky; top: 0; z-index: 1; background: #1e293b; color: #cbd5e1; }
+.model-comparison-table td:first-child { min-width: 150px; }
+.model-comparison-table td:nth-child(2) { text-transform: capitalize; }
+.prediction-disagreement { color: #fca5a5 !important; font-weight: 800; }
+.comparison-time-cell { min-width: 130px; }
+.comparison-time-cell > span:first-child { display: block; white-space: nowrap; }
+.comparison-time-bar {
+    display: block;
+    height: 5px;
+    max-width: 100%;
+    margin-top: 6px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #34d399, #38bdf8);
+}
+@media (max-width: 600px) {
+    .model-comparison-table { min-width: 450px; }
+    .model-results:not(.hidden) { max-height: 340px; }
+}

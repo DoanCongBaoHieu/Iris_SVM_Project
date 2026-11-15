@@ -1,9 +1,10 @@
 const API_BASE_URL =
     (window.location.hostname === "localhost" ||
      window.location.hostname === "127.0.0.1")
-        ? "http://127.0.0.1:8000"
+        ? "http://localhost:8000"
         : "https://iris-svm-api-oar1.onrender.com";
 
+const auth0LoginButton = document.getElementById("auth0-login-button");
 const loginButton = document.getElementById("login-button");
 const usernameInput = document.getElementById("login-username");
 const passwordInput = document.getElementById("login-password");
@@ -81,6 +82,7 @@ async function login() {
         }
 
         // Lưu thông tin người dùng sau khi đăng nhập thành công
+        localStorage.removeItem("auth_provider");
         localStorage.setItem("user_id", data.user_id);
         localStorage.setItem("username", data.username);
 
@@ -102,6 +104,14 @@ async function login() {
 
 
 loginButton.addEventListener("click", login);
+
+auth0LoginButton.addEventListener("click", () => {
+    window.location.assign(
+        `${API_BASE_URL}/auth/login?returnTo=${encodeURIComponent(
+            `${API_BASE_URL}/auth/complete`
+        )}`
+    );
+});
 
 
 // Cho phép nhấn Enter để đăng nhập

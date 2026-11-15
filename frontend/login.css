@@ -433,6 +433,30 @@ body {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+#auth0-login-button {
+    width: 100%;
+    height: 50px;
+    margin: 0 0 12px;
+    border: 1px solid #7350d7;
+    border-radius: 10px;
+    background: transparent;
+    color: #e4d8ff;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+#auth0-login-button:hover {
+    border-color: #8af6f2;
+    background: rgba(115, 80, 215, 0.18);
+}
+
+#auth0-login-button:focus-visible {
+    outline: 2px solid #8af6f2;
+    outline-offset: 2px;
+}
+
 #login-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 14px 30px rgba(190, 48, 123, 0.28);
