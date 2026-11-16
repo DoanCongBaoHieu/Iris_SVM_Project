@@ -390,11 +390,8 @@ function displayResult(data) {
         elements.flowerImage.alt = `\u1ea2nh hoa Iris ${formatSpecies(species)} t\u01b0\u01a1ng \u1ee9ng v\u1edbi lo\u00e0i \u0111\u01b0\u1ee3c d\u1ef1 \u0111o\u00e1n.`;
         const caption = elements.flowerImage.closest(".result-section")?.querySelector(".artwork-caption");
         if (caption) {
-            const index = document.createElement("span");
-            index.textContent = "H\u00ecnh 01";
-            caption.replaceChildren(index, document.createTextNode(
-                `\u1ea2nh m\u1eabu hoa Iris ${formatSpecies(species)} theo k\u1ebft qu\u1ea3 d\u1ef1 \u0111o\u00e1n`
-            ));
+            caption.textContent =
+                "\\u1ea2nh hoa Iris " + formatSpecies(species) + " theo k\\u1ebft qu\\u1ea3 d\\u1ef1 \\u0111o\\u00e1n";
         }
     }
 

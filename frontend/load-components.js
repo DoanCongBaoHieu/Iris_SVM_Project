@@ -22,9 +22,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
 
         await Promise.all([
-            loadComponent("comp-header", "components/header.html?v=9"),
+            loadComponent("comp-header", "components/header.html?v=10"),
             loadComponent("comp-history", "components/history.html?v=5"),
-            loadComponent("comp-prediction", "components/prediction.html?v=10"),
+            loadComponent("comp-prediction", "components/prediction.html?v=11"),
             loadComponent("comp-model-info", "components/model-info.html?v=10"),
             loadComponent("comp-evaluation", "components/evaluation.html?v=10"),
             loadComponent("comp-dataset", "components/dataset.html?v=8"),
@@ -64,7 +64,7 @@ document.addEventListener("click", function (event) {
         // Chỉ chạy script.js sau khi toàn bộ HTML component đã có trong DOM
         const script = document.createElement("script");
 
-        script.src = "script.js?v=22";
+        script.src = "script.js?v=23";
 
         document.body.appendChild(script);
 
