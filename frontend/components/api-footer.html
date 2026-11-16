@@ -1,93 +1,26 @@
 <section id="api-info" class="api-section">
-    <div class="section-title">
-        <span>⚡</span>
-        <h2>Giao diện lập trình & Thông tin dự án</h2>
-    </div>
-    <p class="section-description">
-        FastAPI cung cấp dịch vụ dự đoán bằng năm biến thể SVM với kernel Linear, RBF, Polynomial, Sigmoid và Laplacian.
-    </p>
-
+    <div class="section-title"><span>06</span><h2>Giao di&#7879;n l&#7853;p tr&#236;nh &amp; Th&#244;ng tin d&#7921; &#225;n</h2></div>
+    <p class="section-description">FastAPI lu&#244;n d&#249;ng m&#244; h&#236;nh SVM g&#7889;c cho k&#7871;t qu&#7843; ch&#237;nh. N&#259;m c&#7845;u h&#236;nh Kernel &#8212; Linear, RBF, Polynomial, Sigmoid v&#224; Laplacian &#8212; ch&#7881; ch&#7841;y khi &#273;&#432;&#7907;c ch&#7885;n &#273;&#7875; &#273;&#7889;i chi&#7871;u.</p>
     <div class="api-grid">
-        <div class="api-card">
-            <div class="api-card-icon">⚡</div>
-            <h3>FastAPI</h3>
-            <p>Máy chủ cung cấp dịch vụ dự đoán qua giao diện lập trình REST.</p>
-            <div class="api-card-meta">
-                <span class="api-meta-label">Trạng thái dịch vụ</span>
-                <span class="api-badge"><span aria-hidden="true">●</span> Đang hoạt động</span>
-            </div>
-        </div>
-        <div class="api-card">
-            <div class="api-card-icon">🔗</div>
-            <h3>POST /predict</h3>
-            <p>Nhận 4 thông số và danh sách thuật toán; trả về kết quả của từng mô hình được chọn.</p>
-            <div class="api-card-meta">
-                <span class="api-meta-label">Endpoint</span>
-                <code class="endpoint">POST /predict</code>
-            </div>
-        </div>
-        <div class="api-card">
-            <div class="api-card-icon">🤖</div>
-            <h3>Các mô hình</h3>
-            <p>Năm biến thể SVM dùng kernel Linear, RBF, Polynomial, Sigmoid và Laplacian.</p>
-            <div class="api-card-meta">
-                <span class="api-meta-label">Tùy chọn</span>
-                <span class="api-badge">Có thể chọn nhiều mô hình</span>
-            </div>
-        </div>
-        <div class="api-card">
-            <div class="api-card-icon">🌐</div>
-            <h3>Tài liệu Swagger</h3>
-            <p>Truy cập tài liệu để xem và thử nghiệm các dịch vụ dự đoán.</p>
-            <a class="api-button swagger-button" href="https://iris-svm-api-oar1.onrender.com/docs" target="_blank" rel="noopener noreferrer">Mở tài liệu API →</a>
-        </div>
-        <div class="api-card">
-            <div class="api-card-icon">💻</div>
-            <h3>GitHub</h3>
-            <p>Xem mã nguồn giao diện, máy chủ và các mô hình của dự án.</p>
-            <a class="api-button github-button" href="https://github.com/DoanCongBaoHieu/Iris_SVM_Project" target="_blank" rel="noopener noreferrer">Xem mã nguồn trên GitHub →</a>
-        </div>
+        <article class="api-card"><span class="api-card-icon">01</span><h3>FastAPI</h3><p>M&#225;y ch&#7911; cung c&#7845;p d&#7883;ch v&#7909; d&#7921; &#273;o&#225;n qua giao di&#7879;n l&#7853;p tr&#236;nh REST.</p><div class="api-card-meta"><span class="api-meta-label">Tr&#7841;ng th&#225;i d&#7883;ch v&#7909;</span><span class="api-badge">&#272;ang ho&#7841;t &#273;&#7897;ng</span></div></article>
+        <article class="api-card"><span class="api-card-icon">02</span><h3>POST /predict</h3><p>Nh&#7853;n b&#7889;n th&#244;ng s&#7889; v&#224; m&#7843;ng kernels t&#249;y ch&#7885;n; lu&#244;n tr&#7843; d&#7921; &#273;o&#225;n t&#7915; SVM g&#7889;c, k&#232;m k&#7871;t qu&#7843; &#273;&#7889;i chi&#7871;u n&#7871;u c&#243;.</p><div class="api-card-meta"><span class="api-meta-label">Endpoint</span><code class="endpoint">POST /predict</code></div></article>
+        <article class="api-card"><span class="api-card-icon">03</span><h3>C&#225;c m&#244; h&#236;nh</h3><p>SVM g&#7889;c v&#224; n&#259;m c&#7845;u h&#236;nh Kernel &#273;&#7889;i chi&#7871;u l&#224; c&#225;c vai tr&#242; ri&#234;ng bi&#7879;t trong lu&#7891;ng d&#7921; &#273;o&#225;n.</p><div class="api-card-meta"><span class="api-meta-label">&#272;&#7889;i chi&#7871;u</span><span class="api-badge">5 c&#7845;u h&#236;nh Kernel</span></div></article>
+        <article class="api-card"><span class="api-card-icon">04</span><h3>T&#224;i li&#7879;u Swagger</h3><p>Truy c&#7853;p t&#224;i li&#7879;u &#273;&#7875; xem v&#224; th&#7917; nghi&#7879;m c&#225;c d&#7883;ch v&#7909; d&#7921; &#273;o&#225;n.</p><a class="api-button swagger-button" href="https://iris-svm-api-oar1.onrender.com/docs" target="_blank" rel="noopener noreferrer">M&#7903; t&#224;i li&#7879;u API &#8594;</a></article>
+        <article class="api-card"><span class="api-card-icon">05</span><h3>GitHub</h3><p>Xem m&#227; ngu&#7891;n giao di&#7879;n, m&#225;y ch&#7911; v&#224; c&#225;c m&#244; h&#236;nh c&#7911;a d&#7921; &#225;n.</p><a class="api-button github-button" href="https://github.com/DoanCongBaoHieu/Iris_SVM_Project" target="_blank" rel="noopener noreferrer">Xem m&#227; ngu&#7891;n tr&#234;n GitHub &#8594;</a></article>
+        <article class="api-card"><span class="api-card-icon">06</span><h3>PostgreSQL &amp; Auth0 SSO</h3><p>L&#432;u tr&#7919; l&#7883;ch s&#7917; d&#7921; &#273;o&#225;n tr&#234;n c&#417; s&#7903; d&#7919; li&#7879;u &#273;&#225;m m&#226;y v&#224; qu&#7843;n l&#253; phi&#234;n &#273;&#259;ng nh&#7853;p t&#7853;p trung.</p><div class="api-card-meta"><span class="api-meta-label">B&#7842;O M&#7852;T &amp; L&#431;U TR&#7918;</span><span class="api-badge">&#272;ang k&#237;ch ho&#7841;t</span></div></article>
     </div>
 </section>
-
 <footer class="footer contact-footer" aria-labelledby="contact-footer-title">
     <div class="contact-footer-content">
-        <p class="contact-footer-kicker">PHÂN LOẠI HOA IRIS · ĐỒ ÁN HỌC MÁY</p>
-        <h2 id="contact-footer-title">Thông tin liên hệ</h2>
-        <span class="contact-footer-divider" aria-hidden="true"></span>
-
+        <p class="contact-footer-kicker">PH&#194;N LO&#7840;I HOA IRIS &#183; &#272;&#7890; &#193;N H&#7884;C M&#193;Y</p><h2 id="contact-footer-title">Th&#244;ng tin li&#234;n h&#7879;</h2><span class="contact-footer-divider" aria-hidden="true"></span>
         <address class="contact-details">
-            <div class="contact-detail">
-                <span class="contact-detail-label">Họ và tên</span>
-                <strong>Đoàn Công Bảo Hiếu</strong>
-            </div>
-            <div class="contact-detail">
-                <span class="contact-detail-label">Lớp</span>
-                <strong>24CKDL</strong>
-            </div>
-            <div class="contact-detail contact-detail-instructor">
-                <span class="contact-detail-label">Giảng viên hướng dẫn</span>
-                <img class="contact-profile-image" src="images/instructor.png" alt="Ảnh chân dung giảng viên hướng dẫn">
-                <strong>Phan Trần Đức Minh</strong>
-            </div>
-            <div class="contact-detail">
-                <span class="contact-detail-label">Trường</span>
-                <strong>Trường Đại học Sư phạm - Đại học Đà Nẵng</strong>
-            </div>
-            <div class="contact-detail">
-                <span class="contact-detail-label">Điện thoại</span>
-                <a href="tel:+84797666417">0797 666 417</a>
-            </div>
-            <div class="contact-detail">
-                <span class="contact-detail-label">Email</span>
-                <a href="mailto:doancongbaohieu2006@gmail.com">doancongbaohieu2006@gmail.com</a>
-            </div>
+            <div class="contact-detail"><span class="contact-detail-label">H&#7885; v&#224; t&#234;n</span><strong>&#272;o&#224;n C&#244;ng B&#7843;o Hi&#7871;u</strong></div>
+            <div class="contact-detail"><span class="contact-detail-label">L&#7899;p</span><strong>24CKDL</strong></div>
+            <div class="contact-detail contact-detail-instructor"><span class="contact-detail-label">Gi&#7843;ng vi&#234;n h&#432;&#7899;ng d&#7851;n</span><img class="contact-profile-image" src="images/instructor-thumb.webp" alt="&#7842;nh ch&#226;n dung gi&#7843;ng vi&#234;n h&#432;&#7899;ng d&#7851;n" width="40" height="40" loading="lazy" decoding="async"><strong>Phan Tr&#7847;n &#272;&#7913;c Minh</strong></div>
+            <div class="contact-detail"><span class="contact-detail-label">Tr&#432;&#7901;ng</span><strong>Tr&#432;&#7901;ng &#272;&#7841;i h&#7885;c S&#432; ph&#7841;m - &#272;&#7841;i h&#7885;c &#272;&#224; N&#7861;ng</strong></div>
+            <div class="contact-detail"><span class="contact-detail-label">&#272;i&#7879;n tho&#7841;i</span><a href="tel:+84797666417">0797 666 417</a></div>
+            <div class="contact-detail"><span class="contact-detail-label">Email</span><a href="mailto:doancongbaohieu2006@gmail.com">doancongbaohieu2006@gmail.com</a></div>
         </address>
-
-        <div class="contact-footer-brand" aria-hidden="true">
-            <span>IRIS</span>
-            <span class="contact-footer-flower">✿</span>
-        </div>
-        <p class="contact-footer-caption">Hệ thống phân loại hoa bằng học máy</p>
+        <div class="contact-footer-brand" aria-hidden="true"><span>IRIS</span><span class="contact-footer-flower">06</span></div><p class="contact-footer-caption">H&#7879; th&#7889;ng ph&#226;n lo&#7841;i hoa b&#7857;ng h&#7885;c m&#225;y</p>
     </div>
 </footer>

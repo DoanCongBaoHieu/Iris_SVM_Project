@@ -265,7 +265,7 @@ async function register() {
         // Thành công
 
         showRegisterMessage(
-            "✅ Đăng ký tài khoản thành công.",
+            " Đăng ký tài khoản thành công.",
             "success"
         );
 

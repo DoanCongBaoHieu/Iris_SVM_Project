@@ -4,6 +4,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 from sklearn.svm import SVC
 
+from backend.kernels import laplacian_kernel
+
 
 # ============================================
 # 1. LOAD DATASET
@@ -44,6 +46,16 @@ models = {
     "Polynomial SVM": Pipeline([
         ("scaler", StandardScaler()),
         ("svm", SVC(kernel="poly"))
+    ]),
+
+    "Sigmoid SVM": Pipeline([
+        ("scaler", StandardScaler()),
+        ("svm", SVC(kernel="sigmoid"))
+    ]),
+
+    "Laplacian SVM": Pipeline([
+        ("scaler", StandardScaler()),
+        ("svm", SVC(kernel=laplacian_kernel))
     ])
 }
 

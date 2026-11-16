@@ -1,78 +1,73 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phân loại hoa Iris</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="description" content="Kh&#225;m ph&#225; ph&#226;n lo&#7841;i hoa Iris qua m&#7897;t trang d&#7921; &#225;n SVM mang phong c&#225;ch t&#7841;p ch&#237; khoa h&#7885;c.">
+    <title>Iris Field Notes | Ph&#226;n lo&#7841;i hoa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=28">
     <script>
         if (!localStorage.getItem("user_id") || !localStorage.getItem("username")) {
-            window.location.replace("login.html?v=9");
+            window.location.replace("login.html?v=10");
         }
     </script>
-    <link rel="stylesheet" href="style.css?v=21">
 </head>
-<body class="dark-mode">
+<body class="dark-mode editorial-site">
     <div class="container">
-        <!-- Các khối Component sẽ được JS tự động đổ vào đây -->
         <div id="comp-header"></div>
 
-        <!-- =========================================
-             POPUP ĐỔI MẬT KHẨU
-        ========================================== -->
-        <div id="change-password-modal" class="password-modal hidden">
-            <div class="password-modal-overlay"></div>
-            <div class="password-modal-content">
-                <button type="button" id="close-password-modal" class="password-modal-close">×</button>
-                <div class="password-modal-icon">🔑</div>
-                <h2>Đổi mật khẩu</h2>
-                <p class="password-modal-description">Cập nhật mật khẩu để bảo vệ tài khoản của bạn.</p>
-                <div class="password-form-group">
-                    <label for="current-password">Mật khẩu hiện tại</label>
-                    <input type="password" id="current-password" placeholder="Nhập mật khẩu hiện tại" autocomplete="current-password">
-                </div>
-                <div class="password-form-group">
-                    <label for="new-password">Mật khẩu mới</label>
-                    <input type="password" id="new-password" placeholder="Tối thiểu 6 ký tự" autocomplete="new-password">
-                </div>
-                <div class="password-form-group">
-                    <label for="confirm-password">Xác nhận mật khẩu mới</label>
-                    <input type="password" id="confirm-password" placeholder="Nhập lại mật khẩu mới" autocomplete="new-password">
-                </div>
-                <div id="password-message" class="password-message"></div>
-                <div class="password-modal-actions">
-                    <button type="button" id="cancel-password-button" class="password-cancel-button">Hủy</button>
-                    <button type="button" id="submit-password-button" class="password-submit-button">🔑 Lưu mật khẩu mới</button>
-                </div>
+        <main class="main-content">
+            <div class="edition-line" aria-label="&#7844;n ph&#7849;m">
+                <span>Field notes <i>/</i> Vol. 01</span>
+                <span>Specimen study <i>&#8212;</i> 2026</span>
             </div>
-        </div>
-
-        <div id="comp-prediction"></div>
-        <div id="comp-history"></div>
-        <div id="comp-model-info"></div>
-        <div id="comp-evaluation"></div>
-        <div id="comp-dataset"></div>
-        <div id="comp-svm-theory"></div>
-        <div id="comp-process"></div>
+            <div id="comp-prediction"></div>
+            <div id="comp-history"></div>
+            <section id="evaluation" class="content-region model-evaluation-region" aria-label="&#272;&#225;nh gi&#225; v&#224; so s&#225;nh m&#244; h&#236;nh">
+                <div id="comp-model-info"></div>
+                <div id="comp-evaluation"></div>
+            </section>
+            <section class="content-region learning-region" aria-label="D&#7919; li&#7879;u Iris v&#224; thu&#7853;t to&#225;n SVM">
+                <div id="comp-dataset"></div>
+                <div id="comp-svm-theory"></div>
+            </section>
+            <div id="comp-process"></div>
+        </main>
     </div>
 
     <div id="comp-api-footer"></div>
 
-    <!-- =========================================
-         MENU ĐIỀU HƯỚNG BÊN CẠNH (FLOATING MENU)
-    ========================================== -->
-    <div class="floating-side-menu">
-        <a href="#prediction" class="side-link">🔮 Dự đoán</a>
-        <a href="#history" class="side-link">🕘 Lịch sử</a>
-        <a href="#evaluation" class="side-link">📊 Đánh giá</a>
-        <a href="#dataset" class="side-link">🌸 Dữ liệu Iris</a>
-        <a href="#svm-theory" class="side-link">🧠 Tìm hiểu SVM</a>
-        <a href="#api-info" class="side-link">⚡ API</a>
-        <a href="#" class="side-link back-top">⬆ Lên đầu trang</a>
+    <div id="change-password-modal" class="password-modal hidden">
+        <div class="password-modal-overlay"></div>
+        <section class="password-modal-content" role="dialog" aria-modal="true" aria-labelledby="password-modal-title">
+            <button type="button" id="close-password-modal" class="password-modal-close" aria-label="&#272;&#243;ng">&#215;</button>
+            <p class="eyebrow">Account settings</p>
+            <h2 id="password-modal-title">&#272;&#7893;i m&#7853;t kh&#7849;u</h2>
+            <p class="password-modal-description">C&#7853;p nh&#7853;t m&#7853;t kh&#7849;u t&#224;i kho&#7843;n.</p>
+            <div class="password-form-group">
+                <label for="current-password">M&#7853;t kh&#7849;u hi&#7879;n t&#7841;i</label>
+                <input type="password" id="current-password" autocomplete="current-password">
+            </div>
+            <div class="password-form-group">
+                <label for="new-password">M&#7853;t kh&#7849;u m&#7899;i</label>
+                <input type="password" id="new-password" autocomplete="new-password">
+            </div>
+            <div class="password-form-group">
+                <label for="confirm-password">X&#225;c nh&#7853;n m&#7853;t kh&#7849;u</label>
+                <input type="password" id="confirm-password" autocomplete="new-password">
+            </div>
+            <div id="password-message" class="password-message"></div>
+            <div class="password-modal-actions">
+                <button type="button" id="cancel-password-button" class="password-cancel-button">H&#7911;y</button>
+                <button type="button" id="submit-password-button" class="password-submit-button">L&#432;u m&#7853;t kh&#7849;u</button>
+            </div>
+        </section>
     </div>
 
-    <!-- =========================================
-         SCRIPT GHÉP NỐI UI
-    ========================================== -->
-    <script src="load-components.js?v=16"></script>
+    <script src="load-components.js?v=20"></script>
 </body>
 </html>

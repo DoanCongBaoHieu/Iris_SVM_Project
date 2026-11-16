@@ -595,3 +595,43 @@ body {
         border-bottom: 1px solid rgba(143, 102, 255, 0.25);
     }
 }
+
+/* Match the Iris Dark Editorial visual system. */
+:root {
+    --editorial-ink: #0a0a0a;
+    --editorial-paper: #ffffff;
+    --editorial-muted: #e0e0e0;
+    --editorial-navy: #0a1128;
+    --editorial-navy-deep: #051937;
+    --editorial-wine: #722f37;
+    --editorial-wine-light: #a64c5a;
+}
+body { background: var(--editorial-ink); color: var(--editorial-paper); font-family: "Montserrat", sans-serif; }
+.register-page { min-height: 100vh; }
+.register-card { border: 1px solid rgba(114, 47, 55, .68); border-radius: 2px; background: var(--editorial-navy); box-shadow: 2px 2px 0 #35151d, 8px 8px 0 #080d17; }
+.register-brand-section { border-right: 1px solid rgba(114, 47, 55, .55); background: var(--editorial-navy-deep); color: #ffffff; }
+.register-brand-section::before, .register-brand-section::after { opacity: .22; }
+.register-brand-icon { border: 1px solid rgba(166, 76, 90, .55); border-radius: 2px; background: rgba(114, 47, 55, .24); box-shadow: none; }
+.register-brand-name, .register-brand-content h1 { color: #ffffff; font-family: "Playfair Display", serif; }
+.register-brand-label { color: #e0e0e0; }
+.register-brand-footer { color: #bfc5d0; }
+.register-form-section { background: var(--editorial-navy); }
+.register-form-group label { color: #ffffff; font-size: 13px; }
+.register-form-group input { border: 1px solid rgba(35, 54, 86, .9); border-radius: 2px; background: var(--editorial-navy-deep); color: #ffffff; font: inherit; }
+.register-form-group input::placeholder { color: #a8b0be; }
+.register-form-group input:focus { border-color: var(--editorial-wine-light); background: var(--editorial-navy); box-shadow: 0 0 0 2px rgba(114, 47, 55, .2); }
+#register-button { border: 1px solid var(--editorial-wine-light); border-radius: 2px; background: var(--editorial-wine); color: #ffffff; font: 600 14px "Montserrat", sans-serif; box-shadow: 0 0 18px rgba(114, 47, 55, .25), 2px 2px 0 #2f151a; }
+#register-button:hover:not(:disabled) { transform: translateY(-2px); background: #873b45; box-shadow: 0 0 22px rgba(114, 47, 55, .34), 2px 4px 0 #2f151a; }
+.register-login { color: var(--editorial-muted); }
+.register-login a { color: #e3a4ad; }
+:where(a, button, input):focus-visible { outline: 2px solid var(--editorial-wine-light); outline-offset: 3px; }
+button:disabled { cursor: not-allowed; opacity: .55; transform: none !important; box-shadow: none !important; }
+@media (max-width: 850px) { .register-brand-section { border-right: 0; border-bottom: 1px solid rgba(114, 47, 55, .55); } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+
+.register-brand-section::before { border-color: rgba(166, 76, 90, .3); box-shadow: 0 0 0 55px rgba(114, 47, 55, .06), 0 0 0 110px rgba(114, 47, 55, .035); }
+.register-brand-section::after { background: rgba(114, 47, 55, .18); }
+.register-brand-section { background: var(--editorial-navy-deep); }
+.register-brand-section::before, .register-brand-section::after { opacity: .5; }
+.register-brand-section h1 { font-family: "Playfair Display", serif; font-weight: 500; }
+#register-button:focus-visible { outline: 2px solid var(--editorial-wine-light); outline-offset: 3px; }

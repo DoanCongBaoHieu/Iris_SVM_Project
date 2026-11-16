@@ -1,6 +1,6 @@
 <section id="svm-theory" class="svm-section">
     <div class="section-title">
-        <span>🧠</span>
+        <span>04</span>
         <h2>Tìm hiểu về máy véc-tơ hỗ trợ (SVM)</h2>
     </div>
     <p class="section-description">
@@ -20,7 +20,7 @@
 
     <section id="model-training" class="svm-training-panel" aria-labelledby="model-training-title">
         <div class="svm-training-heading">
-            <span class="svm-training-icon" aria-hidden="true">⚙️</span>
+            <span class="svm-training-icon" aria-hidden="true">01</span>
             <div>
                 <h3 id="model-training-title">Quy trình huấn luyện SVM</h3>
                 <p>Dữ liệu được chia phân tầng theo tỉ lệ 80:20 (random_state = 42).</p>
@@ -48,14 +48,14 @@
 
     <div class="svm-overview">
         <div class="svm-main-card" id="svm-boundary">
-            <div class="svm-card-icon">🎯</div>
+            <div class="svm-card-icon">01</div>
             <div>
                 <h3>SVM hoạt động như thế nào?</h3>
                 <p>SVM tìm một siêu phẳng phân chia các lớp dữ liệu sao cho khoảng cách từ siêu phẳng đến các điểm dữ liệu gần nhất được tối đa hóa.</p>
             </div>
         </div>
         <div class="svm-main-card">
-            <div class="svm-card-icon">📐</div>
+            <div class="svm-card-icon">02</div>
             <div>
                 <h3>Véc-tơ hỗ trợ</h3>
                 <p>Véc-tơ hỗ trợ là những điểm dữ liệu nằm gần ranh giới phân loại và có vai trò quan trọng trong việc xác định siêu phẳng.</p>
@@ -72,12 +72,12 @@
         <div class="svm-info-card">
             <div class="svm-info-number">02</div>
             <h3>Tham số C</h3>
-            <p>Các cấu hình dùng C = 0.1 cho Linear và C = 1.0 cho bốn kernel còn lại; script hiện tại dùng các giá trị cấu hình cố định.</p>
+            <p>Các cấu hình dùng C = 0.1 cho Linear và C = 1.0 cho các kernel phi tuyến; script hiện tại dùng các giá trị cấu hình cố định.</p>
         </div>
         <div class="svm-info-card">
             <div class="svm-info-number">03</div>
             <h3>Đánh giá trên tập kiểm tra</h3>
-            <p>Năm kernel được so sánh trên cùng 30 mẫu kiểm tra bằng cách chia phân tầng 80/20, random_state = 42. Script hiện tại chưa chạy kiểm định chéo.</p>
+            <p>B&#7843;ng d&#249;ng m&#7897;t l&#7847;n chia holdout ph&#226;n t&#7847;ng 80/20; c&#243; th&#7875; ch&#7841;y 5-fold cross-validation ri&#234;ng b&#7857;ng <code>backend/compare_svm.py</code>.</p>
         </div>
         <div class="svm-info-card">
             <div class="svm-info-number">04</div>

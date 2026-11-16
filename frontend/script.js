@@ -55,7 +55,16 @@ async function updateApiStatus() {
 }
 
 updateApiStatus();
-setInterval(updateApiStatus, 60000);
+setInterval(() => {
+    if (document.visibilityState === "visible") {
+        updateApiStatus();
+    }
+}, 300000);
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+        updateApiStatus();
+    }
+});
 
 
 // ======================================================
@@ -239,7 +248,7 @@ function setLoading(isLoading) {
     } else {
         elements.predictButton.disabled = false;
         elements.predictButton.innerHTML =
-            '🌸 DỰ ĐOÁN LOÀI HOA';
+            ' DỰ ĐOÁN LOÀI HOA';
     }
 }
 
@@ -317,81 +326,57 @@ async function requestAPI(
 // ======================================================
 
 function displayResult(data) {
-
-    const species =
-        data.species;
-
-    elements.speciesName.textContent =
-        species;
-
+    const species = String(data.main_result || "").toLowerCase();
+    elements.speciesName.textContent = species;
 
     if (elements.modelResults) {
-        const results =
-            Array.isArray(data.results) && data.results.length > 0
-                ? data.results
-                : [data];
-
         elements.modelResults.replaceChildren();
+        const comparisons = data.comparison_results || {};
+        const comparisonTimes = data.comparison_times_ms || {};
+        const kernels = Object.entries(comparisons);
 
-        if (results.length > 1) {
+        if (kernels.length > 0) {
             const comparison = document.createElement("details");
             comparison.className = "model-comparison";
-
             const summary = document.createElement("summary");
-            summary.textContent = `So sánh ${results.length} mô hình`;
+            summary.textContent = `So sánh kernel (${kernels.length})`;
             comparison.appendChild(summary);
 
-            const tableWrap = document.createElement("div");
-            tableWrap.className = "model-comparison-scroll";
             const table = document.createElement("table");
             table.className = "model-comparison-table";
             const thead = document.createElement("thead");
-            const headerRow = document.createElement("tr");
-            ["Thuật toán", "Loài dự đoán", "Thời gian xử lý"].forEach(label => {
+            const header = document.createElement("tr");
+            ["Mô hình", "Dự đoán", "Thời gian xử lý"].forEach(label => {
                 const th = document.createElement("th");
                 th.scope = "col";
                 th.textContent = label;
-                headerRow.appendChild(th);
+                header.appendChild(th);
             });
-            thead.appendChild(headerRow);
+            thead.appendChild(header);
+
             const tbody = document.createElement("tbody");
-            const times = results.map(result => Number(result.prediction_time_ms));
-            const maxTime = Math.max(...times);
-            const primarySpecies = String(results[0].species).toLowerCase();
-
-            results.forEach(result => {
-                const row = document.createElement("tr");
-                const algorithmCell = document.createElement("td");
-                const algorithmName = document.createElement("strong");
-                algorithmName.textContent = result.model_name;
-                algorithmCell.appendChild(algorithmName);
-
-                const speciesCell = document.createElement("td");
-                speciesCell.textContent = result.species;
-                if (String(result.species).toLowerCase() !== primarySpecies) {
-                    speciesCell.classList.add("prediction-disagreement");
-                    speciesCell.setAttribute("aria-label", `\u26A0 Result differs from default model (${results[0].species})`);
-                    speciesCell.textContent = `\u26A0 ${result.species}`;
-                }
-
-                const timeCell = document.createElement("td");
-                timeCell.className = "comparison-time-cell";
-                const timeText = document.createElement("span");
-                const time = Number(result.prediction_time_ms);
-                timeText.textContent = `${time.toFixed(4)} ms`;
-                const bar = document.createElement("span");
-                bar.className = "comparison-time-bar";
-                bar.setAttribute("aria-hidden", "true");
-                bar.style.width = `${maxTime > 0 ? Math.max(4, (time / maxTime) * 100) : 0}%`;
-                timeCell.append(timeText, bar);
-
-                row.append(algorithmCell, speciesCell, timeCell);
-                tbody.appendChild(row);
-            });
+            [["SVM gốc", species, data.main_prediction_time_ms],
+                ...kernels.map(([kernel, result]) => [kernel, result, comparisonTimes[kernel]])]
+                .forEach(([name, result, timeMs]) => {
+                    const row = document.createElement("tr");
+                    const nameCell = document.createElement("td");
+                    nameCell.textContent = name;
+                    const resultCell = document.createElement("td");
+                    resultCell.textContent = result;
+                    if (String(result).toLowerCase() !== species) {
+                        resultCell.classList.add("prediction-disagreement");
+                    }
+                    const timeCell = document.createElement("td");
+                    const elapsedMs = Number(timeMs);
+                    timeCell.textContent = Number.isFinite(elapsedMs)
+                        ? `${elapsedMs.toFixed(4)} ms`
+                        : "—";
+                    row.append(nameCell, resultCell, timeCell);
+                    tbody.appendChild(row);
+                });
 
             table.append(thead, tbody);
-            tableWrap.appendChild(table);
-            comparison.appendChild(tableWrap);
+            comparison.appendChild(table);
             elements.modelResults.appendChild(comparison);
             elements.modelResults.classList.remove("hidden");
         } else {
@@ -399,35 +384,26 @@ function displayResult(data) {
         }
     }
 
-
-    const imagePath =
-        FLOWER_IMAGES[species.toLowerCase()];
-
-
+    const imagePath = FLOWER_IMAGES[species];
     if (imagePath) {
-
-        elements.flowerImage.src =
-            imagePath;
-
-        elements.flowerImage.alt =
-            `Hoa Iris ${species}`;
+        elements.flowerImage.src = imagePath;
+        elements.flowerImage.alt = `\u1ea2nh hoa Iris ${formatSpecies(species)} t\u01b0\u01a1ng \u1ee9ng v\u1edbi lo\u00e0i \u0111\u01b0\u1ee3c d\u1ef1 \u0111o\u00e1n.`;
+        const caption = elements.flowerImage.closest(".result-section")?.querySelector(".artwork-caption");
+        if (caption) {
+            const index = document.createElement("span");
+            index.textContent = "H\u00ecnh 01";
+            caption.replaceChildren(index, document.createTextNode(
+                `\u1ea2nh m\u1eabu hoa Iris ${formatSpecies(species)} theo k\u1ebft qu\u1ea3 d\u1ef1 \u0111o\u00e1n`
+            ));
+        }
     }
 
-
-    elements.resultPlaceholder.classList.add(
-        "hidden"
-    );
-
-    elements.predictionResult.classList.remove(
-        "hidden"
-    );
-
-
+    elements.resultPlaceholder.classList.add("hidden");
+    elements.predictionResult.classList.remove("hidden");
     elements.predictionResult.classList.remove("animate-pop");
     void elements.predictionResult.offsetWidth;
     elements.predictionResult.classList.add("animate-pop");
 }
-
 
 // ======================================================
 // 10. DỰ ĐOÁN HOA
@@ -450,13 +426,9 @@ async function predictFlower() {
         return;
     }
 
-    const selectedAlgorithms = Array.from(
-        document.querySelectorAll('input[name="prediction-model"]:checked')
+    const kernels = Array.from(
+        document.querySelectorAll('input[name="prediction-kernel"]:checked')
     ).map(input => input.value);
-    // Always run the default SVM first. Selected kernels are extra comparisons.
-    const algorithms = ["svm_linear", ...selectedAlgorithms.filter(
-        algorithm => algorithm !== "svm_linear"
-    )];
 
     const storedUserId = localStorage.getItem("user_id");
     const userId = Number(storedUserId);
@@ -482,7 +454,7 @@ async function predictFlower() {
 
         const requestData = {
             user_id: userId,
-            algorithms,
+            kernels,
             ...flowerData
         };
         const result =
@@ -999,7 +971,7 @@ if (submitPasswordButton) {
                 // --------------------------------------
 
                 passwordMessage.textContent =
-                    "✅ Đổi mật khẩu thành công.";
+                    " Đổi mật khẩu thành công.";
 
                 passwordMessage.className =
                     "password-message success";
@@ -1031,7 +1003,7 @@ if (submitPasswordButton) {
                 submitPasswordButton.disabled = false;
 
                 submitPasswordButton.textContent =
-                    "🔑 Lưu mật khẩu mới";
+                    " Lưu mật khẩu mới";
 
             }
 
@@ -1182,7 +1154,7 @@ function renderHistoryPage() {
                     colspan="9"
                     class="history-empty"
                 >
-                    📭 Bạn chưa có lần dự đoán nào.
+                     Bạn chưa có lần dự đoán nào.
                 </td>
             </tr>
         `;
@@ -1268,7 +1240,7 @@ function renderHistoryPage() {
 
                     <td>
                         <strong class="history-species">
-                            🌸 ${formatSpecies(
+                             ${formatSpecies(
                                 item.species
                             )}
                         </strong>
@@ -1291,7 +1263,7 @@ function renderHistoryPage() {
                             class="history-delete-button history-delete-record-button"
                             data-history-id="${Number(item.id)}"
                         >
-                            🗑 Xóa
+                             Xóa
                         </button>
                     </td>
 
@@ -1546,7 +1518,7 @@ async function loadPredictionHistory() {
                     colspan="9"
                     class="history-empty"
                 >
-                    ❌ Không thể tải lịch sử dự đoán.
+                     Không thể tải lịch sử dự đoán.
                 </td>
             </tr>
         `;
@@ -1566,7 +1538,7 @@ async function loadPredictionHistory() {
             refreshHistoryButton.disabled = false;
 
             refreshHistoryButton.textContent =
-                "🔄 Làm mới";
+                " Làm mới";
 
         }
 
@@ -1733,74 +1705,450 @@ if (refreshHistoryButton) {
 // TỰ ĐỘNG TẢI KHI MỞ TRANG
 // ======================================================
 
+function initEditorialNavigation() {
+    const links = Array.from(document.querySelectorAll(".navbar a[href^='#']"));
+    const sectionIds = [
+        "prediction",
+        "history",
+        "evaluation",
+        "dataset",
+        "svm-theory",
+        "process",
+        "api-info"
+    ];
+    const sections = sectionIds
+        .map(id => document.getElementById(id))
+        .filter(Boolean);
+    let scrollFrame = null;
+
+    function setActiveSection(sectionId) {
+        const navId = sectionId === "svm-theory" ? "dataset" : sectionId;
+        links.forEach(link => {
+            const isActive = link.getAttribute("href") === `#${navId}`;
+            link.classList.toggle("is-active", isActive);
+            if (isActive) {
+                link.setAttribute("aria-current", "location");
+            } else {
+                link.removeAttribute("aria-current");
+            }
+        });
+    }
+
+    function updateActiveSection() {
+        const readingLine = window.scrollY + window.innerHeight * 0.34;
+        let currentId = sections[0]?.id;
+
+        sections.forEach(section => {
+            const sectionTop = section.getBoundingClientRect().top + window.scrollY;
+            if (sectionTop <= readingLine) {
+                currentId = section.id;
+            }
+        });
+
+        if (currentId) {
+            setActiveSection(currentId);
+        }
+        scrollFrame = null;
+    }
+
+    window.addEventListener("scroll", () => {
+        if (scrollFrame === null) {
+            scrollFrame = window.requestAnimationFrame(updateActiveSection);
+        }
+    }, { passive: true });
+    window.addEventListener("resize", updateActiveSection, { passive: true });
+    links.forEach(link => link.addEventListener("click", () => {
+        const sectionId = link.getAttribute("href").slice(1);
+        setActiveSection(sectionId);
+    }));
+    updateActiveSection();
+}
+
+initEditorialNavigation();
 loadPredictionHistory();
 
-function initSideMenu() {
-    const sideLinks = document.querySelectorAll(
-        ".floating-side-menu .side-link:not(.back-top)"
-    );
 
-    window.addEventListener('scroll', () => {
-        let currentSection = '';
-
-        sideLinks.forEach(link => {
-            const sectionId = link.getAttribute('href').substring(1);
-            const section = document.getElementById(sectionId);
-
-            if (section) {
-                const sectionTop = section.offsetTop;
-                if (window.scrollY >= sectionTop - 300) {
-                    currentSection = sectionId;
-                }
-            }
-        });
-
-        sideLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href') === `#${currentSection}`) {
-                link.classList.add('active');
-            }
-        });
-    });
+function formatEvaluationPercent(value, digits = 2) {
+    return `${(Number(value) * 100).toFixed(digits)}%`;
 }
 
-initSideMenu();
+function createEvaluationCell(text, tagName = "td") {
+    const cell = document.createElement(tagName);
+    cell.textContent = text;
+    return cell;
+}
 
-function initDarkMode() {
-    const savedTheme = localStorage.getItem('darkMode');
-    const isDarkMode = savedTheme === null || savedTheme === 'true';
+function renderKernelEvaluation(report, root) {
+    const holdoutBody = root.querySelector("#holdout-kernel-body");
+    const cvBody = root.querySelector("#cv-kernel-body");
+    const confusionSelect = root.querySelector("#confusion-kernel");
+    const boundaryKernel = root.querySelector("#boundary-kernel");
+    const kernels = report.kernels;
+    const bestAccuracy = Math.max(...kernels.map(kernel => report.holdout[kernel].accuracy));
+    const bestAccuracyKernels = kernels.filter(kernel => Math.abs(report.holdout[kernel].accuracy - bestAccuracy) < 1e-12);
+    const bestF1 = Math.max(...kernels.map(kernel => report.holdout[kernel].f1_weighted));
+    const bestF1Kernels = kernels.filter(kernel => Math.abs(report.holdout[kernel].f1_weighted - bestF1) < 1e-12);
+    const bestCvMean = Math.max(...kernels.map(kernel => report.cross_validation[kernel].accuracy_mean));
+    const lowestCvStd = Math.min(...kernels.map(kernel => report.cross_validation[kernel].accuracy_std));
+    const bestCvKernels = kernels.filter(kernel => Math.abs(report.cross_validation[kernel].accuracy_mean - bestCvMean) < 1e-12);
+    const stableCvKernels = kernels.filter(kernel => Math.abs(report.cross_validation[kernel].accuracy_std - lowestCvStd) < 1e-12);
 
-    const applyTheme = (dark) => {
-        const body = document.body;
-        const toggleBtn = document.getElementById('theme-toggle');
+    root.querySelector("#holdout-count").textContent = `${report.holdout_protocol.test_samples} m\u1eabu ki\u1ec3m th\u1eed`;
+    root.querySelector("#holdout-protocol").textContent =
+        `Ph\u00e2n t\u1ea7ng 80/20 | random_state=${report.holdout_protocol.random_state} | ` +
+        `${report.holdout_protocol.train_samples} train / ${report.holdout_protocol.test_samples} holdout.`;
+    root.querySelector("#overview-train-count").textContent = report.holdout_protocol.train_samples;
+    root.querySelector("#overview-test-count").textContent = report.holdout_protocol.test_samples;
+    root.querySelector("#overview-best-accuracy-kernel").textContent = bestAccuracyKernels.join(" / ");
+    root.querySelector("#overview-best-accuracy").textContent = formatEvaluationPercent(bestAccuracy);
+    root.querySelector("#overview-best-f1").textContent = formatEvaluationPercent(bestF1);
+    root.querySelector("#overview-best-f1-kernel").textContent = bestF1Kernels.join(" / ");
+    root.querySelector("#overview-cv-status").textContent = `${report.cross_validation_protocol.n_splits}-fold / train-only`;
+    root.querySelector("#cv-protocol").textContent =
+        `StratifiedKFold (${report.cross_validation_protocol.n_splits} folds, c\u00f3 x\u00e1o tr\u1ed9n, ` +
+        `random_state=${report.cross_validation_protocol.random_state}) ch\u1ec9 d\u00f9ng ` +
+        `${report.cross_validation_protocol.samples} m\u1eabu hu\u1ea5n luy\u1ec7n.`;
 
-        if (dark) {
-            body.classList.add('dark-mode');
-            if (toggleBtn) {
-                toggleBtn.textContent = '☀️';
-                toggleBtn.title = 'Chuyển sang giao diện sáng';
-                toggleBtn.setAttribute('aria-label', 'Chuyển sang giao diện sáng');
-            }
-        } else {
-            body.classList.remove('dark-mode');
-            if (toggleBtn) {
-                toggleBtn.textContent = '🌙';
-                toggleBtn.title = 'Chuyển sang giao diện tối';
-                toggleBtn.setAttribute('aria-label', 'Chuyển sang giao diện tối');
-            }
+    holdoutBody.replaceChildren();
+    cvBody.replaceChildren();
+    confusionSelect.replaceChildren();
+    if (!boundaryKernel.options.length) {
+        kernels.forEach(kernel => {
+            const option = document.createElement("option");
+            option.value = kernel;
+            option.textContent = kernel;
+            boundaryKernel.appendChild(option);
+        });
+        boundaryKernel.value = "rbf";
+    }
+
+    kernels.forEach(kernel => {
+        const holdoutRow = document.createElement("tr");
+        if (bestAccuracyKernels.includes(kernel)) holdoutRow.classList.add("holdout-best-row");
+        const holdoutKernelCell = createEvaluationCell(kernel, "th");
+        holdoutKernelCell.scope = "row";
+        if (bestAccuracyKernels.includes(kernel)) {
+            const badge = document.createElement("span");
+            badge.className = "metric-badge";
+            badge.textContent = "T\u1ed1i \u01b0u Holdout";
+            holdoutKernelCell.append(" ", badge);
         }
-    };
+        holdoutRow.appendChild(holdoutKernelCell);
+        ["accuracy", "precision_weighted", "recall_weighted", "f1_weighted"].forEach(metric => {
+            holdoutRow.appendChild(createEvaluationCell(formatEvaluationPercent(report.holdout[kernel][metric])));
+        });
+        holdoutBody.appendChild(holdoutRow);
 
-    applyTheme(isDarkMode);
+        const cv = report.cross_validation[kernel];
+        const cvRow = document.createElement("tr");
+        const isBestMean = bestCvKernels.includes(kernel);
+        const isMostStable = stableCvKernels.includes(kernel);
+        if (isBestMean) cvRow.classList.add("cv-best-mean-row");
+        if (isMostStable) cvRow.classList.add("cv-stable-row");
+        const cvKernelCell = createEvaluationCell(kernel, "th");
+        cvKernelCell.scope = "row";
+        if (isBestMean || isMostStable) {
+            const badge = document.createElement("span");
+            badge.className = "metric-badge";
+            badge.textContent = [isBestMean ? "Accuracy trung b\u00ecnh cao nh\u1ea5t" : "", isMostStable ? "SD th\u1ea5p nh\u1ea5t" : ""].filter(Boolean).join(" \u00b7 ");
+            cvKernelCell.append(" ", badge);
+        }
+        cvRow.appendChild(cvKernelCell);
+        cvRow.appendChild(createEvaluationCell(
+            `${formatEvaluationPercent(cv.accuracy_mean, 3)} \u00b1 ${formatEvaluationPercent(cv.accuracy_std, 3)}`
+        ));
+        cvRow.appendChild(createEvaluationCell(
+            `${formatEvaluationPercent(cv.f1_weighted_mean, 3)} \u00b1 ${formatEvaluationPercent(cv.f1_weighted_std, 3)}`
+        ));
+        cvBody.appendChild(cvRow);
 
-    document.addEventListener('click', event => {
-        const toggleBtn = event.target.closest('#theme-toggle');
-        if (!toggleBtn) return;
-
-        const isDarkNow = document.body.classList.contains('dark-mode');
-        localStorage.setItem('darkMode', !isDarkNow);
-        applyTheme(!isDarkNow);
+        const option = document.createElement("option");
+        option.value = kernel;
+        option.textContent = kernel;
+        confusionSelect.appendChild(option);
     });
+
+    const formatKernels = values => values.join(" / ");
+    root.querySelector("#cv-interpretation").textContent =
+        `Ghi ch\u00fa th\u1ef1c nghi\u1ec7m: tr\u00ean holdout (${report.holdout_protocol.test_samples} m\u1eabu), ` +
+        `${formatKernels(bestAccuracyKernels)} \u0111\u1ea1t Accuracy cao nh\u1ea5t (${formatEvaluationPercent(bestAccuracy)}). ` +
+        `Tr\u00ean 5-fold CV (${report.cross_validation_protocol.samples} m\u1eabu), ` +
+        `${formatKernels(bestCvKernels)} c\u00f3 Accuracy trung b\u00ecnh cao nh\u1ea5t ` +
+        `(${formatEvaluationPercent(bestCvMean, 3)}); ${formatKernels(stableCvKernels)} c\u00f3 \u0111\u1ed9 l\u1ec7ch chu\u1ea9n th\u1ea5p nh\u1ea5t ` +
+        `(${formatEvaluationPercent(lowestCvStd, 3)}), cho th\u1ea5y m\u1ee9c bi\u1ebfn thi\u00ean th\u1ea5p h\u01a1n gi\u1eefa c\u00e1c fold.`;
+
+    renderConfusionMatrix(report, root, confusionSelect.value);
+    renderMetricChart(report, root);
+}
+function renderConfusionMatrix(report, root, kernel) {
+    const container = root.querySelector("#confusion-matrix-container");
+    const matrix = report.holdout[kernel].confusion_matrix;
+    const classes = report.classes;
+    const table = document.createElement("table");
+    table.className = "confusion-matrix-table";
+    const caption = document.createElement("caption");
+    caption.textContent = `H\u00e0ng: th\u1ef1c t\u1ebf; c\u1ed9t: d\u1ef1 \u0111o\u00e1n — ${kernel}`;
+    table.appendChild(caption);
+
+    const thead = document.createElement("thead");
+    const header = document.createElement("tr");
+    header.appendChild(createEvaluationCell("Th\u1ef1c t\u1ebf \\ D\u1ef1 \u0111o\u00e1n", "th"));
+    classes.forEach(name => {
+        const th = createEvaluationCell(name, "th");
+        th.scope = "col";
+        header.appendChild(th);
+    });
+    thead.appendChild(header);
+    table.appendChild(thead);
+
+    const tbody = document.createElement("tbody");
+    matrix.forEach((rowValues, rowIndex) => {
+        const row = document.createElement("tr");
+        const rowHeader = createEvaluationCell(classes[rowIndex], "th");
+        rowHeader.scope = "row";
+        row.appendChild(rowHeader);
+        rowValues.forEach((count, columnIndex) => {
+            const cell = createEvaluationCell(String(count));
+            if (rowIndex === columnIndex) cell.classList.add("matrix-correct");
+            else if (count > 0) cell.classList.add("matrix-error");
+            row.appendChild(cell);
+        });
+        tbody.appendChild(row);
+    });
+    table.appendChild(tbody);
+    container.replaceChildren(table);
+
+    const correct = matrix.reduce((sum, row, index) => sum + row[index], 0);
+    const total = matrix.flat().reduce((sum, count) => sum + count, 0);
+    root.querySelector("#confusion-counts").textContent =
+        `${correct} d\u1ef1 \u0111o\u00e1n \u0111\u00fang | ${total - correct} d\u1ef1 \u0111o\u00e1n sai | ${total} m\u1eabu holdout`;
 }
 
-initDarkMode();
+function renderMetricChart(report, root) {
+    const container = root.querySelector("#metric-chart-container");
+    const metric = root.querySelector("#metric-chart-select").value;
+    const metricLabels = {
+        accuracy: "Accuracy",
+        precision_weighted: "Precision (weighted)",
+        recall_weighted: "Recall (weighted)",
+        f1_weighted: "F1 (weighted)"
+    };
+    const svgNs = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(svgNs, "svg");
+    svg.setAttribute("viewBox", "0 0 760 330");
+    svg.setAttribute("role", "img");
+    svg.setAttribute("aria-label", `${metricLabels[metric]} for five SVM kernels on the fixed holdout split`);
+    const title = document.createElementNS(svgNs, "title");
+    title.textContent = `${metricLabels[metric]} on holdout`;
+    svg.appendChild(title);
+    const bestValue = Math.max(...report.kernels.map(kernel => Number(report.holdout[kernel][metric])));
+    const bestKernels = new Set(report.kernels.filter(kernel => Math.abs(Number(report.holdout[kernel][metric]) - bestValue) < 1e-12));
+    const domainMin = 0.8;
+    const domainMax = 1.0;
+    const plotX = 190;
+    const plotWidth = 470;
+    const rowHeight = 52;
+    const top = 34;
+
+    [0.8, 0.85, 0.9, 0.95, 1].forEach(tick => {
+        const x = plotX + ((tick - domainMin) / (domainMax - domainMin)) * plotWidth;
+        const line = document.createElementNS(svgNs, "line");
+        line.setAttribute("x1", x); line.setAttribute("x2", x);
+        line.setAttribute("y1", 22); line.setAttribute("y2", 292);
+        line.setAttribute("stroke", "#263753"); line.setAttribute("stroke-width", "1");
+        svg.appendChild(line);
+        const label = document.createElementNS(svgNs, "text");
+        label.setAttribute("x", x); label.setAttribute("y", 316);
+        label.setAttribute("text-anchor", "middle"); label.setAttribute("class", "chart-axis-label");
+        label.textContent = `${Math.round(tick * 100)}%`;
+        svg.appendChild(label);
+    });
+
+    report.kernels.forEach((kernel, index) => {
+        const y = top + index * rowHeight;
+        const value = Number(report.holdout[kernel][metric]);
+        const label = document.createElementNS(svgNs, "text");
+        label.setAttribute("x", plotX - 14); label.setAttribute("y", y + 17);
+        label.setAttribute("text-anchor", "end"); label.setAttribute("class", "chart-kernel-label");
+        label.textContent = kernel;
+        svg.appendChild(label);
+        const track = document.createElementNS(svgNs, "rect");
+        track.setAttribute("x", plotX); track.setAttribute("y", y);
+        track.setAttribute("width", plotWidth); track.setAttribute("height", 23);
+        track.setAttribute("fill", "#101a2c");
+        svg.appendChild(track);
+        const bar = document.createElementNS(svgNs, "rect");
+        bar.setAttribute("x", plotX); bar.setAttribute("y", y);
+        bar.setAttribute("width", Math.max(0, Math.min(1, (value - domainMin) / (domainMax - domainMin))) * plotWidth);
+        bar.setAttribute("height", 23);
+        bar.setAttribute("fill", bestKernels.has(kernel) ? "#9e2a3b" : "#2b3a55");
+        svg.appendChild(bar);
+        const valueLabel = document.createElementNS(svgNs, "text");
+        valueLabel.setAttribute("x", plotX + plotWidth + 10); valueLabel.setAttribute("y", y + 17);
+        valueLabel.setAttribute("class", "chart-value-label");
+        valueLabel.textContent = formatEvaluationPercent(value);
+        svg.appendChild(valueLabel);
+    });
+    container.replaceChildren(svg);
+}
+function drawDecisionBoundary(canvas, data) {
+    const featureNames = ["Chi\u1ec1u d\u00e0i \u0111\u00e0i hoa (cm)", "Chi\u1ec1u r\u1ed9ng \u0111\u00e0i hoa (cm)", "Chi\u1ec1u d\u00e0i c\u00e1nh hoa (cm)", "Chi\u1ec1u r\u1ed9ng c\u00e1nh hoa (cm)"];
+    const featureXLabel = featureNames[data.feature_x.index] || data.feature_x.name;
+    const featureYLabel = featureNames[data.feature_y.index] || data.feature_y.name;
+    const context = canvas.getContext("2d");
+    const width = canvas.width;
+    const height = canvas.height;
+    const margin = { top: 20, right: 24, bottom: 60, left: 78 };
+    const plotWidth = width - margin.left - margin.right;
+    const plotHeight = height - margin.top - margin.bottom;
+    const xValues = data.grid.x_values;
+    const yValues = data.grid.y_values;
+    const predictions = data.grid.predictions;
+    const rows = yValues.length;
+    const columns = xValues.length;
+    const cellWidth = plotWidth / columns;
+    const cellHeight = plotHeight / rows;
+    const regionColors = ["rgba(114,47,55,.34)", "rgba(48,75,110,.55)", "rgba(136,112,82,.42)"];
+
+    context.clearRect(0, 0, width, height);
+    context.fillStyle = "#0a1128";
+    context.fillRect(0, 0, width, height);
+    predictions.forEach((row, yIndex) => row.forEach((classIndex, xIndex) => {
+        const canvasY = margin.top + plotHeight - (yIndex + 1) * cellHeight;
+        context.fillStyle = regionColors[classIndex] || regionColors[0];
+        context.fillRect(margin.left + xIndex * cellWidth, canvasY, cellWidth + 1, cellHeight + 1);
+    }));
+
+    context.strokeStyle = "#8c96a8";
+    context.lineWidth = 1;
+    context.beginPath();
+    context.moveTo(margin.left, margin.top);
+    context.lineTo(margin.left, margin.top + plotHeight);
+    context.lineTo(margin.left + plotWidth, margin.top + plotHeight);
+    context.stroke();
+
+    data.holdout_points.forEach(point => {
+        const x = margin.left + ((point.x - xValues[0]) / (xValues[columns - 1] - xValues[0])) * plotWidth;
+        const y = margin.top + plotHeight - ((point.y - yValues[0]) / (yValues[rows - 1] - yValues[0])) * plotHeight;
+        context.beginPath();
+        context.arc(x, y, 5, 0, Math.PI * 2);
+        context.fillStyle = ["#f1e8d8", "#d88663", "#8fb1cb"][point.actual];
+        context.fill();
+        context.lineWidth = 2;
+        context.strokeStyle = point.actual === point.predicted ? "#ffffff" : "#f2a1aa";
+        context.stroke();
+    });
+
+    context.fillStyle = "#ffffff";
+    context.font = "14px Montserrat, sans-serif";
+    context.textAlign = "center";
+    context.fillText(featureXLabel, margin.left + plotWidth / 2, height - 15);
+    context.save();
+    context.translate(20, margin.top + plotHeight / 2);
+    context.rotate(-Math.PI / 2);
+    context.fillText(featureYLabel, 0, 0);
+    context.restore();
+    context.font = "11px Montserrat, sans-serif";
+    context.textAlign = "left";
+    context.fillStyle = "#e0e0e0";
+    context.fillText(xValues[0].toFixed(1), margin.left, margin.top + plotHeight + 20);
+    context.textAlign = "right";
+    context.fillText(xValues[columns - 1].toFixed(1), margin.left + plotWidth, margin.top + plotHeight + 20);
+    context.textAlign = "right";
+    context.fillText(yValues[0].toFixed(1), margin.left - 9, margin.top + plotHeight);
+    context.fillText(yValues[rows - 1].toFixed(1), margin.left - 9, margin.top + 5);
+}
+
+function initMachineLearningPanels() {
+    const root = document.querySelector(".model-evaluation-region");
+    if (!root) return;
+
+    const loading = root.querySelector("#evaluation-loading");
+    const error = root.querySelector("#evaluation-error");
+    const errorMessage = root.querySelector("#evaluation-error-message");
+    const content = root.querySelector("#evaluation-content");
+    let reportPromise = null;
+
+    async function loadEvaluation() {
+        if (reportPromise) return reportPromise;
+        loading.hidden = false;
+        error.hidden = true;
+        errorMessage.textContent = "";
+        reportPromise = requestAPI(`${API_BASE_URL}/evaluation`)
+            .then(report => {
+                renderKernelEvaluation(report, root);
+                content.hidden = false;
+                loading.hidden = true;
+                return report;
+            })
+            .catch(failure => {
+                reportPromise = null;
+                loading.hidden = true;
+                errorMessage.textContent = failure.message || "Kh\u00f4ng t\u1ea3i \u0111\u01b0\u1ee3c d\u1eef li\u1ec7u \u0111\u00e1nh gi\u00e1 m\u00f4 h\u00ecnh.";
+                error.hidden = false;
+                return null;
+            });
+        return reportPromise;
+    }
+
+    const observer = "IntersectionObserver" in window
+        ? new IntersectionObserver(entries => {
+            if (entries.some(entry => entry.isIntersecting)) {
+                observer.disconnect();
+                loadEvaluation();
+            }
+        }, { rootMargin: "220px 0px" })
+        : null;
+    if (observer) observer.observe(root);
+    else loadEvaluation();
+
+    root.querySelector("#retry-evaluation-button").addEventListener("click", loadEvaluation);
+
+    root.querySelector("#confusion-kernel").addEventListener("change", async event => {
+        const report = await loadEvaluation();
+        if (report) renderConfusionMatrix(report, root, event.target.value);
+    });
+    root.querySelector("#metric-chart-select").addEventListener("change", async () => {
+        const report = await loadEvaluation();
+        if (report) renderMetricChart(report, root);
+    });
+
+    async function requestBoundary() {
+        const kernel = root.querySelector("#boundary-kernel").value || "rbf";
+        const featureX = root.querySelector("#boundary-feature-x").value || "2";
+        const featureY = root.querySelector("#boundary-feature-y").value || "3";
+        const status = root.querySelector("#boundary-status");
+        const canvas = root.querySelector("#decision-boundary-canvas");
+        const button = root.querySelector("#draw-boundary-button");
+        if (featureX === featureY) {
+            status.textContent = "H\u00e3y ch\u1ecdn hai \u0111\u1eb7c tr\u01b0ng kh\u00e1c nhau \u0111\u1ec3 v\u1ebd ranh gi\u1edbi.";
+            status.classList.add("evaluation-error");
+            return;
+        }
+        button.disabled = true;
+        status.classList.remove("evaluation-error");
+        status.textContent = "\u0110ang t\u1ea1o m\u00f4 h\u00ecnh 2D ri\u00eang v\u00e0 v\u1ebd c\u00e1c v\u00f9ng quy\u1ebft \u0111\u1ecbnh\u2026";
+        try {
+            const query = new URLSearchParams({ kernel, feature_x: featureX, feature_y: featureY });
+            const result = await requestAPI(`${API_BASE_URL}/decision-boundary?${query}`);
+            drawDecisionBoundary(canvas, result);
+            canvas.hidden = false;
+            root.querySelector(".boundary-legend").hidden = false;
+            canvas.setAttribute("aria-label", `M\u00f4 h\u00ecnh 2D ${kernel} \u0111\u01b0\u1ee3c hu\u1ea5n luy\u1ec7n ri\u00eang; tr\u1ee5c X: ${root.querySelector("#boundary-feature-x").selectedOptions[0].textContent}, tr\u1ee5c Y: ${root.querySelector("#boundary-feature-y").selectedOptions[0].textContent}; c\u00e1c \u0111i\u1ec3m l\u00e0 m\u1eabu holdout.`);
+            status.textContent = `M\u00f4 h\u00ecnh 2D ri\u00eang | ${result.train_samples} m\u1eabu train | ${result.test_samples} \u0111i\u1ec3m holdout.`;
+        } catch (failure) {
+            status.textContent = failure.message || "Kh\u00f4ng th\u1ec3 t\u1ea1o bi\u1ec3u \u0111\u1ed3 ranh gi\u1edbi quy\u1ebft \u0111\u1ecbnh.";
+            status.classList.add("evaluation-error");
+        } finally {
+            button.disabled = false;
+        }
+    }
+
+    root.querySelector("#draw-boundary-button").addEventListener("click", requestBoundary);
+    root.querySelector("#boundary-kernel").addEventListener("change", requestBoundary);
+    root.querySelector("#boundary-feature-x").addEventListener("change", requestBoundary);
+    root.querySelector("#boundary-feature-y").addEventListener("change", requestBoundary);
+    requestBoundary();
+}
+
+initMachineLearningPanels();

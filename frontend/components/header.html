@@ -1,87 +1,33 @@
 <header class="header">
-
     <div class="header-top">
+        <a class="brand" href="#prediction" aria-label="Iris Field Notes, v&#7873; &#273;&#7847;u trang">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy">
+                <span class="brand-kicker">The Iris archive</span>
+                <strong>Iris <em>Field Notes</em></strong>
+            </span>
+        </a>
 
-        <!-- LOGO -->
-        <div class="brand">
+        <nav class="navbar" aria-label="&#272;i&#7873;u h&#432;&#7899;ng ch&#237;nh">
+            <a href="#prediction">D&#7921; &#273;o&#225;n <span>01</span></a>
+            <a href="#history">L&#7883;ch s&#7917; <span>02</span></a>
+            <a href="#evaluation">&#272;&#225;nh gi&#225; <span>03</span></a>
+            <a href="#dataset">D&#7919; li&#7879;u &amp; SVM <span>04</span></a>
+            <a href="#process">Quy tr&#236;nh <span>05</span></a>
+            <a href="#api-info">API &amp; D&#7921; &#225;n <span>06</span></a>
+        </nav>
 
-            <div class="brand-icon">🌸</div>
-
-            <div>
-                <h1>Phân loại hoa Iris</h1>
-                <p>Ứng dụng học máy nhận dạng loài hoa Iris</p>
-            </div>
-
-        </div>
-
-
-        <!-- KHU VỰC BÊN PHẢI -->
         <div class="header-actions">
-            <button
-                type="button"
-                id="theme-toggle"
-                class="theme-toggle-btn"
-                title="Chuyển sang giao diện sáng"
-                aria-label="Chuyển sang giao diện sáng"
-            >☀️</button>
-            <!-- API -->
             <div class="api-status" data-state="checking" role="status" aria-live="polite">
                 <span class="status-dot"></span>
-                <span data-api-status-text>Đang kiểm tra API...</span>
+                <span data-api-status-text>&#272;ang k&#7871;t n&#7889;i API</span>
             </div>
-
-
-            <!-- TÀI KHOẢN -->
-            <div
-                id="user-account"
-                class="user-account hidden"
->
-
-            <span class="user-icon">👤</span>
-
-             <span
-                id="current-username"
-                class="current-username"
-            ></span>
-
-            <button
-                type="button"
-                id="change-password-button"
-                class="change-password-button"
-            >
-                🔑 Đổi mật khẩu
-            </button>
-
-            <button
-                type="button"
-                id="logout-button"
-                class="logout-button"
-            >
-                Đăng xuất
-            </button>
-
-</div>
-
+            <div id="user-account" class="user-account hidden">
+                <span class="account-label">Session</span>
+                <span id="current-username" class="current-username"></span>
+                <button type="button" id="change-password-button" class="change-password-button">T&#224;i kho&#7843;n</button>
+                <button type="button" id="logout-button" class="logout-button">Tho&#225;t</button>
+            </div>
         </div>
-
     </div>
-
-
-    <!-- MENU -->
-    <nav class="navbar">
-
-        <a href="#prediction">Dự đoán</a>
-
-        <a href="#history">Lịch sử</a>
-
-        <a href="#evaluation">Đánh giá</a>
-
-        <a href="#dataset">Dữ liệu Iris</a>
-
-        <a href="#svm-theory">Tìm hiểu SVM</a>
-
-        <a href="#api-info">API</a>
-
-    </nav>
-
 </header>

@@ -22,15 +22,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
 
         await Promise.all([
-            loadComponent("comp-header", "components/header.html?v=7"),
-            loadComponent("comp-history", "components/history.html?v=4"),
-            loadComponent("comp-prediction", "components/prediction.html?v=6"),
-            loadComponent("comp-model-info", "components/model-info.html?v=5"),
-            loadComponent("comp-evaluation", "components/evaluation.html?v=3"),
-            loadComponent("comp-dataset", "components/dataset.html?v=5"),
-            loadComponent("comp-svm-theory", "components/svm-theory.html?v=5"),
-            loadComponent("comp-process", "components/process.html?v=4"),
-            loadComponent("comp-api-footer", "components/api-footer.html?v=5")
+            loadComponent("comp-header", "components/header.html?v=9"),
+            loadComponent("comp-history", "components/history.html?v=5"),
+            loadComponent("comp-prediction", "components/prediction.html?v=10"),
+            loadComponent("comp-model-info", "components/model-info.html?v=10"),
+            loadComponent("comp-evaluation", "components/evaluation.html?v=10"),
+            loadComponent("comp-dataset", "components/dataset.html?v=8"),
+            loadComponent("comp-svm-theory", "components/svm-theory.html?v=7"),
+            loadComponent("comp-process", "components/process.html?v=7"),
+            loadComponent("comp-api-footer", "components/api-footer.html?v=10")
         ]);
         // ================================================
 // MỞ POPUP ĐỔI MẬT KHẨU
@@ -59,19 +59,19 @@ document.addEventListener("click", function (event) {
 
 });
 
-        console.log("✅ Tất cả component đã được tải.");
+        console.log(" Tất cả component đã được tải.");
 
         // Chỉ chạy script.js sau khi toàn bộ HTML component đã có trong DOM
         const script = document.createElement("script");
 
-        script.src = "script.js?v=" + new Date().getTime();
+        script.src = "script.js?v=22";
 
         document.body.appendChild(script);
 
     } catch (error) {
 
         console.error(
-            "❌ Lỗi tải component:",
+            " Lỗi tải component:",
             error
         );
     }

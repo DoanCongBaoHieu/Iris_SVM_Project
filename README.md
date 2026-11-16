@@ -1,23 +1,23 @@
 # Phân loại hoa Iris bằng các kernel SVM
 
-Dự án học máy minh họa cách dùng năm kernel của Support Vector Machine (SVM) để phân loại ba loài hoa Iris. Ứng dụng gồm giao diện web tiếng Việt, API dự đoán bằng FastAPI, các mô hình đã huấn luyện và chức năng tài khoản/lưu lịch sử dự đoán.
+This Iris classifier always predicts with a separately saved main SVM model. Linear, RBF, Polynomial, Sigmoid and Laplacian are optional comparison models.
 
 ## Nội dung
 
 - Nhập bốn đặc trưng của hoa: chiều dài và chiều rộng đài hoa, chiều dài và chiều rộng cánh hoa.
-- Chọn một hoặc nhiều mô hình để so sánh kết quả dự đoán.
+- The main SVM always predicts; select any of five kernels to compare additional results.
 - Đăng nhập bằng Auth0; tài khoản cũ vẫn có thể đăng nhập bằng tên đăng nhập và mật khẩu.
 - Lưu/xem lịch sử dự đoán theo tài khoản.
 - Tìm hiểu dữ liệu Iris, quy trình học máy và các kernel SVM trên giao diện.
 
-## Năm kernel SVM
+## Main model and optional comparison kernels
 
-Mỗi mô hình dùng `StandardScaler` để chuẩn hóa dữ liệu trước khi huấn luyện SVC.
+The main model is stored as `model/iris_svm_model.pkl`. The table below lists optional comparison models; each uses a `StandardScaler` pipeline.
 
 | Mã mô hình | Kernel | Mô tả ngắn |
 | --- | --- | --- |
 | `svm_linear` | Linear | Tạo ranh giới phân lớp tuyến tính. |
-| `svm_rbf` | RBF | Mô hình hóa ranh giới phi tuyến bằng hàm xuyên tâm. |
+| `svm_rbf` | RBF | Tạo ranh giới phi tuyến dựa trên khoảng cách RBF. |
 | `svm_poly` | Polynomial | Tạo ranh giới dựa trên đa thức bậc 3. |
 | `svm_sigmoid` | Sigmoid | Dùng hàm sigmoid để tạo ranh giới phân lớp. |
 | `svm_laplacian` | Laplacian | Kernel tùy chỉnh dựa trên khoảng cách Manhattan; được định nghĩa trong `backend/kernels.py`. |
@@ -57,7 +57,7 @@ Các tệp model đã huấn luyện có sẵn trong `model/`. Để huấn luy�
 .venv\Scripts\python.exe -m backend.train_models
 ```
 
-Lệnh này thay mới năm tệp `model/iris_svm_*_model.pkl`.
+This command replaces the five optional comparison model files in `model/`.
 
 ### 3. Khởi chạy API
 
@@ -103,13 +103,13 @@ python -m http.server 5500 --directory frontend
 
 Mở `http://localhost:5500`. Khi chạy trên `localhost` hoặc `127.0.0.1`, frontend gọi API tại `http://localhost:8000`.
 
-## API dự đoán
+## Prediction API
 
-Endpoint `POST /predict` nhận các đặc trưng theo centimet và danh sách mã mô hình tùy chọn:
+`POST /predict` always runs the separately saved main SVM model. Optional comparison kernels are supplied in `kernels`; an empty list still returns the main prediction.
 
 ```json
 {
-  "algorithms": ["svm_linear", "svm_rbf"],
+  "kernels": ["linear", "rbf", "polynomial"],
   "sepal_length": 5.1,
   "sepal_width": 3.5,
   "petal_length": 1.4,
@@ -117,29 +117,16 @@ Endpoint `POST /predict` nhận các đặc trưng theo centimet và danh sách 
 }
 ```
 
-`algorithms` có thể chứa một hoặc nhiều mã trong bảng kernel. Nếu bỏ qua trường này, API dùng `svm_rbf`. Có thể thêm `user_id` để lưu kết quả đầu tiên vào lịch sử của người dùng đã đăng nhập.
+The response contains `main_result`, `main_prediction_time_ms`, `comparison_results`, and `comparison_times_ms`. `comparison_results` and `comparison_times_ms` are empty objects when no comparison kernels are selected. `user_id` is optional and saves the main prediction to the user's history when provided.
 
-Các endpoint đăng nhập và lịch sử chính:
-
-| Phương thức | Đường dẫn | Mục đích |
-| --- | --- | --- |
-| `GET` | `/auth/login` | Bắt đầu đăng nhập Auth0. |
-| `GET` | `/auth/callback` | Xử lý callback Auth0. |
-| `GET` | `/auth/complete` | Liên kết phiên Auth0 với tài khoản ứng dụng. |
-| `GET` | `/auth/logout` | Đăng xuất Auth0. |
-| `POST` | `/register` | Tạo tài khoản. |
-| `POST` | `/login` | Đăng nhập. |
-| `POST` | `/change-password` | Đổi mật khẩu. |
-| `GET` | `/history/{user_id}` | Lấy lịch sử dự đoán. |
-| `DELETE` | `/history/{user_id}/{history_id}` | Xóa một bản ghi lịch sử. |
-| `DELETE` | `/history/{user_id}` | Xóa toàn bộ lịch sử của người dùng. |
+`GET /evaluation` reports the fixed 80/20 holdout metrics and five-fold stratified CV separately. CV uses only the 120 training samples; the 30-sample holdout remains reserved for the holdout table and confusion matrices. `GET /decision-boundary` builds a separate two-feature SVM illustration and does not represent the deployed four-feature model.
 
 ## Cấu trúc thư mục
 
 ```text
-backend/       API, kết nối cơ sở dữ liệu, huấn luyện và kernel Laplacian
+backend/       FastAPI, database access, model training and the Laplacian kernel
 frontend/      Giao diện web, JavaScript, CSS, các phần HTML và hình ảnh
-model/         Năm mô hình SVM đã huấn luyện
+model/         Main SVM model and five optional comparison models
 reports/       Hình trực quan hóa dữ liệu
 eda.py         Phân tích khám phá dữ liệu Iris
 visualize.py   Tạo biểu đồ dữ liệu

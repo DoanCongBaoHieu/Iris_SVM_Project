@@ -4,6 +4,7 @@ import os
 import secrets
 import time
 from pathlib import Path
+from typing import Literal
 from urllib.parse import urlencode
 
 import bcrypt
@@ -11,7 +12,7 @@ from auth0_fastapi.auth.auth_client import AuthClient
 from auth0_fastapi.config import Auth0Config
 from auth0_fastapi.errors import register_exception_handlers
 from auth0_fastapi.server.routes import register_auth_routes, router as auth0_router
-from fastapi import Depends, FastAPI, HTTPException, Request, Response
+from fastapi import Depends, FastAPI, HTTPException, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 import joblib
@@ -24,6 +25,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from dotenv import load_dotenv
 
 from backend.database import Base, engine, get_db
+from backend.evaluation import build_decision_boundary, get_evaluation_report
 from backend.models import PredictionHistory, User
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env")
@@ -97,31 +99,23 @@ register_exception_handlers(app)
 
 
 MODEL_DIR = Path(__file__).resolve().parents[1] / "model"
-MODEL_FILES = {
-    "svm_linear": "iris_svm_linear_model.pkl",
-    "svm_rbf": "iris_svm_rbf_model.pkl",
-    "svm_poly": "iris_svm_poly_model.pkl",
-    "svm_sigmoid": "iris_svm_sigmoid_model.pkl",
-    "svm_laplacian": "iris_svm_laplacian_model.pkl"
-}
+MAIN_MODEL_PATH = MODEL_DIR / "iris_svm_model.pkl"
+if not MAIN_MODEL_PATH.exists():
+    raise FileNotFoundError(
+        f"Main SVM model not found at {MAIN_MODEL_PATH}. "
+        "Create it with `python model/save_model.py`."
+    )
+main_model = joblib.load(MAIN_MODEL_PATH)
 
-prediction_models = {}
-for algorithm, filename in MODEL_FILES.items():
-    model_path = MODEL_DIR / filename
-    if not model_path.exists():
-        raise FileNotFoundError(
-            f"Không tìm thấy mô hình tại: {model_path}. "
-            "Hãy chạy `python backend/train_models.py` để tạo các mô hình."
-        )
-    prediction_models[algorithm] = joblib.load(model_path)
-
-model_names = {
-    "svm_linear": "SVM kernel tuyến tính (Linear)",
-    "svm_rbf": "SVM kernel RBF",
-    "svm_poly": "SVM kernel đa thức (Polynomial)",
-    "svm_sigmoid": "SVM kernel Sigmoid",
-    "svm_laplacian": "SVM kernel Laplacian"
+KERNEL_MODEL_FILES = {
+    "linear": "iris_svm_linear_model.pkl",
+    "rbf": "iris_svm_rbf_model.pkl",
+    "polynomial": "iris_svm_poly_model.pkl",
+    "sigmoid": "iris_svm_sigmoid_model.pkl",
+    "laplacian": "iris_svm_laplacian_model.pkl",
 }
+comparison_models = {}
+
 
 
 target_names = [
@@ -136,10 +130,9 @@ class IrisInput(BaseModel):
         description="ID người dùng"
     )
 
-    algorithms: list[str] = Field(
-        default_factory=lambda: ["svm_linear"],
-        min_length=1,
-        description="Các thuật toán cần dùng để dự đoán"
+    kernels: list[str] = Field(
+        default_factory=list,
+        description="Optional kernels to compare with the main SVM model"
     )
 
     sepal_length: float = Field(
@@ -305,65 +298,84 @@ def auth_after_logout():
     )
 
 
+@app.get("/evaluation")
+def model_evaluation():
+    """Return separate fixed-holdout and train-only cross-validation results."""
+    return get_evaluation_report()
+
+
+@app.get("/decision-boundary")
+def decision_boundary(
+    kernel: Literal["linear", "rbf", "polynomial", "sigmoid", "laplacian"] = "rbf",
+    feature_x: int = Query(default=2, ge=0, le=3),
+    feature_y: int = Query(default=3, ge=0, le=3),
+    grid_size: int = Query(default=40, ge=20, le=80),
+):
+    if feature_x == feature_y:
+        raise HTTPException(
+            status_code=422,
+            detail="Choose two different Iris features.",
+        )
+    return build_decision_boundary(kernel, feature_x, feature_y, grid_size)
+
+
 @app.post("/predict")
 def predict(data: IrisInput, db: Session = Depends(get_db)):
-    if len(set(data.algorithms)) != len(data.algorithms):
+    features = np.array([[
+        data.sepal_length,
+        data.sepal_width,
+        data.petal_length,
+        data.petal_width,
+    ]])
+
+    # The original, separately trained SVM always produces the official result.
+    prediction_started_at = time.perf_counter()
+    main_prediction = int(main_model.predict(features)[0])
+    prediction_time_ms = (time.perf_counter() - prediction_started_at) * 1000
+    main_result = target_names[main_prediction]
+
+    if len(set(data.kernels)) != len(data.kernels):
         raise HTTPException(
             status_code=422,
-            detail="Danh sách thuật toán không được chứa lựa chọn trùng lặp."
+            detail="The kernels list must not contain duplicates.",
         )
 
-    unsupported_algorithms = [
-        algorithm
-        for algorithm in data.algorithms
-        if algorithm not in prediction_models
+    unsupported_kernels = [
+        kernel for kernel in data.kernels if kernel not in KERNEL_MODEL_FILES
     ]
-    if unsupported_algorithms:
+    if unsupported_kernels:
         raise HTTPException(
             status_code=422,
-            detail=(
-                "Thuật toán không được hỗ trợ: "
-                + ", ".join(unsupported_algorithms)
-            )
+            detail="Unsupported kernels: " + ", ".join(unsupported_kernels),
         )
+
+    comparison_results = {}
+    comparison_times_ms = {}
+    for kernel in data.kernels:
+        if kernel not in comparison_models:
+            model_path = MODEL_DIR / KERNEL_MODEL_FILES[kernel]
+            if not model_path.exists():
+                raise HTTPException(
+                    status_code=500,
+                    detail=f"Comparison model file not found: {model_path.name}",
+                )
+            comparison_models[kernel] = joblib.load(model_path)
+
+        comparison_started_at = time.perf_counter()
+        prediction = int(comparison_models[kernel].predict(features)[0])
+        comparison_times_ms[kernel] = round(
+            (time.perf_counter() - comparison_started_at) * 1000,
+            4,
+        )
+        comparison_results[kernel] = target_names[prediction]
 
     user = None
-
     if data.user_id is not None:
         user = db.execute(
             select(User).where(User.id == data.user_id)
         ).scalar_one_or_none()
-
         if not user:
-            raise HTTPException(
-                status_code=404,
-                detail="Không tìm thấy người dùng."
-            )
-
-    features = np.array([
-        [
-            data.sepal_length,
-            data.sepal_width,
-            data.petal_length,
-            data.petal_width
-        ]
-    ])
-
-    results = []
-    for algorithm in data.algorithms:
-        start_time = time.perf_counter()
-        prediction = int(prediction_models[algorithm].predict(features)[0])
-        prediction_time_ms = (time.perf_counter() - start_time) * 1000
-
-        results.append({
-            "algorithm": algorithm,
-            "model_name": model_names[algorithm],
-            "prediction": prediction,
-            "species": target_names[prediction],
-            "prediction_time_ms": round(prediction_time_ms, 4)
-        })
-
-    primary_result = results[0]
+            raise HTTPException(status_code=404, detail="User not found.")
 
     if user is not None:
         history = PredictionHistory(
@@ -372,23 +384,19 @@ def predict(data: IrisInput, db: Session = Depends(get_db)):
             sepal_width=data.sepal_width,
             petal_length=data.petal_length,
             petal_width=data.petal_width,
-            prediction=primary_result["prediction"],
-            species=primary_result["species"],
-            prediction_time_ms=primary_result["prediction_time_ms"]
+            prediction=main_prediction,
+            species=main_result,
+            prediction_time_ms=round(prediction_time_ms, 4),
         )
-
         db.add(history)
         db.commit()
-        db.refresh(history)
 
     return {
-        **primary_result,
-        "message": (
-            f"Mô hình {primary_result['model_name']} dự đoán hoa thuộc "
-            f"loài {primary_result['species'].capitalize()}."
-        ),
-        "results": results,
-        "history_saved": user is not None
+        "main_result": main_result,
+        "main_prediction_time_ms": round(prediction_time_ms, 4),
+        "comparison_results": comparison_results,
+        "comparison_times_ms": comparison_times_ms,
+        "history_saved": user is not None,
     }
 
 @app.get("/db-test")
