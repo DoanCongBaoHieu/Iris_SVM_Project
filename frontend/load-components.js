@@ -24,13 +24,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         await Promise.all([
             loadComponent("comp-header", "components/header.html?v=10"),
             loadComponent("comp-history", "components/history.html?v=5"),
-            loadComponent("comp-prediction", "components/prediction.html?v=11"),
-            loadComponent("comp-model-info", "components/model-info.html?v=10"),
-            loadComponent("comp-evaluation", "components/evaluation.html?v=10"),
-            loadComponent("comp-dataset", "components/dataset.html?v=8"),
-            loadComponent("comp-svm-theory", "components/svm-theory.html?v=7"),
-            loadComponent("comp-process", "components/process.html?v=7"),
-            loadComponent("comp-api-footer", "components/api-footer.html?v=10")
+            loadComponent("comp-prediction", "components/prediction.html?v=12"),
+            loadComponent("comp-model-info", "components/model-info.html?v=11"),
+            loadComponent("comp-evaluation", "components/evaluation.html?v=14"),
+            loadComponent("comp-dataset", "components/dataset.html?v=9"),
+            loadComponent("comp-svm-theory", "components/svm-theory.html?v=9"),
+            loadComponent("comp-process", "components/process.html?v=8"),
+            loadComponent("comp-api-footer", "components/api-footer.html?v=12")
         ]);
         // ================================================
 // MỞ POPUP ĐỔI MẬT KHẨU
@@ -64,7 +64,7 @@ document.addEventListener("click", function (event) {
         // Chỉ chạy script.js sau khi toàn bộ HTML component đã có trong DOM
         const script = document.createElement("script");
 
-        script.src = "script.js?v=23";
+        script.src = "script.js?v=27";
 
         document.body.appendChild(script);
 

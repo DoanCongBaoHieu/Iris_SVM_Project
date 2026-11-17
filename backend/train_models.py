@@ -8,9 +8,6 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 
-from backend.kernels import laplacian_kernel
-
-
 MODEL_DIR = Path(__file__).resolve().parents[1] / "model"
 
 
@@ -31,10 +28,6 @@ def create_models():
         "svm_sigmoid": Pipeline([
             ("scaler", StandardScaler()),
             ("classifier", SVC(kernel="sigmoid", C=1.0, gamma="scale"))
-        ]),
-        "svm_laplacian": Pipeline([
-            ("scaler", StandardScaler()),
-            ("classifier", SVC(kernel=laplacian_kernel, C=1.0))
         ])
     }
 

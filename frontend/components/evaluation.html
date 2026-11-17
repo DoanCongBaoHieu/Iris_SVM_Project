@@ -1,4 +1,4 @@
-<section class="evaluation-section ml-lab" aria-label="Kiểm chứng chéo, ma trận nhầm lẫn, biểu đồ và ranh giới quyết định 2D">
+<section class="evaluation-section ml-lab" aria-label="Ki&#7875;m ch&#7913;ng ch&#233;o, ma tr&#7853;n nh&#7847;m l&#7851;n v&#224; bi&#7875;u &#273;&#7891;">
     <div id="evaluation-content" class="evaluation-content" hidden>
 
 
@@ -37,42 +37,6 @@
             </section>
         </div>
 
-        <section class="ml-panel boundary-panel" aria-labelledby="boundary-title">
-            <div class="ml-panel-heading">
-                <div>
-                <p class="eyebrow">Trực quan hóa hai chiều</p>
-                    <h3 id="boundary-title">Ranh gi&#7899;i quy&#7871;t &#273;&#7883;nh SVM 2D</h3>
-                </div>
-                <span class="protocol-stamp">Model 2D ri&#234;ng</span>
-            </div>
-            <p class="ml-note boundary-explanation">Bi&#7875;u &#273;&#7891; hu&#7845;n luy&#7879;n m&#7897;t pipeline SVM ri&#234;ng tr&#234;n hai &#273;&#7863;c tr&#432;ng &#273;ang ch&#7885;n, d&#249;ng 120 m&#7851;u train. N&#243; kh&#244;ng ph&#7843;i l&#224; h&#236;nh chi&#7871;u hay to&#224;n b&#7897; m&#244; h&#236;nh d&#7921; &#273;o&#225;n b&#7889;n chi&#7873;u; c&#225;c ch&#7845;m l&#224; 30 m&#7851;u holdout, vi&#7873;n h&#7891;ng &#273;&#225;nh d&#7845;u d&#7921; &#273;o&#225;n sai c&#7911;a model 2D.</p>
-            <div class="boundary-controls">
-                <div>
-                    <label class="control-label" for="boundary-kernel">Kernel</label>
-                <select id="boundary-kernel" class="ml-select"><option value="linear">Linear</option><option value="rbf" selected>RBF</option><option value="polynomial">Polynomial</option><option value="sigmoid">Sigmoid</option><option value="laplacian">Laplacian</option></select>
-                </div>
-                <div>
-                    <label class="control-label" for="boundary-feature-x">Tr&#7909;c X</label>
-                <select id="boundary-feature-x" class="ml-select"><option value="0">Chiều dài đài hoa (cm)</option><option value="1">Chiều rộng đài hoa (cm)</option><option value="2" selected>Chiều dài cánh hoa (cm)</option><option value="3">Chiều rộng cánh hoa (cm)</option></select>
-                </div>
-                <div>
-                    <label class="control-label" for="boundary-feature-y">Tr&#7909;c Y</label>
-                <select id="boundary-feature-y" class="ml-select"><option value="0">Chiều dài đài hoa (cm)</option><option value="1">Chiều rộng đài hoa (cm)</option><option value="2">Chiều dài cánh hoa (cm)</option><option value="3" selected>Chiều rộng cánh hoa (cm)</option></select>
-                </div>
-                <button id="draw-boundary-button" class="boundary-button" type="button">V&#7869; ranh gi&#7899;i</button>
-            </div>
-            <div id="boundary-status" class="evaluation-status" role="status" aria-live="polite">Đang chuẩn bị biểu đồ ranh giới quyết định.</div>
-            <div class="boundary-plot-wrap">
-                <canvas id="decision-boundary-canvas" width="900" height="520" role="img" aria-label="Ranh gi&#7899;i c&#7911;a m&#244; h&#236;nh SVM 2D ri&#234;ng bi&#7879;t" hidden></canvas>
-            </div>
-            <div class="boundary-legend" aria-label="Ch&#250; gi&#7843;i lo&#224;i hoa" hidden>
-                <span><i class="legend-setosa"></i> Setosa</span>
-                <span><i class="legend-versicolor"></i> Versicolor</span>
-                <span><i class="legend-virginica"></i> Virginica</span>
-                <span><i class="legend-test-point"></i> M&#7851;u holdout</span>
-            </div>
-        </section>
-
         <section class="ml-panel cv-panel" aria-labelledby="cv-title">
             <div class="ml-panel-heading">
                 <div>
@@ -94,7 +58,6 @@
                     <tbody id="cv-kernel-body"></tbody>
                 </table>
             </div>
-            <p id="cv-interpretation" class="ml-note cv-interpretation"></p>
             <p class="ml-note">SD l&#224; &#273;&#7897; l&#7879;ch chu&#7849;n m&#7851;u gi&#7919;a c&#225;c fold. CV ch&#7881; d&#249;ng 120 m&#7851;u train; holdout 30 m&#7851;u v&#7851;n &#273;&#432;&#7907;c &#273;&#225;nh gi&#225; ri&#234;ng.</p>
         </section>
 

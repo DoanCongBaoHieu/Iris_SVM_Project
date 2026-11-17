@@ -1779,83 +1779,62 @@ function renderKernelEvaluation(report, root) {
     const holdoutBody = root.querySelector("#holdout-kernel-body");
     const cvBody = root.querySelector("#cv-kernel-body");
     const confusionSelect = root.querySelector("#confusion-kernel");
-    const boundaryKernel = root.querySelector("#boundary-kernel");
     const kernels = report.kernels;
-    const bestAccuracy = Math.max(...kernels.map(kernel => report.holdout[kernel].accuracy));
-    const bestAccuracyKernels = kernels.filter(kernel => Math.abs(report.holdout[kernel].accuracy - bestAccuracy) < 1e-12);
-    const bestF1 = Math.max(...kernels.map(kernel => report.holdout[kernel].f1_weighted));
-    const bestF1Kernels = kernels.filter(kernel => Math.abs(report.holdout[kernel].f1_weighted - bestF1) < 1e-12);
-    const bestCvMean = Math.max(...kernels.map(kernel => report.cross_validation[kernel].accuracy_mean));
-    const lowestCvStd = Math.min(...kernels.map(kernel => report.cross_validation[kernel].accuracy_std));
-    const bestCvKernels = kernels.filter(kernel => Math.abs(report.cross_validation[kernel].accuracy_mean - bestCvMean) < 1e-12);
-    const stableCvKernels = kernels.filter(kernel => Math.abs(report.cross_validation[kernel].accuracy_std - lowestCvStd) < 1e-12);
 
-    root.querySelector("#holdout-count").textContent = `${report.holdout_protocol.test_samples} m\u1eabu ki\u1ec3m th\u1eed`;
+    root.querySelector("#holdout-count").textContent =
+        report.holdout_protocol.test_samples + " m\u1eabu ki\u1ec3m th\u1eed";
     root.querySelector("#holdout-protocol").textContent =
-        `Ph\u00e2n t\u1ea7ng 80/20 | random_state=${report.holdout_protocol.random_state} | ` +
-        `${report.holdout_protocol.train_samples} train / ${report.holdout_protocol.test_samples} holdout.`;
-    root.querySelector("#overview-train-count").textContent = report.holdout_protocol.train_samples;
-    root.querySelector("#overview-test-count").textContent = report.holdout_protocol.test_samples;
-    root.querySelector("#overview-best-accuracy-kernel").textContent = bestAccuracyKernels.join(" / ");
-    root.querySelector("#overview-best-accuracy").textContent = formatEvaluationPercent(bestAccuracy);
-    root.querySelector("#overview-best-f1").textContent = formatEvaluationPercent(bestF1);
-    root.querySelector("#overview-best-f1-kernel").textContent = bestF1Kernels.join(" / ");
-    root.querySelector("#overview-cv-status").textContent = `${report.cross_validation_protocol.n_splits}-fold / train-only`;
+        "Ph\u00e2n t\u1ea7ng 80/20 | random_state=" +
+        report.holdout_protocol.random_state + " | " +
+        report.holdout_protocol.train_samples + " train / " +
+        report.holdout_protocol.test_samples + " holdout.";
+    root.querySelector("#overview-train-count").textContent =
+        report.holdout_protocol.train_samples;
+    root.querySelector("#overview-test-count").textContent =
+        report.holdout_protocol.test_samples;
+    root.querySelector("#overview-main-model").textContent = "SVM g\u1ed1c";
+    root.querySelector("#overview-kernel-count").textContent = kernels.length;
+    const trainPercent = Math.round((1 - report.holdout_protocol.test_size) * 100);
+    const testPercent = Math.round(report.holdout_protocol.test_size * 100);
+    root.querySelector("#overview-holdout-protocol").textContent =
+        trainPercent + "/" + testPercent + " ph\u00e2n t\u1ea7ng";
+    root.querySelector("#overview-cv-status").textContent =
+        report.cross_validation_protocol.n_splits + "-fold / train-only";
     root.querySelector("#cv-protocol").textContent =
-        `StratifiedKFold (${report.cross_validation_protocol.n_splits} folds, c\u00f3 x\u00e1o tr\u1ed9n, ` +
-        `random_state=${report.cross_validation_protocol.random_state}) ch\u1ec9 d\u00f9ng ` +
-        `${report.cross_validation_protocol.samples} m\u1eabu hu\u1ea5n luy\u1ec7n.`;
+        "StratifiedKFold (" + report.cross_validation_protocol.n_splits +
+        " folds, c\u00f3 x\u00e1o tr\u1ed9n, random_state=" +
+        report.cross_validation_protocol.random_state + ") ch\u1ec9 d\u00f9ng " +
+        report.cross_validation_protocol.samples + " m\u1eabu hu\u1ea5n luy\u1ec7n.";
 
     holdoutBody.replaceChildren();
     cvBody.replaceChildren();
     confusionSelect.replaceChildren();
-    if (!boundaryKernel.options.length) {
-        kernels.forEach(kernel => {
-            const option = document.createElement("option");
-            option.value = kernel;
-            option.textContent = kernel;
-            boundaryKernel.appendChild(option);
-        });
-        boundaryKernel.value = "rbf";
-    }
+
 
     kernels.forEach(kernel => {
         const holdoutRow = document.createElement("tr");
-        if (bestAccuracyKernels.includes(kernel)) holdoutRow.classList.add("holdout-best-row");
         const holdoutKernelCell = createEvaluationCell(kernel, "th");
         holdoutKernelCell.scope = "row";
-        if (bestAccuracyKernels.includes(kernel)) {
-            const badge = document.createElement("span");
-            badge.className = "metric-badge";
-            badge.textContent = "T\u1ed1i \u01b0u Holdout";
-            holdoutKernelCell.append(" ", badge);
-        }
         holdoutRow.appendChild(holdoutKernelCell);
         ["accuracy", "precision_weighted", "recall_weighted", "f1_weighted"].forEach(metric => {
-            holdoutRow.appendChild(createEvaluationCell(formatEvaluationPercent(report.holdout[kernel][metric])));
+            holdoutRow.appendChild(
+                createEvaluationCell(formatEvaluationPercent(report.holdout[kernel][metric]))
+            );
         });
         holdoutBody.appendChild(holdoutRow);
 
         const cv = report.cross_validation[kernel];
         const cvRow = document.createElement("tr");
-        const isBestMean = bestCvKernels.includes(kernel);
-        const isMostStable = stableCvKernels.includes(kernel);
-        if (isBestMean) cvRow.classList.add("cv-best-mean-row");
-        if (isMostStable) cvRow.classList.add("cv-stable-row");
         const cvKernelCell = createEvaluationCell(kernel, "th");
         cvKernelCell.scope = "row";
-        if (isBestMean || isMostStable) {
-            const badge = document.createElement("span");
-            badge.className = "metric-badge";
-            badge.textContent = [isBestMean ? "Accuracy trung b\u00ecnh cao nh\u1ea5t" : "", isMostStable ? "SD th\u1ea5p nh\u1ea5t" : ""].filter(Boolean).join(" \u00b7 ");
-            cvKernelCell.append(" ", badge);
-        }
         cvRow.appendChild(cvKernelCell);
         cvRow.appendChild(createEvaluationCell(
-            `${formatEvaluationPercent(cv.accuracy_mean, 3)} \u00b1 ${formatEvaluationPercent(cv.accuracy_std, 3)}`
+            formatEvaluationPercent(cv.accuracy_mean, 3) + " \u00b1 " +
+            formatEvaluationPercent(cv.accuracy_std, 3)
         ));
         cvRow.appendChild(createEvaluationCell(
-            `${formatEvaluationPercent(cv.f1_weighted_mean, 3)} \u00b1 ${formatEvaluationPercent(cv.f1_weighted_std, 3)}`
+            formatEvaluationPercent(cv.f1_weighted_mean, 3) + " \u00b1 " +
+            formatEvaluationPercent(cv.f1_weighted_std, 3)
         ));
         cvBody.appendChild(cvRow);
 
@@ -1864,15 +1843,6 @@ function renderKernelEvaluation(report, root) {
         option.textContent = kernel;
         confusionSelect.appendChild(option);
     });
-
-    const formatKernels = values => values.join(" / ");
-    root.querySelector("#cv-interpretation").textContent =
-        `Ghi ch\u00fa th\u1ef1c nghi\u1ec7m: tr\u00ean holdout (${report.holdout_protocol.test_samples} m\u1eabu), ` +
-        `${formatKernels(bestAccuracyKernels)} \u0111\u1ea1t Accuracy cao nh\u1ea5t (${formatEvaluationPercent(bestAccuracy)}). ` +
-        `Tr\u00ean 5-fold CV (${report.cross_validation_protocol.samples} m\u1eabu), ` +
-        `${formatKernels(bestCvKernels)} c\u00f3 Accuracy trung b\u00ecnh cao nh\u1ea5t ` +
-        `(${formatEvaluationPercent(bestCvMean, 3)}); ${formatKernels(stableCvKernels)} c\u00f3 \u0111\u1ed9 l\u1ec7ch chu\u1ea9n th\u1ea5p nh\u1ea5t ` +
-        `(${formatEvaluationPercent(lowestCvStd, 3)}), cho th\u1ea5y m\u1ee9c bi\u1ebfn thi\u00ean th\u1ea5p h\u01a1n gi\u1eefa c\u00e1c fold.`;
 
     renderConfusionMatrix(report, root, confusionSelect.value);
     renderMetricChart(report, root);
@@ -1934,12 +1904,10 @@ function renderMetricChart(report, root) {
     const svg = document.createElementNS(svgNs, "svg");
     svg.setAttribute("viewBox", "0 0 760 330");
     svg.setAttribute("role", "img");
-    svg.setAttribute("aria-label", `${metricLabels[metric]} for five SVM kernels on the fixed holdout split`);
+    svg.setAttribute("aria-label", `${metricLabels[metric]} for four SVM kernels on the fixed holdout split`);
     const title = document.createElementNS(svgNs, "title");
     title.textContent = `${metricLabels[metric]} on holdout`;
     svg.appendChild(title);
-    const bestValue = Math.max(...report.kernels.map(kernel => Number(report.holdout[kernel][metric])));
-    const bestKernels = new Set(report.kernels.filter(kernel => Math.abs(Number(report.holdout[kernel][metric]) - bestValue) < 1e-12));
     const domainMin = 0.8;
     const domainMax = 1.0;
     const plotX = 190;
@@ -1978,7 +1946,7 @@ function renderMetricChart(report, root) {
         bar.setAttribute("x", plotX); bar.setAttribute("y", y);
         bar.setAttribute("width", Math.max(0, Math.min(1, (value - domainMin) / (domainMax - domainMin))) * plotWidth);
         bar.setAttribute("height", 23);
-        bar.setAttribute("fill", bestKernels.has(kernel) ? "#9e2a3b" : "#2b3a55");
+        bar.setAttribute("fill", "#526b8d");
         svg.appendChild(bar);
         const valueLabel = document.createElementNS(svgNs, "text");
         valueLabel.setAttribute("x", plotX + plotWidth + 10); valueLabel.setAttribute("y", y + 17);
@@ -1988,74 +1956,6 @@ function renderMetricChart(report, root) {
     });
     container.replaceChildren(svg);
 }
-function drawDecisionBoundary(canvas, data) {
-    const featureNames = ["Chi\u1ec1u d\u00e0i \u0111\u00e0i hoa (cm)", "Chi\u1ec1u r\u1ed9ng \u0111\u00e0i hoa (cm)", "Chi\u1ec1u d\u00e0i c\u00e1nh hoa (cm)", "Chi\u1ec1u r\u1ed9ng c\u00e1nh hoa (cm)"];
-    const featureXLabel = featureNames[data.feature_x.index] || data.feature_x.name;
-    const featureYLabel = featureNames[data.feature_y.index] || data.feature_y.name;
-    const context = canvas.getContext("2d");
-    const width = canvas.width;
-    const height = canvas.height;
-    const margin = { top: 20, right: 24, bottom: 60, left: 78 };
-    const plotWidth = width - margin.left - margin.right;
-    const plotHeight = height - margin.top - margin.bottom;
-    const xValues = data.grid.x_values;
-    const yValues = data.grid.y_values;
-    const predictions = data.grid.predictions;
-    const rows = yValues.length;
-    const columns = xValues.length;
-    const cellWidth = plotWidth / columns;
-    const cellHeight = plotHeight / rows;
-    const regionColors = ["rgba(114,47,55,.34)", "rgba(48,75,110,.55)", "rgba(136,112,82,.42)"];
-
-    context.clearRect(0, 0, width, height);
-    context.fillStyle = "#0a1128";
-    context.fillRect(0, 0, width, height);
-    predictions.forEach((row, yIndex) => row.forEach((classIndex, xIndex) => {
-        const canvasY = margin.top + plotHeight - (yIndex + 1) * cellHeight;
-        context.fillStyle = regionColors[classIndex] || regionColors[0];
-        context.fillRect(margin.left + xIndex * cellWidth, canvasY, cellWidth + 1, cellHeight + 1);
-    }));
-
-    context.strokeStyle = "#8c96a8";
-    context.lineWidth = 1;
-    context.beginPath();
-    context.moveTo(margin.left, margin.top);
-    context.lineTo(margin.left, margin.top + plotHeight);
-    context.lineTo(margin.left + plotWidth, margin.top + plotHeight);
-    context.stroke();
-
-    data.holdout_points.forEach(point => {
-        const x = margin.left + ((point.x - xValues[0]) / (xValues[columns - 1] - xValues[0])) * plotWidth;
-        const y = margin.top + plotHeight - ((point.y - yValues[0]) / (yValues[rows - 1] - yValues[0])) * plotHeight;
-        context.beginPath();
-        context.arc(x, y, 5, 0, Math.PI * 2);
-        context.fillStyle = ["#f1e8d8", "#d88663", "#8fb1cb"][point.actual];
-        context.fill();
-        context.lineWidth = 2;
-        context.strokeStyle = point.actual === point.predicted ? "#ffffff" : "#f2a1aa";
-        context.stroke();
-    });
-
-    context.fillStyle = "#ffffff";
-    context.font = "14px Montserrat, sans-serif";
-    context.textAlign = "center";
-    context.fillText(featureXLabel, margin.left + plotWidth / 2, height - 15);
-    context.save();
-    context.translate(20, margin.top + plotHeight / 2);
-    context.rotate(-Math.PI / 2);
-    context.fillText(featureYLabel, 0, 0);
-    context.restore();
-    context.font = "11px Montserrat, sans-serif";
-    context.textAlign = "left";
-    context.fillStyle = "#e0e0e0";
-    context.fillText(xValues[0].toFixed(1), margin.left, margin.top + plotHeight + 20);
-    context.textAlign = "right";
-    context.fillText(xValues[columns - 1].toFixed(1), margin.left + plotWidth, margin.top + plotHeight + 20);
-    context.textAlign = "right";
-    context.fillText(yValues[0].toFixed(1), margin.left - 9, margin.top + plotHeight);
-    context.fillText(yValues[rows - 1].toFixed(1), margin.left - 9, margin.top + 5);
-}
-
 function initMachineLearningPanels() {
     const root = document.querySelector(".model-evaluation-region");
     if (!root) return;
@@ -2110,42 +2010,7 @@ function initMachineLearningPanels() {
         if (report) renderMetricChart(report, root);
     });
 
-    async function requestBoundary() {
-        const kernel = root.querySelector("#boundary-kernel").value || "rbf";
-        const featureX = root.querySelector("#boundary-feature-x").value || "2";
-        const featureY = root.querySelector("#boundary-feature-y").value || "3";
-        const status = root.querySelector("#boundary-status");
-        const canvas = root.querySelector("#decision-boundary-canvas");
-        const button = root.querySelector("#draw-boundary-button");
-        if (featureX === featureY) {
-            status.textContent = "H\u00e3y ch\u1ecdn hai \u0111\u1eb7c tr\u01b0ng kh\u00e1c nhau \u0111\u1ec3 v\u1ebd ranh gi\u1edbi.";
-            status.classList.add("evaluation-error");
-            return;
-        }
-        button.disabled = true;
-        status.classList.remove("evaluation-error");
-        status.textContent = "\u0110ang t\u1ea1o m\u00f4 h\u00ecnh 2D ri\u00eang v\u00e0 v\u1ebd c\u00e1c v\u00f9ng quy\u1ebft \u0111\u1ecbnh\u2026";
-        try {
-            const query = new URLSearchParams({ kernel, feature_x: featureX, feature_y: featureY });
-            const result = await requestAPI(`${API_BASE_URL}/decision-boundary?${query}`);
-            drawDecisionBoundary(canvas, result);
-            canvas.hidden = false;
-            root.querySelector(".boundary-legend").hidden = false;
-            canvas.setAttribute("aria-label", `M\u00f4 h\u00ecnh 2D ${kernel} \u0111\u01b0\u1ee3c hu\u1ea5n luy\u1ec7n ri\u00eang; tr\u1ee5c X: ${root.querySelector("#boundary-feature-x").selectedOptions[0].textContent}, tr\u1ee5c Y: ${root.querySelector("#boundary-feature-y").selectedOptions[0].textContent}; c\u00e1c \u0111i\u1ec3m l\u00e0 m\u1eabu holdout.`);
-            status.textContent = `M\u00f4 h\u00ecnh 2D ri\u00eang | ${result.train_samples} m\u1eabu train | ${result.test_samples} \u0111i\u1ec3m holdout.`;
-        } catch (failure) {
-            status.textContent = failure.message || "Kh\u00f4ng th\u1ec3 t\u1ea1o bi\u1ec3u \u0111\u1ed3 ranh gi\u1edbi quy\u1ebft \u0111\u1ecbnh.";
-            status.classList.add("evaluation-error");
-        } finally {
-            button.disabled = false;
-        }
-    }
 
-    root.querySelector("#draw-boundary-button").addEventListener("click", requestBoundary);
-    root.querySelector("#boundary-kernel").addEventListener("change", requestBoundary);
-    root.querySelector("#boundary-feature-x").addEventListener("change", requestBoundary);
-    root.querySelector("#boundary-feature-y").addEventListener("change", requestBoundary);
-    requestBoundary();
 }
 
 initMachineLearningPanels();

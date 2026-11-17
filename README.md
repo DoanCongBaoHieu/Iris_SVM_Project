@@ -1,11 +1,11 @@
 # Phân loại hoa Iris bằng các kernel SVM
 
-This Iris classifier always predicts with a separately saved main SVM model. Linear, RBF, Polynomial, Sigmoid and Laplacian are optional comparison models.
+This Iris classifier always predicts with a separately saved main SVM model. Linear, RBF, Polynomial, Sigmoid are optional comparison models.
 
 ## Nội dung
 
 - Nhập bốn đặc trưng của hoa: chiều dài và chiều rộng đài hoa, chiều dài và chiều rộng cánh hoa.
-- The main SVM always predicts; select any of five kernels to compare additional results.
+- The main SVM always predicts; select any of four kernels to compare additional results.
 - Đăng nhập bằng Auth0; tài khoản cũ vẫn có thể đăng nhập bằng tên đăng nhập và mật khẩu.
 - Lưu/xem lịch sử dự đoán theo tài khoản.
 - Tìm hiểu dữ liệu Iris, quy trình học máy và các kernel SVM trên giao diện.
@@ -20,7 +20,6 @@ The main model is stored as `model/iris_svm_model.pkl`. The table below lists op
 | `svm_rbf` | RBF | Tạo ranh giới phi tuyến dựa trên khoảng cách RBF. |
 | `svm_poly` | Polynomial | Tạo ranh giới dựa trên đa thức bậc 3. |
 | `svm_sigmoid` | Sigmoid | Dùng hàm sigmoid để tạo ranh giới phân lớp. |
-| `svm_laplacian` | Laplacian | Kernel tùy chỉnh dựa trên khoảng cách Manhattan; được định nghĩa trong `backend/kernels.py`. |
 
 Các chỉ số được in khi huấn luyện dùng tập kiểm tra 20% với chia phân tầng và `random_state=42`. Sau bước đánh giá, mỗi mô hình được huấn luyện lại trên toàn bộ 150 mẫu Iris và lưu trong `model/`.
 
@@ -57,7 +56,7 @@ Các tệp model đã huấn luyện có sẵn trong `model/`. Để huấn luy�
 .venv\Scripts\python.exe -m backend.train_models
 ```
 
-This command replaces the five optional comparison model files in `model/`.
+This command replaces the four optional comparison model files in `model/`.
 
 ### 3. Khởi chạy API
 
@@ -119,14 +118,14 @@ Mở `http://localhost:5500`. Khi chạy trên `localhost` hoặc `127.0.0.1`, f
 
 The response contains `main_result`, `main_prediction_time_ms`, `comparison_results`, and `comparison_times_ms`. `comparison_results` and `comparison_times_ms` are empty objects when no comparison kernels are selected. `user_id` is optional and saves the main prediction to the user's history when provided.
 
-`GET /evaluation` reports the fixed 80/20 holdout metrics and five-fold stratified CV separately. CV uses only the 120 training samples; the 30-sample holdout remains reserved for the holdout table and confusion matrices. `GET /decision-boundary` builds a separate two-feature SVM illustration and does not represent the deployed four-feature model.
+`GET /evaluation` reports the fixed 80/20 holdout metrics and five-fold stratified CV separately. CV uses only the 120 training samples; the 30-sample holdout remains reserved for the holdout table and confusion matrices. `
 
 ## Cấu trúc thư mục
 
 ```text
-backend/       FastAPI, database access, model training and the Laplacian kernel
+backend/       FastAPI, database access, model training and model evaluation
 frontend/      Giao diện web, JavaScript, CSS, các phần HTML và hình ảnh
-model/         Main SVM model and five optional comparison models
+model/         Main SVM model and four optional comparison models
 reports/       Hình trực quan hóa dữ liệu
 eda.py         Phân tích khám phá dữ liệu Iris
 visualize.py   Tạo biểu đồ dữ liệu
@@ -139,6 +138,5 @@ Dự án sử dụng bộ Iris có sẵn trong scikit-learn (`sklearn.datasets.l
 
 ## Ghi chú
 
-- Khi chạy backend, cần giữ nguyên tệp `backend/kernels.py` vì mô hình Laplacian đã lưu tham chiếu đến hàm kernel trong tệp này.
 - Thông tin cấu hình cơ sở dữ liệu được đọc từ biến môi trường `DATABASE_URL`.
 - Các chỉ số được ghi trong giao diện là kết quả của lần đánh giá trên tập chia cố định; kết quả có thể thay đổi nếu thay dữ liệu hoặc tham số huấn luyện.

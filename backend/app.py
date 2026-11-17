@@ -4,7 +4,6 @@ import os
 import secrets
 import time
 from pathlib import Path
-from typing import Literal
 from urllib.parse import urlencode
 
 import bcrypt
@@ -12,7 +11,7 @@ from auth0_fastapi.auth.auth_client import AuthClient
 from auth0_fastapi.config import Auth0Config
 from auth0_fastapi.errors import register_exception_handlers
 from auth0_fastapi.server.routes import register_auth_routes, router as auth0_router
-from fastapi import Depends, FastAPI, HTTPException, Query, Request, Response
+from fastapi import Depends, FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 import joblib
@@ -25,7 +24,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from dotenv import load_dotenv
 
 from backend.database import Base, engine, get_db
-from backend.evaluation import build_decision_boundary, get_evaluation_report
+from backend.evaluation import get_evaluation_report
 from backend.models import PredictionHistory, User
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env")
@@ -112,7 +111,6 @@ KERNEL_MODEL_FILES = {
     "rbf": "iris_svm_rbf_model.pkl",
     "polynomial": "iris_svm_poly_model.pkl",
     "sigmoid": "iris_svm_sigmoid_model.pkl",
-    "laplacian": "iris_svm_laplacian_model.pkl",
 }
 comparison_models = {}
 
@@ -302,21 +300,6 @@ def auth_after_logout():
 def model_evaluation():
     """Return separate fixed-holdout and train-only cross-validation results."""
     return get_evaluation_report()
-
-
-@app.get("/decision-boundary")
-def decision_boundary(
-    kernel: Literal["linear", "rbf", "polynomial", "sigmoid", "laplacian"] = "rbf",
-    feature_x: int = Query(default=2, ge=0, le=3),
-    feature_y: int = Query(default=3, ge=0, le=3),
-    grid_size: int = Query(default=40, ge=20, le=80),
-):
-    if feature_x == feature_y:
-        raise HTTPException(
-            status_code=422,
-            detail="Choose two different Iris features.",
-        )
-    return build_decision_boundary(kernel, feature_x, feature_y, grid_size)
 
 
 @app.post("/predict")
