@@ -3,24 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#0a0a0a">
+    <meta name="theme-color" content="#ffffff">
     <meta name="description" content="Kh&#225;m ph&#225; ph&#226;n lo&#7841;i hoa Iris qua m&#7897;t trang d&#7921; &#225;n SVM mang phong c&#225;ch t&#7841;p ch&#237; khoa h&#7885;c.">
     <title>Ph&#226;n lo&#7841;i hoa Iris</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=33">
+    <link rel="stylesheet" href="theme.css?v=3">
+    <link rel="stylesheet" href="style.css?v=36">
     <script>
         if (!localStorage.getItem("user_id") || !localStorage.getItem("username")) {
             window.location.replace("login.html?v=11");
         }
     </script>
 </head>
-<body class="dark-mode editorial-site">
+<body class="floral-site">
+    <a class="skip-link" href="#main-content">Đến nội dung chính</a>
     <div class="container">
         <div id="comp-header"></div>
 
-        <main class="main-content">
+        <main id="main-content" class="main-content" tabindex="-1">
             <div id="comp-prediction"></div>
             <div id="comp-history"></div>
             <section id="evaluation" class="content-region model-evaluation-region" aria-label="&#272;&#225;nh gi&#225; v&#224; so s&#225;nh m&#244; h&#236;nh">
@@ -41,7 +43,7 @@
         <div class="password-modal-overlay"></div>
         <section class="password-modal-content" role="dialog" aria-modal="true" aria-labelledby="password-modal-title">
             <button type="button" id="close-password-modal" class="password-modal-close" aria-label="&#272;&#243;ng">&#215;</button>
-            <p class="eyebrow">Account settings</p>
+            <p class="eyebrow">Cài đặt tài khoản</p>
             <h2 id="password-modal-title">&#272;&#7893;i m&#7853;t kh&#7849;u</h2>
             <p class="password-modal-description">C&#7853;p nh&#7853;t m&#7853;t kh&#7849;u t&#224;i kho&#7843;n.</p>
             <div class="password-form-group">
@@ -64,6 +66,6 @@
         </section>
     </div>
 
-    <script src="load-components.js?v=26"></script>
+    <script src="load-components.js?v=30"></script>
 </body>
 </html>

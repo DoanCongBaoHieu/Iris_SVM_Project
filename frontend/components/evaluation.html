@@ -14,7 +14,7 @@
                 <label class="control-label" for="confusion-kernel">Kernel</label>
                 <select id="confusion-kernel" class="ml-select"></select>
                 <p class="ml-note">Hàng là nhãn thực tế, cột là nhãn dự đoán. Ô trên đường chéo là dự đoán đúng.</p>
-                <div id="confusion-matrix-container" class="table-scroll" aria-live="polite"></div>
+                <div id="confusion-matrix-container" class="table-scroll" aria-live="polite" tabindex="0" role="region" aria-label="Ma trận nhầm lẫn, cuộn ngang khi cần"></div>
                 <p id="confusion-counts" class="confusion-counts"></p>
             </section>
 
@@ -32,7 +32,7 @@
                     <option value="recall_weighted">Recall (trung bình có trọng số)</option>
                     <option value="f1_weighted">F1 (trung bình có trọng số)</option>
                 </select>
-                <div id="metric-chart-container" class="metric-chart" aria-live="polite"></div>
+                <div id="metric-chart-container" class="metric-chart" aria-live="polite" tabindex="0" role="region" aria-label="Biểu đồ chỉ số, cuộn ngang khi cần"></div>
                 <p class="ml-note">Thanh d&#224;i bi&#7875;u th&#7883; ph&#7847;n t&#7915; 80% &#273;&#7871;n 100%; gi&#225; tr&#7883; ch&#237;nh x&#225;c v&#7851;n hi&#7879;n &#273;&#7847;y &#273;&#7911; b&#234;n c&#7841;nh.</p>
             </section>
         </div>
@@ -46,7 +46,7 @@
                 <span class="protocol-stamp">120 m&#7851;u / 5 folds</span>
             </div>
             <p id="cv-protocol" class="ml-note"></p>
-            <div class="table-scroll">
+            <div class="table-scroll" tabindex="0" role="region" aria-label="Kết quả kiểm chứng chéo, cuộn ngang khi cần">
                 <table class="cv-results-table" aria-describedby="cv-protocol">
                     <thead>
                         <tr>

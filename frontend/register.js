@@ -220,7 +220,7 @@ async function register() {
     registerButton.disabled = true;
 
     registerButton.textContent =
-        "⏳ Đang đăng ký...";
+        "Đang đăng ký...";
 
 
     try {

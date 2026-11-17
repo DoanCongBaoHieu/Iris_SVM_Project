@@ -391,7 +391,7 @@ function displayResult(data) {
         const caption = elements.flowerImage.closest(".result-section")?.querySelector(".artwork-caption");
         if (caption) {
             caption.textContent =
-                "\\u1ea2nh hoa Iris " + formatSpecies(species) + " theo k\\u1ebft qu\\u1ea3 d\\u1ef1 \\u0111o\\u00e1n";
+                "Ảnh hoa Iris " + formatSpecies(species) + " theo kết quả dự đoán";
         }
     }
 
@@ -919,7 +919,7 @@ if (submitPasswordButton) {
             submitPasswordButton.disabled = true;
 
             submitPasswordButton.textContent =
-                "⏳ Đang cập nhật...";
+                "Đang cập nhật...";
 
 
             try {
@@ -1420,7 +1420,7 @@ async function loadPredictionHistory() {
                 colspan="9"
                 class="history-empty"
             >
-                ⏳ Đang tải lịch sử dự đoán...
+                Đang tải lịch sử dự đoán...
             </td>
         </tr>
     `;
@@ -1434,7 +1434,7 @@ async function loadPredictionHistory() {
         refreshHistoryButton.disabled = true;
 
         refreshHistoryButton.textContent =
-            "⏳ Đang tải...";
+            "Đang tải...";
 
     }
 
@@ -1920,7 +1920,7 @@ function renderMetricChart(report, root) {
         const line = document.createElementNS(svgNs, "line");
         line.setAttribute("x1", x); line.setAttribute("x2", x);
         line.setAttribute("y1", 22); line.setAttribute("y2", 292);
-        line.setAttribute("stroke", "#263753"); line.setAttribute("stroke-width", "1");
+        line.setAttribute("class", "chart-grid-line");
         svg.appendChild(line);
         const label = document.createElementNS(svgNs, "text");
         label.setAttribute("x", x); label.setAttribute("y", 316);
@@ -1940,13 +1940,15 @@ function renderMetricChart(report, root) {
         const track = document.createElementNS(svgNs, "rect");
         track.setAttribute("x", plotX); track.setAttribute("y", y);
         track.setAttribute("width", plotWidth); track.setAttribute("height", 23);
-        track.setAttribute("fill", "#101a2c");
+        track.setAttribute("class", "chart-track");
+        track.setAttribute("rx", "5");
         svg.appendChild(track);
         const bar = document.createElementNS(svgNs, "rect");
         bar.setAttribute("x", plotX); bar.setAttribute("y", y);
         bar.setAttribute("width", Math.max(0, Math.min(1, (value - domainMin) / (domainMax - domainMin))) * plotWidth);
         bar.setAttribute("height", 23);
-        bar.setAttribute("fill", "#526b8d");
+        bar.setAttribute("class", "chart-bar");
+        bar.setAttribute("rx", "5");
         svg.appendChild(bar);
         const valueLabel = document.createElementNS(svgNs, "text");
         valueLabel.setAttribute("x", plotX + plotWidth + 10); valueLabel.setAttribute("y", y + 17);
