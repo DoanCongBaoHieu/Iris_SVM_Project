@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta, timezone
 import hashlib
+import json
 import os
 import secrets
 import time
@@ -161,6 +162,20 @@ class IrisInput(BaseModel):
         description="Chiều rộng cánh hoa (cm)"
     )
 
+class BatchIrisSample(BaseModel):
+    sepal_length: float = Field(..., gt=0, le=10, allow_inf_nan=False)
+    sepal_width: float = Field(..., gt=0, le=10, allow_inf_nan=False)
+    petal_length: float = Field(..., gt=0, le=10, allow_inf_nan=False)
+    petal_width: float = Field(..., gt=0, le=10, allow_inf_nan=False)
+
+
+class BatchPredictionInput(BaseModel):
+    user_id: int = Field(..., gt=0)
+    kernels: list[str] = Field(default_factory=list, max_length=4)
+    kernel: str | None = Field(default=None)
+    samples: list[BatchIrisSample] = Field(..., min_length=1, max_length=500)
+
+
 class RegisterInput(BaseModel):
     username: str = Field(
         ...,
@@ -218,10 +233,18 @@ def create_database_tables():
         column["name"]
         for column in inspect(engine).get_columns("users")
     }
+    history_columns = {
+        column["name"]
+        for column in inspect(engine).get_columns("prediction_history")
+    }
     with engine.begin() as connection:
         if "auth0_sub" not in columns:
             connection.execute(
                 text("ALTER TABLE users ADD COLUMN auth0_sub VARCHAR(255)")
+            )
+        if "comparison_kernels" not in history_columns:
+            connection.execute(
+                text("ALTER TABLE prediction_history ADD COLUMN comparison_kernels TEXT")
             )
         connection.execute(
             text(
@@ -369,6 +392,7 @@ def predict(data: IrisInput, db: Session = Depends(get_db)):
             petal_width=data.petal_width,
             prediction=main_prediction,
             species=main_result,
+            comparison_kernels=json.dumps(data.kernels),
             prediction_time_ms=round(prediction_time_ms, 4),
         )
         db.add(history)
@@ -381,6 +405,126 @@ def predict(data: IrisInput, db: Session = Depends(get_db)):
         "comparison_times_ms": comparison_times_ms,
         "history_saved": user is not None,
     }
+
+@app.post("/predict/batch")
+def predict_batch(data: BatchPredictionInput, db: Session = Depends(get_db)):
+    kernel = data.kernel if data.kernel is not None else "original"
+    if kernel != "original" and kernel not in KERNEL_MODEL_FILES:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Unsupported kernel: {kernel}",
+        )
+
+    # Keep the former comparison request shape working for existing clients.
+    legacy_comparison_kernels = data.kernels if data.kernel is None else []
+    if len(set(legacy_comparison_kernels)) != len(legacy_comparison_kernels):
+        raise HTTPException(
+            status_code=422,
+            detail="The kernels list must not contain duplicates.",
+        )
+
+    unsupported_kernels = [
+        item for item in legacy_comparison_kernels if item not in KERNEL_MODEL_FILES
+    ]
+    if unsupported_kernels:
+        raise HTTPException(
+            status_code=422,
+            detail="Unsupported kernels: " + ", ".join(unsupported_kernels),
+        )
+
+    user = db.execute(
+        select(User).where(User.id == data.user_id)
+    ).scalar_one_or_none()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found.")
+
+    features = np.array([
+        [
+            sample.sepal_length,
+            sample.sepal_width,
+            sample.petal_length,
+            sample.petal_width,
+        ]
+        for sample in data.samples
+    ])
+    model = main_model
+    if kernel != "original":
+        if kernel not in comparison_models:
+            model_path = MODEL_DIR / KERNEL_MODEL_FILES[kernel]
+            if not model_path.exists():
+                raise HTTPException(
+                    status_code=500,
+                    detail=f"Selected model file not found: {model_path.name}",
+                )
+            comparison_models[kernel] = joblib.load(model_path)
+        model = comparison_models[kernel]
+
+    predictions = []
+    sample_metrics = []
+    inference_time_ms = 0.0
+    for sample_features in features:
+        sample_matrix = sample_features.reshape(1, -1)
+        inference_started_at = time.perf_counter()
+        prediction = int(model.predict(sample_matrix)[0])
+        decision_scores = np.asarray(model.decision_function(sample_matrix)).reshape(-1)
+        prediction_time_ms = (time.perf_counter() - inference_started_at) * 1000
+        inference_time_ms += prediction_time_ms
+
+        if decision_scores.size == 1:
+            confidence_margin = abs(float(decision_scores[0]))
+        else:
+            predicted_class_index = int(np.flatnonzero(np.asarray(model.classes_) == prediction)[0])
+            other_scores = np.delete(decision_scores, predicted_class_index)
+            confidence_margin = float(decision_scores[predicted_class_index] - other_scores.max())
+
+        predictions.append(prediction)
+        sample_metrics.append({
+            "confidence_margin": round(confidence_margin, 4),
+            "prediction_time_ms": round(prediction_time_ms, 4),
+        })
+    predictions = np.asarray(predictions)
+
+    comparison_predictions = {}
+    for comparison_kernel in legacy_comparison_kernels:
+        if comparison_kernel not in comparison_models:
+            model_path = MODEL_DIR / KERNEL_MODEL_FILES[comparison_kernel]
+            if not model_path.exists():
+                raise HTTPException(
+                    status_code=500,
+                    detail=f"Comparison model file not found: {model_path.name}",
+                )
+            comparison_models[comparison_kernel] = joblib.load(model_path)
+        comparison_predictions[comparison_kernel] = comparison_models[comparison_kernel].predict(features)
+
+    results = []
+    for index, sample in enumerate(data.samples):
+        results.append({
+            "sepal_length": sample.sepal_length,
+            "sepal_width": sample.sepal_width,
+            "petal_length": sample.petal_length,
+            "petal_width": sample.petal_width,
+            "main_result": target_names[int(predictions[index])],
+            "prediction": target_names[int(predictions[index])],
+            "confidence_margin": sample_metrics[index]["confidence_margin"],
+            "prediction_time_ms": sample_metrics[index]["prediction_time_ms"],
+            "comparison_results": {
+                comparison_kernel: target_names[int(comparison_predictions[comparison_kernel][index])]
+                for comparison_kernel in comparison_predictions
+            },
+        })
+
+    return {
+        "total": len(results),
+        "counts": {
+            species: int(np.count_nonzero(predictions == index))
+            for index, species in enumerate(target_names)
+        },
+        "results": results,
+        "kernel_used": kernel,
+        "inference_time_ms": round(inference_time_ms, 4),
+        "history_saved": False,
+    }
+
 
 @app.get("/db-test")
 def database_test(db: Session = Depends(get_db)):
@@ -541,6 +685,16 @@ def serialize_history_timestamp(created_at: datetime) -> str:
     return created_at.isoformat()
 
 
+def deserialize_history_comparison_kernels(value):
+    if not value:
+        return None
+    try:
+        kernels = json.loads(value)
+    except (json.JSONDecodeError, TypeError):
+        return None
+    return kernels if isinstance(kernels, list) else None
+
+
 @app.get("/history/{user_id}")
 def get_prediction_history(
     user_id: int,
@@ -575,6 +729,9 @@ def get_prediction_history(
                 "petal_width": item.petal_width,
                 "prediction": item.prediction,
                 "species": item.species,
+                "comparison_kernels": deserialize_history_comparison_kernels(
+                    item.comparison_kernels
+                ),
                 "prediction_time_ms": item.prediction_time_ms,
                 "created_at": serialize_history_timestamp(item.created_at)
             }

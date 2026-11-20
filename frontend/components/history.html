@@ -21,6 +21,7 @@
         >
              Làm mới
         </button>
+        <button type="button" id="export-history-button" class="history-refresh-button" disabled>Xuất CSV</button>
         <button
             type="button"
             id="delete-all-history-button"
@@ -43,6 +44,7 @@
                     <th scope="col"><span>Cánh hoa</span><small>Dài · cm</small></th>
                     <th scope="col"><span>Cánh hoa</span><small>Rộng · cm</small></th>
                     <th scope="col">Kết quả</th>
+                    <th scope="col">Mô hình / Kernel</th>
                     <th scope="col">Thời gian xử lý</th>
                     <th scope="col">Thao tác</th>
                 </tr>
@@ -50,7 +52,7 @@
 
             <tbody id="history-table-body">
                 <tr>
-                    <td colspan="9" class="history-empty">
+                    <td colspan="10" class="history-empty">
                         Chưa có lịch sử dự đoán.
                     </td>
                 </tr>

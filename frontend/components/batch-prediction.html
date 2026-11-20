@@ -1,0 +1,77 @@
+<section class="batch-prediction-section" aria-labelledby="batch-prediction-title">
+    <header class="batch-prediction-header">
+        <div>
+            <p class="batch-prediction-eyebrow">PHÂN LOẠI HÀNG LOẠT</p>
+            <h2 id="batch-prediction-title">Dự đoán hàng loạt (CSV)</h2>
+            <p class="batch-prediction-description">Tải file CSV chứa danh sách mẫu hoa để dự đoán đồng loạt.</p>
+        </div>
+        <button type="button" id="batch-download-template" class="batch-template-button">↓ TẢI CSV MẪU</button>
+    </header>
+
+    <fieldset class="batch-kernel-selection">
+        <legend>Mô hình SVM cho batch</legend>
+        <div class="batch-kernel-options">
+            <label><input type="radio" name="batch-kernel" value="original" checked> SVM gốc (mặc định)</label>
+            <label><input type="radio" name="batch-kernel" value="linear"> Linear</label>
+            <label><input type="radio" name="batch-kernel" value="polynomial"> Polynomial</label>
+            <label><input type="radio" name="batch-kernel" value="rbf"> RBF</label>
+            <label><input type="radio" name="batch-kernel" value="sigmoid"> Sigmoid</label>
+        </div>
+        <p class="batch-kernel-note">SVM gốc là model mặc định của backend. Kernel được chọn sẽ dùng model đã lưu tương ứng.</p>
+    </fieldset>
+
+    <input id="batch-file-input" class="batch-file-input" type="file" accept=".csv,text/csv" aria-label="Chọn file CSV">
+    <button type="button" id="batch-drop-zone" class="batch-drop-zone" aria-controls="batch-file-input">
+        <svg class="batch-file-icon" viewBox="0 0 48 48" aria-hidden="true">
+            <path d="M12 5h17l9 9v28H12z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+            <path d="M29 5v10h9M18 32h14M18 25h14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M19 20v-5m0 0-3 3m3-3 3 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="batch-drop-primary">Kéo thả file .CSV vào đây hoặc <strong>chọn từ máy tính</strong></span>
+        <span class="batch-drop-format">Định dạng chuẩn: sepal_length, sepal_width, petal_length, petal_width</span>
+    </button>
+
+    <div id="batch-file-details" class="batch-file-details" hidden>
+        <div class="batch-file-meta">
+            <strong id="batch-file-name"></strong>
+            <span id="batch-file-row-count"></span>
+        </div>
+        <button type="button" id="batch-change-file" class="batch-change-file">Thay đổi file</button>
+    </div>
+
+    <p id="batch-status" class="batch-status" role="status" aria-live="polite"></p>
+    <button type="button" id="batch-run-button" class="batch-run-button" disabled>CHẠY DỰ ĐOÁN HÀNG LOẠT</button>
+
+    <section id="batch-results" class="batch-results" aria-labelledby="batch-results-title" hidden>
+        <div class="batch-results-heading">
+            <div>
+                <h3 id="batch-results-title">Kết quả dự đoán</h3>
+                <p id="batch-results-summary" class="batch-results-summary"></p>
+            </div>
+            <div class="batch-export-actions">
+                <button type="button" id="batch-clear-results" class="batch-change-file">Xóa kết quả</button>
+                <button type="button" id="batch-export-results" class="batch-export-button">TẢI KẾT QUẢ CSV</button>
+                <small class="batch-export-note">Tải toàn bộ kết quả, không phụ thuộc bộ lọc hoặc trang hiện tại.</small>
+            </div>
+        </div>
+        <ul id="batch-invalid-details" class="batch-invalid-details" hidden></ul>
+        <div class="batch-count-grid" aria-label="Lọc kết quả theo loài">
+            <button type="button" class="batch-count-card" data-batch-filter="all" aria-pressed="true"><span>Tổng số mẫu</span><strong id="batch-count-total">0</strong></button>
+            <button type="button" class="batch-count-card" data-batch-filter="setosa" aria-pressed="false"><span>Setosa</span><strong id="batch-count-setosa">0</strong></button>
+            <button type="button" class="batch-count-card" data-batch-filter="versicolor" aria-pressed="false"><span>Versicolor</span><strong id="batch-count-versicolor">0</strong></button>
+            <button type="button" class="batch-count-card" data-batch-filter="virginica" aria-pressed="false"><span>Virginica</span><strong id="batch-count-virginica">0</strong></button>
+        </div>
+        <p id="batch-visible-count" class="batch-visible-count" aria-live="polite"></p>
+        <div class="batch-table-wrap" tabindex="0" role="region" aria-label="Bảng kết quả dự đoán hàng loạt, cuộn ngang khi cần">
+            <table class="batch-results-table">
+                <thead><tr id="batch-results-header"></tr></thead>
+                <tbody id="batch-results-body"></tbody>
+            </table>
+        </div>
+        <nav class="batch-pagination" aria-label="Phân trang kết quả batch">
+            <button type="button" id="batch-prev-page" class="batch-page-button" disabled>← Trang trước</button>
+            <span id="batch-page-info" aria-live="polite"></span>
+            <button type="button" id="batch-next-page" class="batch-page-button" disabled>Trang sau →</button>
+        </nav>
+    </section>
+</section>

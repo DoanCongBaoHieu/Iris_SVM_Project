@@ -4,7 +4,7 @@
 
 
 // ======================================================
-// 1. CẤU HÌNH API
+// 1. CÃ¡ÂºÂ¤U HÃƒÅ’NH API
 // ======================================================
 
 const API_BASE_URL =
@@ -14,9 +14,7 @@ const API_BASE_URL =
         : "https://iris-svm-api-oar1.onrender.com";
 
 const API_ENDPOINTS = {
-    predict: `${API_BASE_URL}/predict`,
-    login: `${API_BASE_URL}/login`,
-    register: `${API_BASE_URL}/register`
+    predict: `${API_BASE_URL}/predict`
 };
 
 const apiStatus = document.querySelector(".api-status");
@@ -68,7 +66,7 @@ document.addEventListener("visibilitychange", () => {
 
 
 // ======================================================
-// 2. LẤY CÁC PHẦN TỬ HTML
+// 2. LÃ¡ÂºÂ¤Y CÃƒÂC PHÃ¡ÂºÂ¦N TÃ¡Â»Â¬ HTML
 // ======================================================
 
 const elements = {
@@ -108,7 +106,7 @@ const elements = {
 
 
 // ======================================================
-// 3. DỮ LIỆU CẤU HÌNH
+// 3. DÃ¡Â»Â® LIÃ¡Â»â€ U CÃ¡ÂºÂ¤U HÃƒÅ’NH
 // ======================================================
 
 const FLOWER_IMAGES = {
@@ -143,7 +141,7 @@ const SAMPLE_DATA = {
 
 
 // ======================================================
-// 4. HIỂN THỊ LỖI
+// 4. HIÃ¡Â»â€šN THÃ¡Â»Å  LÃ¡Â»â€“I
 // ======================================================
 
 function showError(message) {
@@ -159,7 +157,7 @@ function showError(message) {
 
 
 // ======================================================
-// 5. XÓA THÔNG BÁO LỖI
+// 5. XÃƒâ€œA THÃƒâ€NG BÃƒÂO LÃ¡Â»â€“I
 // ======================================================
 
 function clearError() {
@@ -175,7 +173,7 @@ function clearError() {
 
 
 // ======================================================
-// 6. KIỂM TRA DỮ LIỆU ĐẦU VÀO
+// 6. KIÃ¡Â»â€šM TRA DÃ¡Â»Â® LIÃ¡Â»â€ U Ã„ÂÃ¡ÂºÂ¦U VÃƒâ‚¬O
 // ======================================================
 
 function validateInput() {
@@ -233,7 +231,7 @@ function validateInput() {
 
 
 // ======================================================
-// 7. Trạng thái đang dự đoán
+// 7. TrÃ¡ÂºÂ¡ng thÃƒÂ¡i Ã„â€˜ang dÃ¡Â»Â± Ã„â€˜oÃƒÂ¡n
 // ======================================================
 
 function setLoading(isLoading) {
@@ -254,7 +252,7 @@ function setLoading(isLoading) {
 
 
 // ======================================================
-// 8. HÀM GỌI API DÙNG CHUNG
+// 8. HÃƒâ‚¬M GÃ¡Â»Å’I API DÃƒâ„¢NG CHUNG
 // ======================================================
 
 async function requestAPI(
@@ -322,7 +320,7 @@ async function requestAPI(
 
 
 // ======================================================
-// 9. HIỂN THỊ KẾT QUẢ DỰ ĐOÁN
+// 9. HIÃ¡Â»â€šN THÃ¡Â»Å  KÃ¡ÂºÂ¾T QUÃ¡ÂºÂ¢ DÃ¡Â»Â° Ã„ÂOÃƒÂN
 // ======================================================
 
 function displayResult(data) {
@@ -403,7 +401,7 @@ function displayResult(data) {
 }
 
 // ======================================================
-// 10. DỰ ĐOÁN HOA
+// 10. DÃ¡Â»Â° Ã„ÂOÃƒÂN HOA
 // ======================================================
 
 async function predictFlower() {
@@ -412,7 +410,7 @@ async function predictFlower() {
 
 
     // ----------------------------------------------
-    // Kiểm tra dữ liệu
+    // KiÃ¡Â»Æ’m tra dÃ¡Â»Â¯ liÃ¡Â»â€¡u
     // ----------------------------------------------
 
     const flowerData =
@@ -437,7 +435,7 @@ async function predictFlower() {
 
 
     // ----------------------------------------------
-    // Bật loading
+    // BÃ¡ÂºÂ­t loading
     // ----------------------------------------------
 
     setLoading(true);
@@ -446,7 +444,7 @@ async function predictFlower() {
     try {
 
         // ------------------------------------------
-        // Gọi FastAPI
+        // GÃ¡Â»Âi FastAPI
         // ------------------------------------------
 
         const requestData = {
@@ -463,7 +461,7 @@ async function predictFlower() {
 
 
         // ------------------------------------------
-        // Ghi log để kiểm tra
+        // Ghi log Ã„â€˜Ã¡Â»Æ’ kiÃ¡Â»Æ’m tra
         // ------------------------------------------
 
         console.log(
@@ -473,11 +471,12 @@ async function predictFlower() {
 
 
         // ------------------------------------------
-        // Hiển thị kết quả
+        // HiÃ¡Â»Æ’n thÃ¡Â»â€¹ kÃ¡ÂºÂ¿t quÃ¡ÂºÂ£
         // ------------------------------------------
 
         displayResult(result);
 
+        if (historyTableBody) {
         if (result.history_saved) {
             await loadPredictionHistory();
         } else {
@@ -487,6 +486,7 @@ async function predictFlower() {
             );
         }
 
+        }
     } catch (error) {
 
         console.error(
@@ -503,7 +503,7 @@ async function predictFlower() {
     } finally {
 
         // ------------------------------------------
-        // Tắt loading
+        // TÃ¡ÂºÂ¯t loading
         // ------------------------------------------
 
         setLoading(false);
@@ -512,7 +512,7 @@ async function predictFlower() {
 
 
 // ======================================================
-// 11. ĐIỀN DỮ LIỆU MẪU
+// 11. Ã„ÂIÃ¡Â»â‚¬N DÃ¡Â»Â® LIÃ¡Â»â€ U MÃ¡ÂºÂªU
 // ======================================================
 
 function fillSample(species) {
@@ -544,7 +544,7 @@ function fillSample(species) {
 
 
 // ======================================================
-// 12. SỰ KIỆN NÚT DỰ ĐOÁN
+// 12. SÃ¡Â»Â° KIÃ¡Â»â€ N NÃƒÅ¡T DÃ¡Â»Â° Ã„ÂOÃƒÂN
 // ======================================================
 
 if (elements.predictButton) {
@@ -557,14 +557,14 @@ if (elements.predictButton) {
 
 
 // ======================================================
-// 13. PHÍM ENTER
+// 13. PHÃƒÂM ENTER
 // ======================================================
 //
-// Chỉ cho phép Enter trong 4 ô nhập thông số Iris.
-// Không dùng document-wide nữa.
+// ChÃ¡Â»â€° cho phÃƒÂ©p Enter trong 4 ÃƒÂ´ nhÃ¡ÂºÂ­p thÃƒÂ´ng sÃ¡Â»â€˜ Iris.
+// KhÃƒÂ´ng dÃƒÂ¹ng document-wide nÃ¡Â»Â¯a.
 //
-// Điều này rất quan trọng khi sau này chúng ta
-// thêm form Login/Register.
+// Ã„ÂiÃ¡Â»Âu nÃƒÂ y rÃ¡ÂºÂ¥t quan trÃ¡Â»Âng khi sau nÃƒÂ y chÃƒÂºng ta
+// thÃƒÂªm form Login/Register.
 // ======================================================
 
 const predictionInputs = [
@@ -602,11 +602,11 @@ predictionInputs.forEach(input => {
 
 
 // ======================================================
-// 14. CHO PHÉP HTML GỌI fillSample()
+// 14. CHO PHÃƒâ€°P HTML GÃ¡Â»Å’I fillSample()
 // ======================================================
 //
-// Giữ tương thích với các nút mẫu hiện tại
-// nếu index.html đang dùng:
+// GiÃ¡Â»Â¯ tÃ†Â°Ã†Â¡ng thÃƒÂ­ch vÃ¡Â»â€ºi cÃƒÂ¡c nÃƒÂºt mÃ¡ÂºÂ«u hiÃ¡Â»â€¡n tÃ¡ÂºÂ¡i
+// nÃ¡ÂºÂ¿u index.html Ã„â€˜ang dÃƒÂ¹ng:
 // onclick="fillSample('setosa')"
 // ======================================================
 
@@ -615,7 +615,7 @@ window.fillSample =
 
 
 // ======================================================
-// 15. KIỂM TRA KẾT NỐI JAVASCRIPT
+// 15. KIÃ¡Â»â€šM TRA KÃ¡ÂºÂ¾T NÃ¡Â»ÂI JAVASCRIPT
 // ======================================================
 
 console.log(
@@ -627,57 +627,10 @@ console.log(
     API_BASE_URL
 );
 // ======================================================
-// 16. QUẢN LÝ NGƯỜI DÙNG
+// 16. QUÃ¡ÂºÂ¢N LÃƒÂ NGÃ†Â¯Ã¡Â»Å“I DÃƒâ„¢NG
 // ======================================================
 
-const userId = localStorage.getItem("user_id");
-const username = localStorage.getItem("username");
-const authProvider = localStorage.getItem("auth_provider");
-
-const userAccount = document.getElementById("user-account");
-const currentUsername = document.getElementById("current-username");
-const logoutButton = document.getElementById("logout-button");
-
-// Nếu chưa đăng nhập → quay về trang Login
-if (!userId || !username) {
-    window.location.href = "login.html?v=9";
-}
-
-// Hiển thị tài khoản đang đăng nhập
-if (userAccount && currentUsername) {
-    currentUsername.textContent = username;
-    userAccount.classList.remove("hidden");
-}
-
-if (authProvider === "auth0") {
-    const changePasswordButton = document.getElementById("change-password-button");
-    if (changePasswordButton) {
-        changePasswordButton.classList.add("hidden");
-    }
-}
-
-// Xử lý đăng xuất
-if (logoutButton) {
-    logoutButton.addEventListener("click", () => {
-
-        localStorage.removeItem("user_id");
-        localStorage.removeItem("username");
-
-        if (authProvider === "auth0") {
-            localStorage.removeItem("auth_provider");
-            window.location.assign(
-                `${API_BASE_URL}/auth/logout?returnTo=${encodeURIComponent(
-                    `${API_BASE_URL}/auth/after-logout`
-                )}`
-            );
-            return;
-        }
-
-        window.location.href = "login.html?v=9";
-    });
-}
-// ======================================================
-// 17. QUẢN LÝ ĐỔI MẬT KHẨU
+// 17. QUÃ¡ÂºÂ¢N LÃƒÂ Ã„ÂÃ¡Â»â€I MÃ¡ÂºÂ¬T KHÃ¡ÂºÂ¨U
 // ======================================================
 
 const passwordModal =
@@ -709,7 +662,7 @@ const passwordMessage =
 
 
 // ======================================================
-// HÀM ĐÓNG POPUP
+// HÃƒâ‚¬M Ã„ÂÃƒâ€œNG POPUP
 // ======================================================
 
 function closePasswordModal() {
@@ -740,7 +693,7 @@ function closePasswordModal() {
 
 
 // ======================================================
-// NÚT X
+// NÃƒÅ¡T X
 // ======================================================
 
 if (closePasswordButton) {
@@ -754,7 +707,7 @@ if (closePasswordButton) {
 
 
 // ======================================================
-// NÚT HỦY
+// NÃƒÅ¡T HÃ¡Â»Â¦Y
 // ======================================================
 
 if (cancelPasswordButton) {
@@ -768,7 +721,7 @@ if (cancelPasswordButton) {
 
 
 // ======================================================
-// BẤM RA NGOÀI POPUP
+// BÃ¡ÂºÂ¤M RA NGOÃƒâ‚¬I POPUP
 // ======================================================
 
 if (passwordOverlay) {
@@ -782,7 +735,7 @@ if (passwordOverlay) {
 
 
 // ======================================================
-// PHÍM ESC
+// PHÃƒÂM ESC
 // ======================================================
 
 document.addEventListener(
@@ -802,7 +755,7 @@ document.addEventListener(
 
 
 // ======================================================
-// NÚT LƯU MẬT KHẨU MỚI
+// NÃƒÅ¡T LÃ†Â¯U MÃ¡ÂºÂ¬T KHÃ¡ÂºÂ¨U MÃ¡Â»Å¡I
 // ======================================================
 
 if (submitPasswordButton) {
@@ -825,7 +778,7 @@ if (submitPasswordButton) {
 
 
             // ------------------------------------------
-            // Kiểm tra đăng nhập
+            // KiÃ¡Â»Æ’m tra Ã„â€˜Ã„Æ’ng nhÃ¡ÂºÂ­p
             // ------------------------------------------
 
             if (!userId) {
@@ -841,7 +794,7 @@ if (submitPasswordButton) {
 
 
             // ------------------------------------------
-            // Kiểm tra mật khẩu hiện tại
+            // KiÃ¡Â»Æ’m tra mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u hiÃ¡Â»â€¡n tÃ¡ÂºÂ¡i
             // ------------------------------------------
 
             if (!currentPassword) {
@@ -859,7 +812,7 @@ if (submitPasswordButton) {
 
 
             // ------------------------------------------
-            // Kiểm tra mật khẩu mới
+            // KiÃ¡Â»Æ’m tra mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u mÃ¡Â»â€ºi
             // ------------------------------------------
 
             if (!newPassword) {
@@ -877,7 +830,7 @@ if (submitPasswordButton) {
 
 
             // ------------------------------------------
-            // Kiểm tra độ dài
+            // KiÃ¡Â»Æ’m tra Ã„â€˜Ã¡Â»â„¢ dÃƒÂ i
             // ------------------------------------------
 
             if (newPassword.length < 6) {
@@ -895,7 +848,7 @@ if (submitPasswordButton) {
 
 
             // ------------------------------------------
-            // Kiểm tra xác nhận
+            // KiÃ¡Â»Æ’m tra xÃƒÂ¡c nhÃ¡ÂºÂ­n
             // ------------------------------------------
 
             if (newPassword !== confirmPassword) {
@@ -950,21 +903,21 @@ if (submitPasswordButton) {
 
 
                 // --------------------------------------
-                // API trả lỗi
+                // API trÃ¡ÂºÂ£ lÃ¡Â»â€”i
                 // --------------------------------------
 
                 if (!response.ok) {
 
                     throw new Error(
                         data.detail ||
-                        "Không thể đổi mật khẩu."
+                    "Không thể đổi mật khẩu."
                     );
 
                 }
 
 
                 // --------------------------------------
-                // Thành công
+                // ThÃƒÂ nh cÃƒÂ´ng
                 // --------------------------------------
 
                 passwordMessage.textContent =
@@ -1010,7 +963,7 @@ if (submitPasswordButton) {
 }
 
 // ======================================================
-// 18. LỊCH SỬ DỰ ĐOÁN
+// 18. LÃ¡Â»Å CH SÃ¡Â»Â¬ DÃ¡Â»Â° Ã„ÂOÃƒÂN
 // ======================================================
 
 const historyTotal =
@@ -1028,6 +981,9 @@ const refreshHistoryButton =
 const deleteAllHistoryButton =
     document.getElementById("delete-all-history-button");
 
+const exportHistoryButton =
+    document.getElementById("export-history-button");
+
 const historyPrevButton =
     document.getElementById("history-prev-button");
 
@@ -1042,7 +998,7 @@ const historyPageInfo =
 
 
 // ======================================================
-// CẤU HÌNH PHÂN TRANG
+// CÃ¡ÂºÂ¤U HÃƒÅ’NH PHÃƒâ€šN TRANG
 // ======================================================
 
 const HISTORY_ITEMS_PER_PAGE = 10;
@@ -1053,7 +1009,7 @@ let currentHistoryPage = 1;
 
 
 // ======================================================
-// HIỂN THỊ THÔNG BÁO
+// HIÃ¡Â»â€šN THÃ¡Â»Å  THÃƒâ€NG BÃƒÂO
 // ======================================================
 
 function showHistoryMessage(message, type = "") {
@@ -1073,7 +1029,7 @@ function showHistoryMessage(message, type = "") {
 
 
 // ======================================================
-// ĐỊNH DẠNG THỜI GIAN
+// Ã„ÂÃ¡Â»Å NH DÃ¡ÂºÂ NG THÃ¡Â»Å“I GIAN
 // ======================================================
 
 function formatHistoryDate(dateValue) {
@@ -1104,7 +1060,7 @@ function formatHistoryDate(dateValue) {
 
 
 // ======================================================
-// ĐỊNH DẠNG TÊN LOÀI HOA
+// Ã„ÂÃ¡Â»Å NH DÃ¡ÂºÂ NG TÃƒÅ N LOÃƒâ‚¬I HOA
 // ======================================================
 
 function formatSpecies(species) {
@@ -1117,9 +1073,28 @@ function formatSpecies(species) {
         + species.slice(1);
 }
 
+function formatHistoryModel(item) {
+    if (!Array.isArray(item.comparison_kernels)) {
+        return "Không có dữ liệu";
+    }
+
+    if (item.comparison_kernels.length === 0) {
+        return "SVM gốc (không đối chiếu)";
+    }
+
+    const kernelNames = {
+        linear: "Linear",
+        rbf: "RBF",
+        polynomial: "Polynomial",
+        sigmoid: "Sigmoid"
+    };
+    const comparisons = item.comparison_kernels.map(kernel => kernelNames[kernel] || kernel);
+    return `SVM gốc · Đối chiếu: ${comparisons.join(", ")}`;
+}
+
 
 // ======================================================
-// HIỂN THỊ MỘT TRANG
+// HIÃ¡Â»â€šN THÃ¡Â»Å  MÃ¡Â»ËœT TRANG
 // ======================================================
 
 function renderHistoryPage() {
@@ -1134,6 +1109,9 @@ function renderHistoryPage() {
     if (deleteAllHistoryButton) {
         deleteAllHistoryButton.disabled = totalItems === 0;
     }
+    if (exportHistoryButton) {
+        exportHistoryButton.disabled = totalItems === 0;
+    }
 
     const totalPages =
         Math.ceil(
@@ -1141,17 +1119,17 @@ function renderHistoryPage() {
         );
 
 
-    // Không có dữ liệu
+    // KhÃƒÂ´ng cÃƒÂ³ dÃ¡Â»Â¯ liÃ¡Â»â€¡u
 
     if (totalItems === 0) {
 
         historyTableBody.innerHTML = `
             <tr>
                 <td
-                    colspan="9"
+                    colspan="10"
                     class="history-empty"
                 >
-                     Bạn chưa có lần dự đoán nào.
+                    Chưa có lần dự đoán nào.
                 </td>
             </tr>
         `;
@@ -1162,7 +1140,7 @@ function renderHistoryPage() {
     }
 
 
-    // Bảo đảm trang hiện tại hợp lệ
+    // BÃ¡ÂºÂ£o Ã„â€˜Ã¡ÂºÂ£m trang hiÃ¡Â»â€¡n tÃ¡ÂºÂ¡i hÃ¡Â»Â£p lÃ¡Â»â€¡
 
     if (currentHistoryPage > totalPages) {
         currentHistoryPage = totalPages;
@@ -1173,7 +1151,7 @@ function renderHistoryPage() {
     }
 
 
-    // Xác định dữ liệu của trang hiện tại
+    // XÃƒÂ¡c Ã„â€˜Ã¡Â»â€¹nh dÃ¡Â»Â¯ liÃ¡Â»â€¡u cÃ¡Â»Â§a trang hiÃ¡Â»â€¡n tÃ¡ÂºÂ¡i
 
     const startIndex =
         (currentHistoryPage - 1)
@@ -1190,7 +1168,7 @@ function renderHistoryPage() {
         );
 
 
-    // Hiển thị bảng
+    // HiÃ¡Â»Æ’n thÃ¡Â»â€¹ bÃ¡ÂºÂ£ng
 
     historyTableBody.innerHTML =
         pageItems.map((item, index) => {
@@ -1243,13 +1221,15 @@ function renderHistoryPage() {
                         </strong>
                     </td>
 
+                    <td>${formatHistoryModel(item)}</td>
+
                     <td>
                         ${
                             item.prediction_time_ms !== null &&
                             item.prediction_time_ms !== undefined
                                 ? `${Number(
                                     item.prediction_time_ms
-                                            ).toFixed(4)} mili giây`
+                                ).toFixed(4)} mili giây`
                                 : "-"
                         }
                     </td>
@@ -1260,7 +1240,7 @@ function renderHistoryPage() {
                             class="history-delete-button history-delete-record-button"
                             data-history-id="${Number(item.id)}"
                         >
-                             Xóa
+                            Xóa
                         </button>
                     </td>
 
@@ -1270,14 +1250,14 @@ function renderHistoryPage() {
         }).join("");
 
 
-    // Cập nhật phân trang
+    // CÃ¡ÂºÂ­p nhÃ¡ÂºÂ­t phÃƒÂ¢n trang
 
     renderHistoryPagination(totalPages);
 }
 
 
 // ======================================================
-// HIỂN THỊ CÁC NÚT PHÂN TRANG
+// HIÃ¡Â»â€šN THÃ¡Â»Å  CÃƒÂC NÃƒÅ¡T PHÃƒâ€šN TRANG
 // ======================================================
 
 function renderHistoryPagination(totalPages) {
@@ -1290,7 +1270,7 @@ function renderHistoryPagination(totalPages) {
     }
 
 
-    // Không có dữ liệu / chỉ có 1 trang
+    // KhÃƒÂ´ng cÃƒÂ³ dÃ¡Â»Â¯ liÃ¡Â»â€¡u / chÃ¡Â»â€° cÃƒÂ³ 1 trang
 
     if (totalPages <= 1) {
 
@@ -1298,7 +1278,7 @@ function renderHistoryPagination(totalPages) {
 
         historyPageInfo.textContent =
             historyData.length > 0
-                ? `Tổng cộng ${historyData.length} bản ghi`
+        ? `Tổng cộng ${historyData.length} bản ghi`
                 : "";
 
         if (historyPrevButton) {
@@ -1313,7 +1293,7 @@ function renderHistoryPagination(totalPages) {
     }
 
 
-    // Nút Trước
+    // NÃƒÂºt TrÃ†Â°Ã¡Â»â€ºc
 
     if (historyPrevButton) {
         historyPrevButton.disabled =
@@ -1321,7 +1301,7 @@ function renderHistoryPagination(totalPages) {
     }
 
 
-    // Nút Sau
+    // NÃƒÂºt Sau
 
     if (historyNextButton) {
         historyNextButton.disabled =
@@ -1329,7 +1309,7 @@ function renderHistoryPagination(totalPages) {
     }
 
 
-    // Các nút số trang
+    // CÃƒÂ¡c nÃƒÂºt sÃ¡Â»â€˜ trang
 
     historyPageNumbers.innerHTML = "";
 
@@ -1368,7 +1348,7 @@ function renderHistoryPagination(totalPages) {
     }
 
 
-    // Thông tin trang
+    // ThÃƒÂ´ng tin trang
 
     const startItem =
         (currentHistoryPage - 1)
@@ -1388,7 +1368,7 @@ function renderHistoryPagination(totalPages) {
 
 
 // ======================================================
-// TẢI LỊCH SỬ
+// TÃ¡ÂºÂ¢I LÃ¡Â»Å CH SÃ¡Â»Â¬
 // ======================================================
 
 async function loadPredictionHistory() {
@@ -1400,8 +1380,9 @@ async function loadPredictionHistory() {
     const currentUserId =
         localStorage.getItem("user_id");
 
+    const userId = Number(currentUserId);
 
-    if (!currentUserId) {
+    if (!currentUserId || !Number.isInteger(userId) || userId <= 0) {
 
         showHistoryMessage(
             "Phiên đăng nhập không hợp lệ.",
@@ -1417,7 +1398,7 @@ async function loadPredictionHistory() {
     historyTableBody.innerHTML = `
         <tr>
             <td
-                colspan="9"
+                colspan="10"
                 class="history-empty"
             >
                 Đang tải lịch sử dự đoán...
@@ -1443,7 +1424,7 @@ async function loadPredictionHistory() {
 
         const response =
             await fetch(
-                `${API_BASE_URL}/history/${currentUserId}`
+                `${API_BASE_URL}/history/${userId}`
             );
 
 
@@ -1451,7 +1432,7 @@ async function loadPredictionHistory() {
             await response.json();
 
 
-        // API trả lỗi
+        // API trÃ¡ÂºÂ£ lÃ¡Â»â€”i
 
         if (!response.ok) {
 
@@ -1462,7 +1443,7 @@ async function loadPredictionHistory() {
         }
 
 
-        // Lưu toàn bộ lịch sử
+        // LÃ†Â°u toÃƒÂ n bÃ¡Â»â„¢ lÃ¡Â»â€¹ch sÃ¡Â»Â­
 
         historyData =
             Array.isArray(data.history)
@@ -1470,7 +1451,7 @@ async function loadPredictionHistory() {
                 : [];
 
 
-        // Tổng số bản ghi
+        // TÃ¡Â»â€¢ng sÃ¡Â»â€˜ bÃ¡ÂºÂ£n ghi
 
         if (historyTotal) {
 
@@ -1480,12 +1461,12 @@ async function loadPredictionHistory() {
         }
 
 
-        // Quay về trang 1 sau khi tải lại
+        // Quay vÃ¡Â»Â trang 1 sau khi tÃ¡ÂºÂ£i lÃ¡ÂºÂ¡i
 
         currentHistoryPage = 1;
 
 
-        // Hiển thị dữ liệu
+        // HiÃ¡Â»Æ’n thÃ¡Â»â€¹ dÃ¡Â»Â¯ liÃ¡Â»â€¡u
 
         renderHistoryPage();
 
@@ -1507,23 +1488,25 @@ async function loadPredictionHistory() {
         if (deleteAllHistoryButton) {
             deleteAllHistoryButton.disabled = true;
         }
+        if (exportHistoryButton) {
+            exportHistoryButton.disabled = true;
+        }
 
 
         historyTableBody.innerHTML = `
             <tr>
                 <td
-                    colspan="9"
+                colspan="10"
                     class="history-empty"
                 >
-                     Không thể tải lịch sử dự đoán.
+                    Không thể tải lịch sử dự đoán.
                 </td>
             </tr>
         `;
 
 
         showHistoryMessage(
-            error.message ||
-            "Đã xảy ra lỗi khi tải lịch sử.",
+            error.message || "Đã xảy ra lỗi khi tải lịch sử.",
             "error"
         );
 
@@ -1630,7 +1613,7 @@ if (deleteAllHistoryButton) {
 
 
 // ======================================================
-// NÚT TRANG TRƯỚC
+// NÃƒÅ¡T TRANG TRÃ†Â¯Ã¡Â»Å¡C
 // ======================================================
 
 if (historyPrevButton) {
@@ -1654,7 +1637,7 @@ if (historyPrevButton) {
 
 
 // ======================================================
-// NÚT TRANG SAU
+// NÃƒÅ¡T TRANG SAU
 // ======================================================
 
 if (historyNextButton) {
@@ -1683,9 +1666,53 @@ if (historyNextButton) {
 
 }
 
+function historyCsvCell(value) {
+    return `"${String(value ?? "").replace(/"/g, '""')}"`;
+}
+
+function exportCurrentUserHistory() {
+    if (!Array.isArray(historyData) || historyData.length === 0) return;
+
+    const headers = [
+        "created_at",
+        "sepal_length",
+        "sepal_width",
+        "petal_length",
+        "petal_width",
+        "species",
+        "model_kernel",
+        "prediction_time_ms"
+    ];
+    const rows = historyData.map(item => [
+        item.created_at,
+        item.sepal_length,
+        item.sepal_width,
+        item.petal_length,
+        item.petal_width,
+        item.species,
+        formatHistoryModel(item),
+        item.prediction_time_ms
+    ]);
+    const content = `\uFEFF${[headers, ...rows]
+        .map(row => row.map(historyCsvCell).join(","))
+        .join("\r\n")}`;
+    const url = URL.createObjectURL(new Blob([content], { type: "text/csv;charset=utf-8" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "iris_prediction_history.csv";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+if (exportHistoryButton) {
+    exportHistoryButton.addEventListener("click", exportCurrentUserHistory);
+}
+
 
 // ======================================================
-// NÚT LÀM MỚI
+// NÃƒÅ¡T LÃƒâ‚¬M MÃ¡Â»Å¡I
 // ======================================================
 
 if (refreshHistoryButton) {
@@ -1699,70 +1726,10 @@ if (refreshHistoryButton) {
 
 
 // ======================================================
-// TỰ ĐỘNG TẢI KHI MỞ TRANG
+// TÃ¡Â»Â° Ã„ÂÃ¡Â»ËœNG TÃ¡ÂºÂ¢I KHI MÃ¡Â»Å¾ TRANG
 // ======================================================
 
-function initEditorialNavigation() {
-    const links = Array.from(document.querySelectorAll(".navbar a[href^='#']"));
-    const sectionIds = [
-        "prediction",
-        "history",
-        "evaluation",
-        "dataset",
-        "svm-theory",
-        "process",
-        "api-info"
-    ];
-    const sections = sectionIds
-        .map(id => document.getElementById(id))
-        .filter(Boolean);
-    let scrollFrame = null;
-
-    function setActiveSection(sectionId) {
-        const navId = sectionId === "svm-theory" ? "dataset" : sectionId;
-        links.forEach(link => {
-            const isActive = link.getAttribute("href") === `#${navId}`;
-            link.classList.toggle("is-active", isActive);
-            if (isActive) {
-                link.setAttribute("aria-current", "location");
-            } else {
-                link.removeAttribute("aria-current");
-            }
-        });
-    }
-
-    function updateActiveSection() {
-        const readingLine = window.scrollY + window.innerHeight * 0.34;
-        let currentId = sections[0]?.id;
-
-        sections.forEach(section => {
-            const sectionTop = section.getBoundingClientRect().top + window.scrollY;
-            if (sectionTop <= readingLine) {
-                currentId = section.id;
-            }
-        });
-
-        if (currentId) {
-            setActiveSection(currentId);
-        }
-        scrollFrame = null;
-    }
-
-    window.addEventListener("scroll", () => {
-        if (scrollFrame === null) {
-            scrollFrame = window.requestAnimationFrame(updateActiveSection);
-        }
-    }, { passive: true });
-    window.addEventListener("resize", updateActiveSection, { passive: true });
-    links.forEach(link => link.addEventListener("click", () => {
-        const sectionId = link.getAttribute("href").slice(1);
-        setActiveSection(sectionId);
-    }));
-    updateActiveSection();
-}
-
-initEditorialNavigation();
-loadPredictionHistory();
+if (historyTableBody) loadPredictionHistory();
 
 
 function formatEvaluationPercent(value, digits = 2) {
@@ -1854,7 +1821,7 @@ function renderConfusionMatrix(report, root, kernel) {
     const table = document.createElement("table");
     table.className = "confusion-matrix-table";
     const caption = document.createElement("caption");
-    caption.textContent = `H\u00e0ng: th\u1ef1c t\u1ebf; c\u1ed9t: d\u1ef1 \u0111o\u00e1n — ${kernel}`;
+    caption.textContent = `Hàng: thực tế; cột: dự đoán — ${kernel}`;
     table.appendChild(caption);
 
     const thead = document.createElement("thead");
@@ -1914,6 +1881,8 @@ function renderMetricChart(report, root) {
     const plotWidth = 470;
     const rowHeight = 52;
     const top = 34;
+    const metricValues = report.kernels.map(kernel => Number(report.holdout[kernel][metric]));
+    const bestValue = Math.max(...metricValues);
 
     [0.8, 0.85, 0.9, 0.95, 1].forEach(tick => {
         const x = plotX + ((tick - domainMin) / (domainMax - domainMin)) * plotWidth;
@@ -1947,7 +1916,8 @@ function renderMetricChart(report, root) {
         bar.setAttribute("x", plotX); bar.setAttribute("y", y);
         bar.setAttribute("width", Math.max(0, Math.min(1, (value - domainMin) / (domainMax - domainMin))) * plotWidth);
         bar.setAttribute("height", 23);
-        bar.setAttribute("class", "chart-bar");
+        const isBest = Math.abs(value - bestValue) <= 1e-12;
+        bar.setAttribute("class", `chart-bar${isBest ? " chart-bar-best" : ""}`);
         bar.setAttribute("rx", "5");
         svg.appendChild(bar);
         const valueLabel = document.createElementNS(svgNs, "text");
@@ -1998,8 +1968,13 @@ function initMachineLearningPanels() {
             }
         }, { rootMargin: "220px 0px" })
         : null;
-    if (observer) observer.observe(root);
-    else loadEvaluation();
+    if (document.body.dataset.page === "evaluation") {
+        loadEvaluation();
+    } else if (observer) {
+        observer.observe(root);
+    } else {
+        loadEvaluation();
+    }
 
     root.querySelector("#retry-evaluation-button").addEventListener("click", loadEvaluation);
 

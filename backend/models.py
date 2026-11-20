@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, Float, DateTime, ForeignKey
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 
@@ -42,6 +42,7 @@ class PredictionHistory(Base):
 
     prediction = Column(Integer, nullable=False)
     species = Column(String(50), nullable=False)
+    comparison_kernels = Column(Text, nullable=True)
 
     prediction_time_ms = Column(Float, nullable=True)
 

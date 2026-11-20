@@ -1,78 +1,70 @@
-async function loadComponent(elementId, filePath) {
-    const container = document.getElementById(elementId);
+const COMPONENT_PATHS = {
+    "account-modal": "components/account-modal.html?v=1",
+    "api-footer": "components/api-footer.html?v=14",
+    "batch-prediction": "components/batch-prediction.html?v=10",
+    "contact-footer": "components/contact-footer.html?v=3",
+    dataset: "components/dataset.html?v=11",
+    evaluation: "components/evaluation.html?v=15",
+    header: "components/header.html?v=17",
+    history: "components/history.html?v=10",
+    "model-info": "components/model-info.html?v=13",
+    prediction: "components/prediction.html?v=16",
+    process: "components/process.html?v=8",
+    "svm-theory": "components/svm-theory.html?v=10"
+};
+
+async function loadComponent(name) {
+    const container = document.getElementById(`comp-${name}`);
 
     if (!container) {
-        throw new Error(`Không tìm thấy container: #${elementId}`);
+        throw new Error(`Missing component container: #comp-${name}`);
     }
 
-    const response = await fetch(filePath);
-
+    const response = await fetch(new URL(COMPONENT_PATHS[name], document.baseURI));
     if (!response.ok) {
-        throw new Error(
-            `Không thể tải component: ${filePath}`
-        );
+        throw new Error(`Unable to load component: ${COMPONENT_PATHS[name]}`);
     }
 
     container.innerHTML = await response.text();
 }
 
+function loadScript(src) {
+    return new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = new URL(src, document.baseURI).href;
+        script.onload = resolve;
+        script.onerror = () => reject(new Error(`Unable to load script: ${src}`));
+        document.body.appendChild(script);
+    });
+}
 
 document.addEventListener("DOMContentLoaded", async () => {
+    const page = document.body;
+    if (!localStorage.getItem("user_id") || !localStorage.getItem("username")) {
+        window.location.replace(new URL("login.html?v=11", document.baseURI));
+        return;
+    }
+
+    const componentNames = (page.dataset.components || "")
+        .split(",")
+        .map(name => name.trim())
+        .filter(Boolean);
+    const components = ["header", "account-modal", ...componentNames];
 
     try {
+        const uniqueComponents = [...new Set(components)];
+        const unknownComponents = uniqueComponents.filter(name => !COMPONENT_PATHS[name]);
+        if (unknownComponents.length) {
+            throw new Error(`Unknown components: ${unknownComponents.join(", ")}`);
+        }
 
-        await Promise.all([
-            loadComponent("comp-header", "components/header.html?v=12"),
-            loadComponent("comp-history", "components/history.html?v=6"),
-            loadComponent("comp-prediction", "components/prediction.html?v=14"),
-            loadComponent("comp-model-info", "components/model-info.html?v=12"),
-            loadComponent("comp-evaluation", "components/evaluation.html?v=15"),
-            loadComponent("comp-dataset", "components/dataset.html?v=11"),
-            loadComponent("comp-svm-theory", "components/svm-theory.html?v=9"),
-            loadComponent("comp-process", "components/process.html?v=8"),
-            loadComponent("comp-api-footer", "components/api-footer.html?v=12")
-        ]);
-        // ================================================
-// MỞ POPUP ĐỔI MẬT KHẨU
-// ================================================
+        await Promise.all(uniqueComponents.map(loadComponent));
+        await loadScript("site-shell.js?v=14");
 
-document.addEventListener("click", function (event) {
-
-    const button =
-        event.target.closest("#change-password-button");
-
-    if (!button) {
-        return;
-    }
-
-    const modal =
-        document.getElementById("change-password-modal");
-
-    if (!modal) {
-        console.error(
-            "Không tìm thấy popup change-password-modal."
-        );
-        return;
-    }
-
-    modal.classList.remove("hidden");
-
-});
-
-        console.log(" Tất cả component đã được tải.");
-
-        // Chỉ chạy script.js sau khi toàn bộ HTML component đã có trong DOM
-        const script = document.createElement("script");
-
-        script.src = "script.js?v=31";
-
-        document.body.appendChild(script);
-
+        for (const src of (page.dataset.scripts || "").split(",").map(item => item.trim()).filter(Boolean)) {
+            await loadScript(src);
+        }
     } catch (error) {
-
-        console.error(
-            " Lỗi tải component:",
-            error
-        );
+        console.error("Unable to initialize the page:", error);
     }
 });
