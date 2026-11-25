@@ -203,7 +203,7 @@
             sessionStorage.removeItem(batchStateKey(userId));
             return true;
         } catch (error) {
-            console.warn("Unable to remove batch session state:", error);
+            console.error("Unable to remove batch session state:", error);
             return false;
         }
     }
@@ -217,7 +217,7 @@
                 }
             }
         } catch (error) {
-            console.warn("Unable to clear another account's batch cache:", error);
+            console.error("Unable to clear another account's batch cache:", error);
         }
     }
 
@@ -269,7 +269,7 @@
         } catch (error) {
             removeBatchState(userId);
             setStatus("Dự đoán vẫn dùng được nhưng không thể lưu phiên Batch trong trình duyệt. Hãy tải CSV kết quả nếu cần giữ lại.", "error");
-            console.warn("Unable to persist batch prediction state:", error);
+            console.error("Unable to persist batch prediction state:", error);
             return false;
         }
     }
@@ -582,7 +582,7 @@
         } catch (error) {
             removeBatchState(userId);
             setStatus("Không thể khôi phục kết quả Batch đã lưu; hãy chọn lại CSV và chạy dự đoán.", "error");
-            console.warn("Unable to restore batch prediction state:", error);
+            console.error("Unable to restore batch prediction state:", error);
         }
     }
 

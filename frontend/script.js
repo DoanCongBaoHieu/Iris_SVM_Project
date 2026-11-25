@@ -46,7 +46,7 @@ async function updateApiStatus() {
     } catch (error) {
         apiStatus.dataset.state = "offline";
         statusText.textContent = "API không hoạt động";
-        console.warn("Không thể kết nối API:", error);
+        console.error("Không thể kết nối API:", error);
     } finally {
         clearTimeout(timeoutId);
     }
@@ -464,10 +464,6 @@ async function predictFlower() {
         // Ghi log Ã„â€˜Ã¡Â»Æ’ kiÃ¡Â»Æ’m tra
         // ------------------------------------------
 
-        console.log(
-            "Kết quả từ API:",
-            result
-        );
 
 
         // ------------------------------------------
@@ -618,14 +614,6 @@ window.fillSample =
 // 15. KIÃ¡Â»â€šM TRA KÃ¡ÂºÂ¾T NÃ¡Â»ÂI JAVASCRIPT
 // ======================================================
 
-console.log(
-    "Iris SVM frontend JavaScript đã được tải."
-);
-
-console.log(
-    "API:",
-    API_BASE_URL
-);
 // ======================================================
 // 16. QUÃ¡ÂºÂ¢N LÃƒÂ NGÃ†Â¯Ã¡Â»Å“I DÃƒâ„¢NG
 // ======================================================

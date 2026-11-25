@@ -1,56 +1,72 @@
-/* Iris AI Explorer — shared Modern Floral Scientific tokens */
+/* Iris Classifier — shared Botanical Editorial color tokens */
+/* === 1. COLOR AND FONT TOKENS === */
 :root {
     color-scheme: light;
-    --navy: #102A56;
-    --sky: #0284C7;
-    --royal: #2563EB;
-    --rose: #BE185D;
-    --rose-hover: #9D174D;
-    --rose-text: #9D174D;
-    --pink-bright: #EC4899;
-    --soft-pink: #FCE7F3;
-    --ice-blue: #EFF8FF;
-    --white: #FFFFFF;
-    --slate: #475569;
-    --border: #9DBDDB;
+    --bg-page: #F8F2F4;
+    --bg-soft: #F1E3ED;
+    --bg-warm: #F6EBDD;
+    --surface: #FBF2E5;
+    --surface-2: #F0E6F3;
+    --navy: #213A63;
+    --navy-soft: #3C557A;
+    --iris: #A97BCB;
+    --iris-soft: #D9C4EB;
+    --berry: #A63D72;
+    --berry-hover: #90365F;
+    --text-main: #2D3552;
+    --text-soft: #656A82;
+    --border: #D6C2D4;
+    --border-strong: #BFA6BB;
+    --highlight-pink: #E4CADC;
+    --highlight-lilac: #DDCAE9;
 
-    --page: #EFF8FF;
-    --surface: var(--white);
-    --surface-subtle: #F7FBFE;
-    --section-surface: #E6F2FB;
-    --surface-blue: var(--ice-blue);
-    --surface-pink: #FFF5FA;
-    --text: var(--navy);
-    --text-secondary: var(--slate);
-    --text-muted: #52647B;
-    --blue-text: #075985;
-    --action: var(--rose);
-    --action-hover: var(--rose-hover);
-    --on-action: var(--white);
-    --control-border: #64748B;
+    --sky: var(--iris);
+    --royal: #76518F;
+    --rose: var(--berry);
+    --rose-hover: var(--berry-hover);
+    --rose-text: #8E3E62;
+    --pink-bright: var(--iris);
+    --soft-pink: var(--highlight-pink);
+    --ice-blue: var(--highlight-lilac);
+    --white: var(--surface);
+    --slate: var(--text-soft);
+
+    --page: var(--bg-page);
+    --surface-subtle: var(--surface-2);
+    --section-surface: var(--bg-soft);
+    --surface-blue: var(--highlight-lilac);
+    --surface-pink: var(--highlight-pink);
+    --text: var(--text-main);
+    --text-secondary: var(--text-soft);
+    --text-muted: #686D84;
+    --blue-text: var(--navy-soft);
+    --action: var(--berry);
+    --action-hover: var(--berry-hover);
+    --on-action: var(--surface);
+    --control-border: var(--border-strong);
     --focus: var(--royal);
 
-    --success: #166534;
-    --success-surface: #F0FDF4;
-    --error: #B42345;
-    --error-surface: #FFF1F2;
-    --warning: #854D0E;
-    --warning-surface: #FFFBEB;
-    --disabled-surface: #EDF2F7;
-    --overlay: rgb(16 42 86 / 40%);
-    --glass: rgb(255 255 255 / 96%);
+    --success: #326747;
+    --success-surface: #EAF3EC;
+    --error: #963A4B;
+    --error-surface: #F8E9E9;
+    --warning: #76531D;
+    --warning-surface: #F7F0DF;
+    --disabled-surface: #EEE7EC;
+    --overlay: rgb(33 58 99 / 42%);
+    --glass: rgb(255 247 239 / 91%);
 
     /* Species colors stay consistent across specimen cards and the confusion matrix. */
-    --setosa: #0284C7;
-    --versicolor: #BE185D;
-    --virginica: #2563EB;
-    --chart-bar: var(--royal);
-    --chart-track: var(--ice-blue);
+    --setosa: #4B7975;
+    --versicolor: #984466;
+    --virginica: #76518F;
+    --chart-bar: var(--navy-soft);
+    --chart-track: #E8DDEC;
     --chart-grid: var(--border);
-    --matrix-correct-bg: #E0F2FE;
-    --matrix-correct-text: #075985;
+    --matrix-correct-bg: #E8F0EA;
+    --matrix-correct-text: #315F45;
     --matrix-error-bg: var(--soft-pink);
-    --matrix-error-text: #9D174D;
+    --matrix-error-text: var(--rose-text);
 
     --serif: "Playfair Display", Georgia, serif;
     --sans: "Montserrat", "Trebuchet MS", sans-serif;
@@ -60,19 +76,24 @@
     --radius-control: 10px;
     --radius-small: 8px;
     --radius-pill: 999px;
-    --shadow-card: 0 1px 3px rgb(16 42 86 / 7%), 0 5px 14px rgb(16 42 86 / 8%), 0 12px 26px rgb(16 42 86 / 5%);
-    --shadow-hover: 0 3px 8px rgb(16 42 86 / 9%), 0 14px 30px rgb(16 42 86 / 12%);
-    --shadow-action: 0 4px 12px rgb(190 24 93 / 20%);
-    --shadow-modal: 0 24px 64px rgb(16 42 86 / 20%);
+    --shadow-card: 0 1px 3px rgb(33 58 99 / 8%), 0 5px 14px rgb(33 58 99 / 10%), 0 12px 26px rgb(33 58 99 / 7%);
+    --shadow-hover: 0 3px 8px rgb(33 58 99 / 10%), 0 14px 30px rgb(33 58 99 / 13%);
+    --shadow-action: 0 4px 12px rgb(166 61 114 / 20%);
+    --shadow-modal: 0 24px 64px rgb(33 58 99 / 24%);
 }
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 112px; }
+/* === 2. RESET AND BASE STYLES === */
 body {
     min-width: 320px;
     min-height: 100vh;
     margin: 0;
-    background: var(--page);
+    background-color: var(--page);
+    background-image: radial-gradient(ellipse at 8% 12%, rgb(190 158 222 / 62%) 0, transparent 49%), radial-gradient(ellipse at 50% 54%, rgb(228 202 220 / 43%) 0, transparent 52%), radial-gradient(ellipse at 85% 75%, rgb(245 192 140 / 59%) 0, transparent 49%), radial-gradient(ellipse at 95% 15%, rgb(232 171 190 / 43%) 0, transparent 45%), linear-gradient(135deg, #EADCF2 0%, #FAF0E3 50%, #F3D6D0 100%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
     color: var(--text);
     font: 400 16px/1.6 var(--sans);
     -webkit-font-smoothing: antialiased;
@@ -124,6 +145,7 @@ input:-webkit-autofill {
 }
 .auth-callback-card h1 { font: 600 clamp(28px, 5vw, 36px)/1.2 var(--serif); }
 .auth-callback-card p { color: var(--text-secondary); }
+/* === 5. INTERACTION AND ACCESSIBILITY === */
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
         scroll-behavior: auto !important;

@@ -12,6 +12,7 @@ from sklearn.model_selection import StratifiedKFold, cross_validate, train_test_
 from backend.train_models import create_models
 
 
+# === 2. EVALUATION CONFIGURATION ===
 KERNEL_MODEL_KEYS = {
     "linear": "svm_linear",
     "rbf": "svm_rbf",
@@ -20,6 +21,7 @@ KERNEL_MODEL_KEYS = {
 }
 
 
+# === 3. EVALUATION HELPER ===
 @lru_cache(maxsize=1)
 def get_evaluation_report():
     """Compute holdout and CV metrics without reusing the holdout for CV."""

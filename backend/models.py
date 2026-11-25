@@ -1,10 +1,12 @@
-from sqlalchemy import Column, Integer, String, Text, Float, DateTime, ForeignKey
+# === 1. IMPORTS ===
+from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 
 from .database import Base
 
 
+# === 2. DATABASE MODELS ===
 class User(Base):
     __tablename__ = "users"
 

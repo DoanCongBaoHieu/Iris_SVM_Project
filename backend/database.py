@@ -1,3 +1,4 @@
+# === 1. IMPORTS ===
 import os
 from pathlib import Path
 
@@ -6,6 +7,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
 
+# === 2. CONFIGURATION AND ENVIRONMENT ===
 BASE_DIR = Path(__file__).resolve().parents[1]
 load_dotenv(BASE_DIR / ".env")
 
@@ -38,9 +40,7 @@ elif not DATABASE_URL.startswith("postgresql+psycopg://"):
     )
 
 
-# ======================================================
-# SQLALCHEMY
-# ======================================================
+# === 3. DATABASE ENGINE AND SESSION ===
 
 engine_kwargs = {
     "echo": False,
@@ -63,10 +63,7 @@ SessionLocal = sessionmaker(
 Base = declarative_base()
 
 
-# ======================================================
-# DATABASE SESSION
-# ======================================================
-
+# === 4. DATABASE DEPENDENCIES ===
 def get_db():
     db = SessionLocal()
 

@@ -65,7 +65,7 @@
                 if (key?.startsWith(keyPrefix)) sessionStorage.removeItem(key);
             }
         } catch (error) {
-            console.warn("Unable to clear batch prediction session state:", error);
+            console.error("Unable to clear batch prediction session state:", error);
         }
     }
 

@@ -1,6 +1,8 @@
+# === 1. IMPORTS ===
 from datetime import datetime, timedelta, timezone
 import hashlib
 import json
+import logging
 import os
 import secrets
 import time
@@ -8,10 +10,10 @@ from pathlib import Path
 from urllib.parse import urlencode
 
 import bcrypt
-from auth0_fastapi.auth.auth_client import AuthClient
 from auth0_fastapi.config import Auth0Config
 from auth0_fastapi.errors import register_exception_handlers
 from auth0_fastapi.server.routes import register_auth_routes, router as auth0_router
+from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
@@ -22,12 +24,13 @@ from sqlalchemy import delete, func, inspect, select, text
 from sqlalchemy.orm import Session
 from starlette.middleware.sessions import SessionMiddleware
 
-from dotenv import load_dotenv
-
+from backend.auth0_clock_skew import create_auth_client
 from backend.database import Base, engine, get_db
 from backend.evaluation import get_evaluation_report
 from backend.models import PredictionHistory, User
 
+# === 2. CONFIGURATION AND ENVIRONMENT ===
+logger = logging.getLogger(__name__)
 load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
 AUTH0_DOMAIN = os.getenv("AUTH0_DOMAIN")
@@ -58,6 +61,7 @@ if missing_auth0_settings:
         "Missing Auth0 configuration: " + ", ".join(missing_auth0_settings)
     )
 
+# === 3. APPLICATION AND AUTHENTICATION SETUP ===
 app = FastAPI(
     title="Iris Classification API",
     description="API phân loại hoa Iris bằng nhiều thuật toán học máy",
@@ -92,12 +96,13 @@ auth0_config = Auth0Config(
     authorization_params={"scope": "openid profile email"},
 )
 app.state.config = auth0_config
-app.state.auth_client = AuthClient(auth0_config)
+app.state.auth_client = create_auth_client(auth0_config)
 register_auth_routes(auth0_router, auth0_config)
 app.include_router(auth0_router)
 register_exception_handlers(app)
 
 
+# === 4. MACHINE LEARNING MODELS ===
 MODEL_DIR = Path(__file__).resolve().parents[1] / "model"
 MAIN_MODEL_PATH = MODEL_DIR / "iris_svm_model.pkl"
 if not MAIN_MODEL_PATH.exists():
@@ -117,12 +122,14 @@ comparison_models = {}
 
 
 
+# === MODEL CLASS LABELS ===
 target_names = [
     "setosa",
     "versicolor",
     "virginica"
 ]
 
+# === 5. PYDANTIC SCHEMAS ===
 class IrisInput(BaseModel):
     user_id: int | None = Field(
         default=None,
@@ -226,6 +233,7 @@ class ChangePasswordInput(BaseModel):
         description="Mật khẩu mới"
     )
 
+# === 3. DATABASE INITIALIZATION ===
 @app.on_event("startup")
 def create_database_tables():
     Base.metadata.create_all(bind=engine)
@@ -254,6 +262,7 @@ def create_database_tables():
         )
 
 
+# === 7. API ENDPOINTS ===
 @app.get("/")
 def root():
 
@@ -615,10 +624,7 @@ def login(
         raise
 
     except Exception as e:
-        print("========== LOGIN ERROR ==========")
-        print(type(e).__name__)
-        print(str(e))
-        print("=================================")
+        logger.exception("Login failed")
 
         raise HTTPException(
             status_code=500,
@@ -672,6 +678,7 @@ def change_password(
     }
 
 
+# === 6. HELPER FUNCTIONS ===
 def serialize_history_timestamp(created_at: datetime) -> str:
     if created_at.tzinfo is None:
         # SQL Server stores CURRENT_TIMESTAMP in server-local time; SQLite/PostgreSQL use UTC.
